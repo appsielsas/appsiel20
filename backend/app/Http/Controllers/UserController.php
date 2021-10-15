@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\User;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return 'Index user';
+        return User::all();
     }
 
     /**
@@ -38,11 +38,16 @@ class UserController extends Controller
     {
         $company_id = 1;
 
+        /*$user = User::create( $request->all() );*/
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = $request->password;
         $user->company_id = $company_id;
+
+        $user->save();
+
+        return $user;
     }
 
     /**
@@ -53,8 +58,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return $user->response()->tojson();
+        //$user = 
+        //return $user->response()->tojson();
+        return User::findOrFail($id);
     }
 
     /**
