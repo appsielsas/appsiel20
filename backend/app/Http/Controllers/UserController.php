@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 use App\Models\User;
 
@@ -38,14 +40,18 @@ class UserController extends Controller
     {
         $company_id = 1;
 
-        /*$user = User::create( $request->all() );*/
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = $request->password;
-        $user->company_id = $company_id;
+        $validator = Validator::make($request->all(), [
+                                            'name' => 'required|max:250',
+                                            'email' => 'email|required|unique:users',
+                                            'password' => [ 'required', 'confirmed', Password::min(8) ],
+                                        ]);
 
-        $user->save();
+        if ( $validator->fails() )
+        {
+            return $validator->errors()->toJson();
+        }
+
+        $user = User::create( array_merge( $request->all(), ['company_id' => 1 ]  ) );
 
         return $user;
     }
@@ -83,7 +89,18 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+                                            'name' => 'required|max:250',
+                                            'email' => 'email|required|unique:users',
+                                        ]);
+
+        if ( $validator->fails() )
+        {
+            return $validator->errors()->toJson();
+        }
+
+        return User::where( 'id', $id )->update( $request->all() );
+
     }
 
     /**
