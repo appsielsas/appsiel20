@@ -112,5 +112,9 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+        $user = array(
+            "id" => $id
+        );
+        return $user;
     }
 }

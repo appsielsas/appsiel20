@@ -15,15 +15,10 @@ const UserList = (props) => {
                 }}
                 noValidate
                 autoComplete="off"
-
             >
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                     Usuarios
                 </Typography>
-                {/*JSON.stringify(props.data,
-                    null,
-                    2
-                )*/}
                 <TableReact data={props.data}></TableReact>
             </Box>
         </Paper>

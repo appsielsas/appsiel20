@@ -1,4 +1,7 @@
+import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import {
   BrowserRouter as Router, Route, Switch
@@ -6,7 +9,8 @@ import {
 import SideBar from './Components/SideBar';
 import Users from './Components/Users';
 import CustomStyles from './CustomStyles';
-import { SnackbarProvider, useSnackbar } from 'notistack';
+import { UserContextProvider } from './application/UserContext'
+
 
 
 
@@ -26,12 +30,16 @@ export default function App() {
                 {/*<CreateUsers handleChange={handleChange} methodPost={requestPost}></CreateUsers>*/}
               </Route>
               <Route path="/users">
-                <Users></Users>
+                <UserContextProvider>
+                  <Users />
+                </UserContextProvider>
               </Route>
               <Route path="/">
-                <Box sx={{ width: '100%', }}>
-                  <h1>Inicio Dashboard</h1>
-                </Box>
+                <Container>
+                  <Box component={Paper} sx={{ width: '100%', p: 3 }}>
+                    <h1 >Inicio Dashboard</h1>
+                  </Box>
+                </Container>
               </Route>
             </Switch>
           </SideBar>

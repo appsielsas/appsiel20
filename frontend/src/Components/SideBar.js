@@ -7,28 +7,30 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import RestoreIcon from '@mui/icons-material/Restore';
+import PeopleIcon from '@mui/icons-material/People';
 import StarBorder from '@mui/icons-material/StarBorder';
 import MuiAppBar from '@mui/material/AppBar';
+import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
+import { grey } from '@mui/material/colors';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
+import SvgIcon from '@mui/material/SvgIcon';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
 import { styled, useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { Link } from "react-router-dom";
 import * as React from 'react';
-import {
-    Link
-} from "react-router-dom";
+
 
 
 
@@ -101,108 +103,24 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function SideBar(props) {
 
-    const layoutButtons = [
-        {
-            aplication: [
-                {
-                    name: "tesoreria",
-                    icon: "inboxIcon",
-                    url: "web/tal",
-                    modulos: [
-                        {
-                            name: "recaudos",
-                            icon: "inboxIcon",
-                            url: "web/tal",
-                            modelos: [
-                                {
-                                    name: "recaudos",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                },
-                                {
-                                    name: "recaudos de cxc",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                },
-                                {
-                                    name: "documentos abonados",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                }
-                            ]
-                        },
-                        {
-                            name: "pagos",
-                            icon: "inboxIcon",
-                            url: "web/tal",
-                            modelos: [
-                                {
-                                    name: "pagos",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                },
-                                {
-                                    name: "pagos de cxp",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                },
-                                {
-                                    name: "documentos abonados",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    name: "inventarios",
-                    icon: "inboxIcon",
-                    url: "web/tal",
-                    modulos: [
-                        {
-                            name: "inventarios",
-                            icon: "inboxIcon",
-                            url: "web/tal",
-                            modelos: []
-                        },
-                        {
-                            name: "transacciones",
-                            icon: "inboxIcon",
-                            url: "web/tal",
-                            modelos: [
-                                {
-                                    name: "entradas de almacen",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                },
-                                {
-                                    name: "salidas de almacen",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                },
-                                {
-                                    name: "transferencia de mercancia",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                },
-                                {
-                                    name: "fabricacion",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                },
-                                {
-                                    name: "ajustes de inventarios",
-                                    icon: "inboxIcon",
-                                    url: "web/tal"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+    const grayw = grey[100];
+    const [dataLayout, setDataLayout] = React.useState({});
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            await fetch('/layoutb.json')
+                .then(res => res.json())
+                .catch(error => {
+                    console.log(error)
+                })
+                .then(response => {
+                    console.log(response)
+                    setDataLayout(response);
+                    //enqueueSnackbar('Actualizado', { variant: 'success' });
+                })
         }
-    ]
+        fetchData()
+    }, [])
 
     const theme = useTheme();
     const [openDrawer, setOpenDrawer] = React.useState(false);
@@ -242,10 +160,15 @@ export default function SideBar(props) {
                         Appsiel
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-                        <Link to="/"><BottomNavigationAction label="Recents" icon={<RestoreIcon />} /></Link>
-                        <Link to="/users"><BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} /></Link>
-                        <Link to="/users/insert"><BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} /></Link>
-                        <Link to="/users/update"><BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} /></Link>
+                        <BottomNavigation
+                            showLabels
+                            sx={{ backgroundColor: 'rgba(0,0,0,0)', '& > *': { color: 'white' }, 'i': { fontSize: '24px' } }}
+                        >
+                            {dataLayout && dataLayout.shortcuts && dataLayout.shortcuts.map((item, i) => (
+                                <BottomNavigationAction label={item.label} component={Link} to={item.url} key={i} icon={<i className={item.icon}></i>} />
+                            ))}
+
+                        </BottomNavigation>
                     </Box>
                     <Button color="inherit">Login</Button>
                 </Toolbar>
@@ -261,40 +184,32 @@ export default function SideBar(props) {
                     sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
                     component="nav"
                 >
-                    {layoutButtons[0].aplication.map((item) => {
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <InboxIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={item.name} />
-                        </ListItemButton>
-                    })}
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Drafts" />
-                    </ListItemButton>
-                    <ListItemButton onClick={handleClick}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Inbox" />
-                        {openCollapse ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={openCollapse} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                            <ListItemButton sx={{ pl: 4 }}>
+                    {dataLayout && dataLayout.aplication && dataLayout.aplication.map((item, i) => (
+                        <div key={i}>
+                            <ListItemButton onClick={handleClick} component={Link} to={item.url}>
                                 <ListItemIcon>
-                                    <StarBorder />
+                                    <i className={item.icon}></i>
                                 </ListItemIcon>
-                                <ListItemText primary="Starred" />
+                                <ListItemText primary={item.label} />
+                                {openCollapse ? <ExpandLess /> : <ExpandMore />}
                             </ListItemButton>
-                        </List>
-                    </Collapse>
+                            <Collapse in={openCollapse} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding>
+                                    {item.modulos.map((model, i) => (
+                                        <ListItemButton sx={{ pl: 4 }} component={Link} to={item.url} key={i}>
+                                            <ListItemIcon>
+                                                <i className={model.icon}></i>
+                                            </ListItemIcon>
+                                            <ListItemText primary={model.label} />
+                                        </ListItemButton>
+                                    ))}
+                                </List>
+                            </Collapse>
+                        </div>
+                    ))}
                 </List>
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 3, }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: grayw, height: '100vh' }}>
                 <DrawerHeader />
                 {props.children}
             </Box>

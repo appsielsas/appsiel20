@@ -1,15 +1,17 @@
+import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import UserContext from '../application/UserContext';
 import React from 'react';
-import { useRowSelect, useTable, usePagination } from 'react-table';
+import { usePagination, useRowSelect, useTable } from 'react-table';
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -28,7 +30,11 @@ const IndeterminateCheckbox = React.forwardRef(
   }
 );
 
+
+
 function TableCheckBox({ columns, data }) {
+
+  const { SelectedUser, setSelectedUser } = React.useContext(UserContext);
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -64,12 +70,12 @@ function TableCheckBox({ columns, data }) {
           id: "selection",
           // The header can use the table's getToggleAllRowsSelectedProps method
           // to render a checkbox
-          Header: () => <div />,
+          Header: () => <div ><i className="far fa-check-square"></i></div>,
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
           Cell: ({ row }) => {
             if (
-              rows.filter((row) => row.isSelected).length < 1 ||
+              page.filter((row) => row.isSelected).length < 1 ||
               row.isSelected
             ) {
               return (
@@ -95,11 +101,22 @@ function TableCheckBox({ columns, data }) {
     }
   );
 
+  React.useEffect(() => {
+    if (selectedFlatRows.length > 0) {
+      selectedFlatRows.map(u => setSelectedUser(u.original))
+    } else {
+      setSelectedUser({})
+    }
+
+    console.log(SelectedUser)
+
+  }, [selectedFlatRows])
+
   // Render the UI for your table
   return (
     <>
       <TableContainer component={Paper}>
-        <Table {...getTableProps()}>
+        <Table size="small" {...getTableProps()}>
           <TableHead>
             {headerGroups.map(headerGroup => (
               <TableRow {...headerGroup.getHeaderGroupProps()}>
@@ -110,7 +127,7 @@ function TableCheckBox({ columns, data }) {
             ))}
           </TableHead>
           <TableBody {...getTableBodyProps()}>
-            {rows.slice(0, 10).map((row, i) => {
+            {page.map((row, i) => {
               prepareRow(row)
               return (
                 <TableRow {...row.getRowProps()}>
@@ -123,69 +140,32 @@ function TableCheckBox({ columns, data }) {
           </TableBody>
         </Table>
       </TableContainer>
-      <div className="pagination">
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>{' '}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
-        </button>{' '}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
-        </button>{' '}
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
-        </button>{' '}
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-        <span>
-          | Go to page:{' '}
-          <input
-            type="number"
-            defaultValue={pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              gotoPage(page)
-            }}
-            style={{ width: '100px' }}
-          />
-        </span>{' '}
-        <select
-          value={pageSize}
-          onChange={e => {
-            setPageSize(Number(e.target.value))
-          }}
-        >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-        <pre>
-          <code>
-            {JSON.stringify(
-              {
-                selectedRowIds: selectedRowIds,
-                'selectedFlatRows[].original': selectedFlatRows.map(
-                  d => d.original
-                ),
-              },
-              null,
-              2
-            )}
-          </code>
-        </pre>
-      </div>
+
+      <TablePagination
+        component="div"
+        count={rows.length}
+        page={pageIndex}
+        onPageChange={(event, newPage) => {
+          gotoPage(newPage)
+        }}
+        rowsPerPage={10}
+        onRowsPerPageChange={(event) => {
+          setPageSize(parseInt(event.target.value, 10));
+          gotoPage(0)
+        }}
+        SelectProps={{
+          inputProps: {
+            'aria-label': 'Registros por pagina',
+          },
+          native: true,
+        }}
+      />
     </>
   )
 }
 
 const TableReact = (props) => {
+
   const columns = React.useMemo(
     () => [
       {
@@ -200,10 +180,27 @@ const TableReact = (props) => {
     []
   )
 
+
+
   const data = React.useMemo(() => [...props.data], [props.data])
 
   return (
-    <TableCheckBox columns={columns} data={data} />
+    <Paper sx={{ padding: 2, flexGrow: 1 }}>
+      <Box
+        component="form"
+        sx={{
+          '& .MuiTextField-root': { m: 1 }, flexDirection: 'column'
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          Usuarios
+        </Typography>
+        <TableCheckBox columns={columns} data={data} />
+      </Box>
+    </Paper>
+
 
   )
 }

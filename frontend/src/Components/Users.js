@@ -1,6 +1,8 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CreateIcon from '@mui/icons-material/Create';
+import DeleteIcon from '@mui/icons-material/Delete';
 import TableChartIcon from '@mui/icons-material/TableChart';
+import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -9,20 +11,19 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
+import LinearProgress from '@mui/material/LinearProgress';
+import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import CreateUsers from './CreateUsers';
 import ModifyUsers from './ModifyUsers';
-import UserList from './UserList';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Snackbar from '@mui/material/Snackbar';
-import LinearProgress from '@mui/material/LinearProgress';
-import Box from '@mui/material/Box';
-import { SnackbarProvider, useSnackbar } from 'notistack';
+import TableReact from './TableReact';
+import UserContext from '../application/UserContext';
 
-const baseUrl = 'http://localhost:8000/api/users';
+const baseUrl = 'http://localhost:8000/api/users/';
 
 const Users = () => {
     const [data, setData] = useState([]);
@@ -30,13 +31,17 @@ const Users = () => {
     const [openModifyModal, setOpenModifyModal] = React.useState(false);
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const { enqueueSnackbar } = useSnackbar();
+    const { SelectedUser, setSelectedUser } = React.useContext(UserContext);
 
-    const [SelectedUser, setSelectedUser] = useState({
+    /*const [SelectedUser, setSelectedUser] = useState({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
-    })
+    })*/
+
+
+
     const [state, setState] = React.useState({
         open: false,
         vertical: 'top',
@@ -111,7 +116,6 @@ const Users = () => {
             .then(res => res.json())
             .catch(error => {
                 console.log(error)
-
             })
             .then(response => {
                 setData(data.concat(response))
@@ -124,23 +128,40 @@ const Users = () => {
     }
 
     const requestPut = async () => {
-        /*await axios.put(baseUrl + SelectedUser.id, SelectedUser)
-          .then(response => {
-            var dataNueva = data;
-            dataNueva.map(Usuario => {
-              if (SelectedUser.id === Usuario.id) {
-                Usuario.name = SelectedUser.name;
-                Usuario.email = SelectedUser.email;
-                Usuario.password = SelectedUser.password;
-              }
+        await fetch(baseUrl + SelectedUser.id, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(SelectedUser),
+
+        }).then(res => res.json())
+            .catch(error => {
+                console.log(error)
             })
-            setData(dataNueva);
-            abrirCerrarModalEditar();
-          })*/
+            .then(response => {
+                var dataNueva = data;
+                dataNueva.map(Usuario => {
+                    if (SelectedUser.id === Usuario.id) {
+                        Usuario.name = SelectedUser.name;
+                        Usuario.email = SelectedUser.email;
+                        Usuario.password = SelectedUser.password;
+                    }
+                })
+                setData(dataNueva);
+
+            })
     }
 
     const requestDelete = async () => {
-        await fetch(baseUrl + SelectedUser.id)
+        await fetch(baseUrl + SelectedUser.id, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(SelectedUser),
+
+        })
             .then(res => res.json())
             .catch(error => {
                 console.log(error)
@@ -148,12 +169,8 @@ const Users = () => {
             .then(response => {
                 setData(data.filter(Usuario => Usuario.id !== SelectedUser.id));
                 handleCloseDeleteModal();
+                enqueueSnackbar(response && response.id + ' eliminado', { variant: 'success' });
             })
-        /*await axios.delete(baseUrl + SelectedUser.id)
-          .then(response => {
-            setData(data.filter(Usuario => Usuario.id !== SelectedUser.id));
-            abrirCerrarModalEliminar();
-          })*/
     }
 
     const selectUser = (Usuario) => {
@@ -196,15 +213,9 @@ const Users = () => {
                 <IconButton aria-label="delete" onClick={handleClickOpenDeleteModal}>
                     <DeleteIcon />
                 </IconButton>
-                <IconButton aria-label="delete" onClick={requestGet}>
-                    U
-                </IconButton>
-                <IconButton color="primary" aria-label="add to shopping cart">
-                    <Link to="/users/"><TableChartIcon /></Link>
-                </IconButton>
             </Stack>
 
-            {data.length !== 0 ? <UserList data={data} /> : <Box sx={{ width: '100%' }}>              <LinearProgress />           </Box>}
+            {data && data.length !== 0 ? <TableReact data={data} setData={setData} /> : <Box sx={{ width: '100%' }}> <LinearProgress /> </Box>}
 
 
             <Dialog open={openCreateModal} onClose={handleCloseCreateModal}>
@@ -239,7 +250,7 @@ const Users = () => {
                 <DialogTitle>Eliminar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>
-                        Realmente desea eliminar este registro.
+                        Realmente desea eliminar este registro. <b>{SelectedUser.name}</b>
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

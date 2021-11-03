@@ -1,0 +1,112 @@
+{
+  "aplication": [
+    {
+      "label": "tesoreria",
+      "icon": "fas fa-box-open",
+      "url": "/web/tal",
+      "modulos": [
+        {
+          "label": "recaudos",
+          "icon": "fas fa-cube",
+          "url": "/web/tal",
+          "modelos": [
+            {
+              "label": "recaudos",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            },
+            {
+              "label": "recaudos de cxc",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            },
+            {
+              "label": "documentos abonados",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            }
+          ]
+        },
+        {
+          "label": "pagos",
+          "icon": "fas fa-cube",
+          "url": "/web/tal",
+          "modelos": [
+            {
+              "label": "pagos",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            },
+            {
+              "label": "pagos de cxp",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            },
+            {
+              "label": "documentos abonados",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "inventarios",
+      "icon": "fas fa-box-open",
+      "url": "/web/tal",
+      "modulos": [
+        {
+          "label": "inventarios",
+          "icon": "fas fa-cube",
+          "url": "/web/tal",
+          "modelos": []
+        },
+        {
+          "label": "transacciones",
+          "icon": "fas fa-cube",
+          "url": "/web/tal",
+          "modelos": [
+            {
+              "label": "entradas de almacen",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            },
+            {
+              "label": "salidas de almacen",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            },
+            {
+              "label": "transferencia de mercancia",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            },
+            {
+              "label": "fabricacion",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            },
+            {
+              "label": "ajustes de inventarios",
+              "icon": "inboxIcon",
+              "url": "/web/tal"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "shortcuts": [
+    {
+      "label": "users",
+      "icon": "fas fa-user",
+      "url": "/users"
+    },
+    {
+      "label": "home",
+      "icon": "fas fa-home",
+      "url": "/home"
+    }
+  ]
+}
