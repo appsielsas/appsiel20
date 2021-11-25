@@ -23,7 +23,7 @@ import ModifyUsers from './ModifyUsers';
 import TableReact from './TableReact';
 import UserContext from '../application/UserContext';
 
-const baseUrl = 'http://localhost:8000/api/users/';
+const baseUrl = 'http://localhost/appsiel20/backend/public/api/users';
 
 const Users = () => {
     const [data, setData] = useState([]);
