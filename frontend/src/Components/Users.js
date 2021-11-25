@@ -1,7 +1,6 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
-import TableChartIcon from '@mui/icons-material/TableChart';
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Button from '@mui/material/Button';
@@ -18,10 +17,10 @@ import Typography from '@mui/material/Typography';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+import UserContext from '../application/UserContext';
 import CreateUsers from './CreateUsers';
 import ModifyUsers from './ModifyUsers';
 import TableReact from './TableReact';
-import UserContext from '../application/UserContext';
 
 const baseUrl = 'http://localhost:8000/api/users/';
 
@@ -92,16 +91,24 @@ const Users = () => {
     }
 
     const requestGet = async () => {
-        await fetch(baseUrl)
-            .then(res => res.json())
-            .catch(error => {
-                console.log(error)
-            })
-            .then(response => {
-                console.log(response)
-                setData(response);
-                enqueueSnackbar('Actualizado', { variant: 'success' });
-            })
+
+        try {
+            await fetch(baseUrl)
+                .then(res => res.json())
+                .then(response => {
+                    console.log(response)
+                    setData(response);
+                    enqueueSnackbar('Actualizado', { variant: 'success' });
+                })
+                .catch(error => {
+                    console.log(error.message)
+                    enqueueSnackbar(error.message, { variant: 'error' });
+                })
+
+        } catch (e) {
+            console.log(e.message)
+        }
+
     }
 
     const requestPost = async () => {
@@ -118,8 +125,9 @@ const Users = () => {
                 console.log(error)
             })
             .then(response => {
+
                 setData(data.concat(response))
-                !response.email || !response.password ? enqueueSnackbar('Usuario ' + response.name + ' agregado correctamente', { variant: 'success' }) : console.log('')
+                !response['0'] ?? enqueueSnackbar('Usuario ' + response.name + ' agregado correctamente', { variant: 'success' })
                 enqueueSnackbar(response.email, { variant: 'error' });
                 enqueueSnackbar(response.password, { variant: 'error' });
                 console.log(response)
@@ -183,6 +191,8 @@ const Users = () => {
             await requestGet()
         }
         fetchData()
+
+
     }, [])
 
 
@@ -207,10 +217,10 @@ const Users = () => {
                 <IconButton aria-label="create" onClick={handleClickOpenCreateModal}>
                     <AddCircleIcon />
                 </IconButton>
-                <IconButton aria-label="edit" onClick={handleClickOpenModifyModal}>
+                <IconButton aria-label="edit" onClick={SelectedUser.id ? handleClickOpenModifyModal : () => { }}>
                     <CreateIcon />
                 </IconButton>
-                <IconButton aria-label="delete" onClick={handleClickOpenDeleteModal}>
+                <IconButton aria-label="delete" onClick={SelectedUser.id ? handleClickOpenDeleteModal : () => { }}>
                     <DeleteIcon />
                 </IconButton>
             </Stack>
