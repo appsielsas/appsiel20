@@ -48,7 +48,10 @@ class UserController extends Controller
 
         if ( $validator->fails() )
         {
-            return $validator->errors()->toJson();
+            $arr = json_decode( $validator->errors(), TRUE);
+            array_unshift( $arr, 'errors'  );
+            $json = json_encode($arr);
+            return $json;
         }
 
         $user = User::create( array_merge( $request->all(), ['company_id' => 1 ]  ) );
@@ -96,7 +99,10 @@ class UserController extends Controller
 
         if ( $validator->fails() )
         {
-            return $validator->errors()->toJson();
+            $arr = json_decode( $validator->errors(), TRUE);
+            array_unshift( $arr, 'errors'  );
+            $json = json_encode($arr);
+            return $json;
         }
 
         return User::where( 'id', $id )->update( $request->all() );
