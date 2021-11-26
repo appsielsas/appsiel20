@@ -75,7 +75,7 @@ function TableCheckBox({ columns, data, setSelected }) {
           Header: () => <div ><i className="far fa-check-square"></i></div>,
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
-          Cell: ({ row }) => {
+          Cell: ({ row, getToggleAllRowsSelectedProps }) => {
             if (
               page.filter((row) => row.isSelected).length < 1 ||
               row.isSelected
@@ -86,8 +86,11 @@ function TableCheckBox({ columns, data, setSelected }) {
                 </div>
               );
             } else {
+
               return (
+
                 <div>
+
                   <IndeterminateCheckbox
                     checked={false}
                     readOnly
@@ -112,18 +115,7 @@ function TableCheckBox({ columns, data, setSelected }) {
       setSelected({})
     }
 
-    //console.log(SelectedUser)
-    /*$(document).ready(function () {
-      $('#table1').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-          'copy', 'excel', 'pdf'
-        ],
-        select: [
-          'selectedSingle'
-        ]
-      });
-    });*/
+
   }, [selectedFlatRows])
 
   // Render the UI for your table

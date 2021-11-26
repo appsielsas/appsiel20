@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 import TableReact from './TableReact';
 import UserContext from '../application/UserContext';
+import TableDataTable from './TableDataTable';
 
 
 const UserList = (props) => {
@@ -31,7 +32,8 @@ const UserList = (props) => {
             <Typography variant="h3" color="text.secondary" gutterBottom>
                 Usuarios
             </Typography>
-            <TableReact data={data} columns={columns} setSelected={setSelectedUser}></TableReact>
+            {<TableReact data={data} columns={columns} setSelected={setSelectedUser}></TableReact>}
+            {/*<TableDataTable data={data} columns={columns} setSelected={setSelectedUser}></TableDataTable>*/}
         </>
     )
 }

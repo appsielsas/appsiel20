@@ -1,6 +1,7 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Skeleton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Button from '@mui/material/Button';
@@ -175,6 +176,7 @@ const Users = () => {
                 setData(data.filter(Usuario => Usuario.id !== SelectedUser.id));
                 handleCloseDeleteModal();
                 enqueueSnackbar('Registro ' + response && response.name + ' eliminado', { variant: 'success' });
+                setSelectedUser({});
             })
     }
 
@@ -234,7 +236,28 @@ const Users = () => {
                 </IconButton>
             </Stack>
 
-            {cargando ? <Box sx={{ width: '100%' }}> <LinearProgress /> </Box> : data.length !== 0 ? <UserList data={data} setData={setData} /> : 'Sin datos'}
+            {/*cargando ?
+                <Box sx={{ width: '100%' }}>
+                    <Typography variant="h2" width="300px"><Skeleton animation="wave" /></Typography>
+                    <Skeleton animation="wave" variant="rectangular" width='100%' height={118} />
+                </Box>
+                :
+                data.length !== 0 ?
+                    <UserList data={data} setData={setData} />
+                    :
+                    'Sin datos'
+            */}
+            {
+                data.length !== 0 ?
+                    <UserList data={data} setData={setData} />
+                    :
+                    <Box sx={{ width: '100%' }}>
+                        <Typography variant="h2" width="300px"><Skeleton animation="wave" /></Typography>
+                        <Skeleton animation="wave" variant="rectangular" width='100%' height={300} />
+                        <Skeleton animation="wave" variant="text" width='200px' sx={{ float: 'right' }} />
+                    </Box>
+
+            }
 
 
             <Dialog open={openCreateModal} onClose={handleCloseCreateModal}>
