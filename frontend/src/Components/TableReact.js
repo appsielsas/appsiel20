@@ -9,9 +9,12 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import UserContext from '../application/UserContext';
 import React from 'react';
+import $ from 'jquery';
+import DataTable from 'datatables.net'
 import { usePagination, useRowSelect, useTable } from 'react-table';
+
+$.DataTable = DataTable;
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -32,9 +35,8 @@ const IndeterminateCheckbox = React.forwardRef(
 
 
 
-function TableCheckBox({ columns, data }) {
+function TableCheckBox({ columns, data, setSelected }) {
 
-  const { SelectedUser, setSelectedUser } = React.useContext(UserContext);
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -101,22 +103,34 @@ function TableCheckBox({ columns, data }) {
     }
   );
 
+
+
   React.useEffect(() => {
     if (selectedFlatRows.length > 0) {
-      selectedFlatRows.map(u => setSelectedUser(u.original))
+      selectedFlatRows.map(u => setSelected(u.original))
     } else {
-      setSelectedUser({})
+      setSelected({})
     }
 
-    console.log(SelectedUser)
-
+    //console.log(SelectedUser)
+    /*$(document).ready(function () {
+      $('#table1').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+          'copy', 'excel', 'pdf'
+        ],
+        select: [
+          'selectedSingle'
+        ]
+      });
+    });*/
   }, [selectedFlatRows])
 
   // Render the UI for your table
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table size="small" {...getTableProps()}>
+      <TableContainer component={Paper} >
+        <Table size="small" {...getTableProps()} id="table1">
           <TableHead>
             {headerGroups.map(headerGroup => (
               <TableRow {...headerGroup.getHeaderGroupProps()}>
@@ -166,42 +180,8 @@ function TableCheckBox({ columns, data }) {
 
 const TableReact = (props) => {
 
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: 'Nombre',
-        accessor: 'name'
-      },
-      {
-        Header: 'Email',
-        accessor: 'email'
-      }
-    ],
-    []
-  )
-
-
-
-  const data = React.useMemo(() => [...props.data], [props.data])
-
   return (
-    <Paper sx={{ padding: 2, flexGrow: 1 }}>
-      <Box
-        component="form"
-        sx={{
-          '& .MuiTextField-root': { m: 1 }, flexDirection: 'column'
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Usuarios
-        </Typography>
-        <TableCheckBox columns={columns} data={data} />
-      </Box>
-    </Paper>
-
-
+    <TableCheckBox columns={props.columns} data={props.data} setSelected={props.setSelected} />
   )
 }
 

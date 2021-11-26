@@ -1,20 +1,27 @@
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
+import { useTheme } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import {
   BrowserRouter as Router, Route, Switch
 } from "react-router-dom";
+import { UserContextProvider } from './application/UserContext';
 import SideBar from './Components/SideBar';
 import Users from './Components/Users';
-import CustomStyles from './CustomStyles';
-import { UserContextProvider } from './application/UserContext'
+import CustomStyles, { ColorModeContext } from './CustomStyles';
+import PdfCreator from './Components/PdfCreator';
 
 
 
 
 export default function App() {
+  const theme = useTheme();
+  const colorMode = React.useContext(ColorModeContext);
 
   return (
 
@@ -23,8 +30,8 @@ export default function App() {
         <SnackbarProvider maxSnack={7}>
           <SideBar>
             <Switch>
-              <Route path="/users/update">
-                {/*<ModifyUsers handleChange={handleChange} methodPut={requestPut}></ModifyUsers>*/}
+              <Route path="/pdfcreator">
+                <PdfCreator />
               </Route>
               <Route path="/users/insert">
                 {/*<CreateUsers handleChange={handleChange} methodPost={requestPost}></CreateUsers>*/}

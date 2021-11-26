@@ -21,14 +21,17 @@ import UserContext from '../application/UserContext';
 import CreateUsers from './CreateUsers';
 import ModifyUsers from './ModifyUsers';
 import TableReact from './TableReact';
+import UserList from './UserList';
 
-const baseUrl = 'http://localhost/appsiel20/backend/public/api/users';
+
+const baseUrl = process.env.REACT_APP_URL + '/api/users/';
 
 const Users = () => {
     const [data, setData] = useState([]);
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
     const [openModifyModal, setOpenModifyModal] = React.useState(false);
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
+    const [cargando, setCargando] = React.useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const { SelectedUser, setSelectedUser } = React.useContext(UserContext);
 
@@ -46,16 +49,6 @@ const Users = () => {
         vertical: 'top',
         horizontal: 'right',
     });
-
-    const { vertical, horizontal, open } = state;
-
-    const handleClick = (newState) => () => {
-        setState({ open: true, ...newState });
-    };
-
-    const handleClose = () => {
-        setState({ ...state, open: false });
-    };
 
     const handleClickOpenCreateModal = () => {
         setOpenCreateModal(true);
@@ -87,11 +80,11 @@ const Users = () => {
             ...prevState,
             [name]: value
         }))
-        console.log(JSON.stringify(SelectedUser));
+        //console.log(JSON.stringify(SelectedUser));
     }
 
     const requestGet = async () => {
-
+        setCargando(true)
         try {
             await fetch(baseUrl)
                 .then(res => res.json())
@@ -99,6 +92,7 @@ const Users = () => {
                     console.log(response)
                     setData(response);
                     enqueueSnackbar('Actualizado', { variant: 'success' });
+                    setCargando(false)
                 })
                 .catch(error => {
                     console.log(error.message)
@@ -125,13 +119,16 @@ const Users = () => {
                 console.log(error)
             })
             .then(response => {
+                //console.log(response['email'])
 
-                setData(data.concat(response))
-                !response['0'] ?? enqueueSnackbar('Usuario ' + response.name + ' agregado correctamente', { variant: 'success' })
-                enqueueSnackbar(response.email, { variant: 'error' });
-                enqueueSnackbar(response.password, { variant: 'error' });
-                console.log(response)
-                handleCloseCreateModal()
+                if (Validator(response)) {
+                    enqueueSnackbar('Usuario ' + response.name + ' agregado correctamente', { variant: 'success' })
+                    setData(data.concat(data))
+                    console.log(data)
+                    handleCloseCreateModal()
+                }
+
+
             })
     }
 
@@ -177,7 +174,7 @@ const Users = () => {
             .then(response => {
                 setData(data.filter(Usuario => Usuario.id !== SelectedUser.id));
                 handleCloseDeleteModal();
-                enqueueSnackbar(response && response.id + ' eliminado', { variant: 'success' });
+                enqueueSnackbar('Registro ' + response && response.name + ' eliminado', { variant: 'success' });
             })
     }
 
@@ -191,9 +188,22 @@ const Users = () => {
             await requestGet()
         }
         fetchData()
-
-
     }, [])
+
+    function Validator(response) {
+
+        if (data['0'] === 'errors') {
+            for (const property in data) {
+                if (property !== '0') {
+                    data[property].forEach(element => {
+                        enqueueSnackbar(element, { variant: 'error' });
+                    });
+                }
+            }
+        } else {
+            return true
+        }
+    }
 
 
     return (
@@ -212,20 +222,19 @@ const Users = () => {
                 <Typography color="text.primary">Index</Typography>
             </Breadcrumbs>
             <hr />
-            <Stack direction="row" spacing={1}>
-
-                <IconButton aria-label="create" onClick={handleClickOpenCreateModal}>
+            <Stack direction="row">
+                <IconButton aria-label="create" onClick={handleClickOpenCreateModal} size="large" color="primary">
                     <AddCircleIcon />
                 </IconButton>
-                <IconButton aria-label="edit" onClick={SelectedUser.id ? handleClickOpenModifyModal : () => { }}>
+                <IconButton aria-label="edit" onClick={SelectedUser.id ? handleClickOpenModifyModal : () => { enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' }) }} size="large" color="secondary">
                     <CreateIcon />
                 </IconButton>
-                <IconButton aria-label="delete" onClick={SelectedUser.id ? handleClickOpenDeleteModal : () => { }}>
+                <IconButton aria-label="delete" onClick={SelectedUser.id ? handleClickOpenDeleteModal : () => { enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' }) }} size="large" color="error">
                     <DeleteIcon />
                 </IconButton>
             </Stack>
 
-            {data && data.length !== 0 ? <TableReact data={data} setData={setData} /> : <Box sx={{ width: '100%' }}> <LinearProgress /> </Box>}
+            {cargando ? <Box sx={{ width: '100%' }}> <LinearProgress /> </Box> : data.length !== 0 ? <UserList data={data} setData={setData} /> : 'Sin datos'}
 
 
             <Dialog open={openCreateModal} onClose={handleCloseCreateModal}>
@@ -268,13 +277,6 @@ const Users = () => {
                     <Button type="submit" onClick={requestDelete} variant="contained">Eliminar</Button>
                 </DialogActions>
             </Dialog>
-            < Snackbar
-                anchorOrigin={{ vertical, horizontal }}
-                open={open}
-                onClose={handleClose}
-                message="I love snacks"
-                key={vertical + horizontal}
-            />
         </>
     )
 }
