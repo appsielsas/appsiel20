@@ -1,27 +1,13 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Skeleton } from '@mui/material';
-import Box from '@mui/material/Box';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import LinearProgress from '@mui/material/LinearProgress';
-import Snackbar from '@mui/material/Snackbar';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import { Skeleton, Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import UserContext from '../application/UserContext';
 import CreateUsers from './CreateUsers';
 import ModifyUsers from './ModifyUsers';
-import TableReact from './TableReact';
 import UserList from './UserList';
 
 
@@ -35,21 +21,6 @@ const Users = () => {
     const [cargando, setCargando] = React.useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const { SelectedUser, setSelectedUser } = React.useContext(UserContext);
-
-    /*const [SelectedUser, setSelectedUser] = useState({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
-    })*/
-
-
-
-    const [state, setState] = React.useState({
-        open: false,
-        vertical: 'top',
-        horizontal: 'right',
-    });
 
     const handleClickOpenCreateModal = () => {
         setOpenCreateModal(true);
@@ -236,27 +207,13 @@ const Users = () => {
                 </IconButton>
             </Stack>
 
-            {/*cargando ?
+            {cargando ?
                 <Box sx={{ width: '100%' }}>
                     <Typography variant="h2" width="300px"><Skeleton animation="wave" /></Typography>
                     <Skeleton animation="wave" variant="rectangular" width='100%' height={118} />
                 </Box>
                 :
-                data.length !== 0 ?
-                    <UserList data={data} setData={setData} />
-                    :
-                    'Sin datos'
-            */}
-            {
-                data.length !== 0 ?
-                    <UserList data={data} setData={setData} />
-                    :
-                    <Box sx={{ width: '100%' }}>
-                        <Typography variant="h2" width="300px"><Skeleton animation="wave" /></Typography>
-                        <Skeleton animation="wave" variant="rectangular" width='100%' height={300} />
-                        <Skeleton animation="wave" variant="text" width='200px' sx={{ float: 'right' }} />
-                    </Box>
-
+                <UserList data={data} setData={setData} />
             }
 
 

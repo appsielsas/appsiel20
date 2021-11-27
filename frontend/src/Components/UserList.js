@@ -1,15 +1,12 @@
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import TableReact from './TableReact';
 import UserContext from '../application/UserContext';
-import TableDataTable from './TableDataTable';
+import TableReact from './TableReact';
 
 
 const UserList = (props) => {
 
-    const { SelectedUser, setSelectedUser } = React.useContext(UserContext);
+    const { setSelectedUser } = React.useContext(UserContext);
 
     const columns = React.useMemo(
         () => [

@@ -92,8 +92,6 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     color: theme.palette.text.secondary,
     [`& .${treeItemClasses.content}`]: {
         color: theme.palette.text.secondary,
-        borderTopRightRadius: theme.spacing(2),
-        borderBottomRightRadius: theme.spacing(2),
         paddingRight: theme.spacing(1),
         fontWeight: theme.typography.fontWeightMedium,
         '&.Mui-expanded': {
@@ -134,27 +132,22 @@ function StyledTreeItem(props) {
     return (
         <StyledTreeItemRoot
             label={
-                <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0, flexDirection: direction }}>
-                    <i className={labelIcon} style={direction ?
-                        { fontSize: 32 } :
-                        { paddingRight: 8, fontSize: 32 }
+                <Box {...(url && { component: Link, to: `/${url}` })} sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0, flexDirection: direction, textDecoration: "none", }}>
+                    {labelIcon.startsWith('fa') ? <i className={labelIcon} style={direction ?
+                        { fontSize: "16px" } :
+                        { paddingRight: 8 }
                     }></i>
-                    {url ?
-                        <Typography component={Link} to={url} variant="body2" color="black" sx={direction ?
-                            { fontWeight: 'inherit', flexGrow: 1, textTransform: 'capitalize', textDecoration: "none", whiteSpace: 'normal', fontSize: 10 } :
-                            { fontWeight: 'inherit', flexGrow: 1, textTransform: 'capitalize', textDecoration: "none", whiteSpace: 'normal' }
-                        }>
-                            {labelText}
-                        </Typography>
                         :
-                        <Typography variant="body2" color="black" sx={direction ?
-                            { fontWeight: 'inherit', flexGrow: 1, textTransform: 'capitalize', textDecoration: "none", whiteSpace: 'normal', fontSize: 10 } :
-                            { fontWeight: 'inherit', flexGrow: 1, textTransform: 'capitalize', textDecoration: "none", whiteSpace: 'normal' }
-                        }>
-                            {labelText}
-                        </Typography>
-
+                        <img src={labelIcon} alt={labelText} height="40px" style={{ paddingRight: 8 }} />
                     }
+
+                    <Typography variant="body2" color="black" sx={direction ?
+                        { fontWeight: 'inherit', flexGrow: 1, textTransform: 'capitalize', whiteSpace: 'normal', textAlign: 'center', fontSize: 10 } :
+                        { fontWeight: 'inherit', flexGrow: 1, textTransform: 'capitalize', whiteSpace: 'normal' }
+                    }>
+                        {labelText}
+                    </Typography>
+
                     <Typography variant="caption" color="inherit">
                         {labelInfo}
                     </Typography>
@@ -180,7 +173,40 @@ StyledTreeItem.propTypes = {
 export default function SideBar(props) {
 
     const grayw = grey[100];
-    const [dataLayout, setDataLayout] = React.useState({});
+    const [navigationLayout, setNavigationLayout] = React.useState([]);
+    const [shorcutLayout, setShorcutLayout] = React.useState([]);
+    const theme = useTheme();
+    const [openDrawer, setOpenDrawer] = React.useState(false);
+    const [openCollapse, setOpenCollapse] = React.useState(true);
+
+    const handleDrawerOpen = () => {
+        setOpenDrawer(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpenDrawer(false);
+    };
+
+    const handleClick = () => {
+        setOpenCollapse(!openCollapse);
+    };
+
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            await fetch(process.env.REACT_APP_URL + '/api/menu')
+                .then(res => res.json())
+                .catch(error => {
+                    console.log(error)
+                })
+                .then(response => {
+                    console.log(response)
+                    setNavigationLayout(response);
+                    //enqueueSnackbar('Actualizado', { variant: 'success' });
+                })
+        }
+        fetchData()
+    }, [])
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -191,29 +217,12 @@ export default function SideBar(props) {
                 })
                 .then(response => {
                     console.log(response)
-                    setDataLayout(response);
+                    setShorcutLayout(response.shortcuts);
                     //enqueueSnackbar('Actualizado', { variant: 'success' });
                 })
         }
         fetchData()
     }, [])
-
-    const theme = useTheme();
-    const [openDrawer, setOpenDrawer] = React.useState(false);
-
-    const handleDrawerOpen = () => {
-        setOpenDrawer(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpenDrawer(false);
-    };
-
-    const [openCollapse, setOpenCollapse] = React.useState(true);
-
-    const handleClick = () => {
-        setOpenCollapse(!openCollapse);
-    };
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -233,15 +242,14 @@ export default function SideBar(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" >
-                        Appsiel
+                        <Link to="/" style={{ textDecoration: "none", color: "white" }}>Appsiel</Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
                         <BottomNavigation
                             showLabels
-
                             sx={{ backgroundColor: 'rgba(0,0,0,0)', 'i': { fontSize: '24px' } }}
                         >
-                            {dataLayout && dataLayout.shortcuts && dataLayout.shortcuts.map((item, i) => (
+                            {shorcutLayout && shorcutLayout.map((item, i) => (
                                 <BottomNavigationAction sx={{ '& > i, span': { color: 'white' } }} label={item.label} component={Link} to={item.url} key={i} icon={<i className={item.icon}></i>} />
                             ))}
                         </BottomNavigation>
@@ -257,22 +265,22 @@ export default function SideBar(props) {
                 </DrawerHeader>
                 <Divider />
                 <TreeView
-                    aria-label="gmail"
+                    aria-label="sidebar"
                     defaultExpanded={[]}
-                    defaultCollapseIcon={<div></div>}
+                    defaultCollapseIcon={<div width="0"></div>}
                     defaultExpandIcon={<MenuIcon fontSize="large" />}
-                    defaultEndIcon={<div></div>}
+                    defaultEndIcon={<div width="0"></div>}
                     sx={{ height: 264, flexGrow: 1, maxWidth: drawerWidth, overflowY: 'auto', overflowX: 'hidden' }}
                 >
-                    {dataLayout && dataLayout.aplication && dataLayout.aplication.map((item, i) => (
-                        <StyledTreeItem url={item.url} bgColor="#9e9e9e"
-                            key={i} nodeId={item.id} labelText={item.label} labelIcon={item.icon} direction={!openDrawer && 'column'}>
-                            {item.modulos && item.modulos.map((modul, j) => (
+                    {navigationLayout && navigationLayout.map((item, i) => (
+                        <StyledTreeItem url='' bgColor="#9e9e9e"
+                            key={i} nodeId={item.id + item.name} labelText={item.label} labelIcon={item.icon} direction={!openDrawer && 'column'}>
+                            {item.modules && item.modules.map((modul, j) => (
                                 <StyledTreeItem url={modul.url} bgColor="#e0e0e0"
-                                    key={j} nodeId={modul.id} labelText={modul.label} labelIcon={modul.icon} direction={!openDrawer && 'column'} sx={openDrawer && { pl: 1 }}>
-                                    {modul.modelos && modul.modelos.map((model, k) => (
+                                    key={j} nodeId={modul.id + modul.name} labelText={modul.label} labelIcon="far fa-circle" direction={!openDrawer && 'column'} sx={openDrawer && { pl: 1 }}>
+                                    {modul.models && modul.models.map((model, k) => (
                                         <StyledTreeItem url={model.url} bgColor="#f5f5f5"
-                                            key={k} nodeId={model.id} labelText={model.label} labelIcon={model.icon} sx={openDrawer && { pl: 1 }} direction={!openDrawer && 'column'}>
+                                            key={k} nodeId={model.id + model.name} labelText={model.label} labelIcon="fas fa-circle" sx={openDrawer && { pl: 1 }} direction={!openDrawer && 'column'}>
                                         </StyledTreeItem>
                                     ))}
                                 </StyledTreeItem>

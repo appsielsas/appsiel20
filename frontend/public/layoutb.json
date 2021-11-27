@@ -129,7 +129,7 @@
     {
       "label": "users",
       "icon": "fas fa-user",
-      "url": "/users"
+      "url": "/api/core/users"
     },
     {
       "label": "PdfCreator",

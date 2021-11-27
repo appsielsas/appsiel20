@@ -1,0 +1,56 @@
+{
+  "model_headers_table": [
+    {
+      "header": "Nombre",
+      "accessor": "name"
+    },
+    {
+      "header": "Nombre",
+      "accessor": "name"
+    }
+  ],
+  "model_data_table": [
+    {
+      "id": 1,
+      "name": "ricardo",
+      "email": "ricardog@ho"
+    }
+  ],
+  "model_fields": [
+    {
+      "id": 34,
+      "name": "name",
+      "type": "text",
+      "label": "Nombre",
+      "options": "",
+      "value": "",
+      "attributes": "{disabled, class='combobox'}",
+      "required": true,
+      "disabled": false
+    }
+  ],
+  "model_actions": [
+    {
+      "id": 23,
+      "label": "Crear",
+      "method": "POST",
+      "prefix": "web",
+      "icon": "fas fa-plus"
+    },
+    {
+      "id": 23,
+      "label": "Editar",
+      "method": "PUT",
+      "prefix": "web",
+      "icon": "fas fa-plus"
+    },
+    ,
+    {
+      "id": 23,
+      "label": "Duplicar",
+      "method": "POST",
+      "prefix": "web/duplicate",
+      "icon": "fas fa-plus"
+    }
+  ]
+}

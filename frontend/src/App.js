@@ -1,22 +1,18 @@
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import {
-  BrowserRouter as Router, Route, Switch
+  BrowserRouter as Router, Route, Switch, useParams
 } from "react-router-dom";
 import { UserContextProvider } from './application/UserContext';
+import Generic from './Components/Generic';
+import PdfCreator from './Components/PdfCreator';
 import SideBar from './Components/SideBar';
 import Users from './Components/Users';
 import CustomStyles, { ColorModeContext } from './CustomStyles';
-import PdfCreator from './Components/PdfCreator';
-
-
 
 
 export default function App() {
@@ -30,17 +26,18 @@ export default function App() {
         <SnackbarProvider maxSnack={7}>
           <SideBar>
             <Switch>
-              <Route path="/pdfcreator">
-                <PdfCreator />
-              </Route>
-              <Route path="/users/insert">
-                {/*<CreateUsers handleChange={handleChange} methodPost={requestPost}></CreateUsers>*/}
-              </Route>
-              <Route path="/users">
+              <Route path="/api/core/users" exact>
                 <UserContextProvider>
                   <Users />
                 </UserContextProvider>
               </Route>
+              <Route path="/pdfcreator" exact>
+                <PdfCreator></PdfCreator>
+              </Route>
+              <Route path="/:aplication/:module/:models">
+                <Generic></Generic>
+              </Route>
+
               <Route path="/">
                 <Container>
                   <Box component={Paper} sx={{ width: '100%', p: 3 }}>
