@@ -1,1 +1,0 @@
-DROP TABLE `failed_jobs`, `migrations`, `password_resets`, `personal_access_tokens`, `users`;
