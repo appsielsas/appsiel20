@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\System;
+
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
-use App\Models\User;
+use App\Models\System\User;
 
 class UserController extends Controller
 {
@@ -50,8 +52,7 @@ class UserController extends Controller
         {
             $arr = json_decode( $validator->errors(), TRUE);
             array_unshift( $arr, 'errors'  );
-            $json = json_encode($arr);
-            return $json;
+            return json_encode($arr);
         }
 
         $user = User::create( array_merge( $request->all(), ['company_id' => 1 ]  ) );
@@ -101,8 +102,7 @@ class UserController extends Controller
         {
             $arr = json_decode( $validator->errors(), TRUE);
             array_unshift( $arr, 'errors'  );
-            $json = json_encode($arr);
-            return $json;
+            return json_encode($arr);
         }
 
         return User::where( 'id', $id )->update( $request->all() );
