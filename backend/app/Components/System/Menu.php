@@ -66,7 +66,8 @@ class Menu
         {            
             $modules = Permission::where([
                                             [ 'application_id', '=', $application->id ],
-                                            [ 'parent', '=', 0 ]
+                                            [ 'parent', '=', 0 ],
+                                            [ 'visible', '=', 1 ]
                                         ])
                                         ->OrderBy('position')
                                         ->get();
@@ -75,7 +76,8 @@ class Menu
             foreach ( $modules as $module )
             {
                 $models = Permission::where([
-                                                [ 'parent', '=', $module->id ]
+                                                [ 'parent', '=', $module->id ],
+                                                [ 'visible', '=', 1 ]
                                             ])
                                             ->OrderBy('position')
                                             ->get();
@@ -103,7 +105,6 @@ class Menu
                                     'id' => $application->id,
                                     'label' => $application->label,
                                     'icon' => $application->url_image,
-                                    'url' => $application->name,
                                     'modules' => $modules_items
                                 ];
         }
