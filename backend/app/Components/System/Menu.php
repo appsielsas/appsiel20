@@ -88,6 +88,7 @@ class Menu
                     $models_items[] = [ 
                                         'id' => $model->model_id,
                                         'label' => $model->label,
+                                        'name' => $model->name,
                                         'url' => $model->url
                                     ];
                 }
@@ -95,7 +96,7 @@ class Menu
                 $modules_items[] = [ 
                                     'id' => $module->id,
                                     'label' => $module->label,
-                                    'icon' => $module->url_image,
+                                    'name' => $module->name,
                                     'url' => $module->url,
                                     'models' => $models_items
                                 ];
@@ -104,7 +105,9 @@ class Menu
             $applications_items[] = [ 
                                     'id' => $application->id,
                                     'label' => $application->label,
+                                    'name' => $application->name,
                                     'icon' => $application->url_image,
+                                    'url' => '',
                                     'modules' => $modules_items
                                 ];
         }

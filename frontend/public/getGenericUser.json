@@ -1,0 +1,84 @@
+{
+  "name": "Generic User",
+  "model_headers_table": [
+    {
+      "Header": "Nombre",
+      "accessor": "name"
+    },
+    {
+      "Header": "E-mail",
+      "accessor": "email"
+    }
+  ],
+  "model_data_table": [
+    {
+      "id": 1,
+      "name": "ricardo",
+      "email": "ricardog@ho"
+    },
+    {
+      "id": 2,
+      "name": "jose",
+      "email": "joseg@ho"
+    },
+    {
+      "id": 3,
+      "name": "garces",
+      "email": "garcesg@ho"
+    }
+  ],
+  "model_fields": [
+    {
+      "id": 35,
+      "name": "name",
+      "type": "text",
+      "label": "Nombre",
+      "options": "",
+      "value": "",
+      "attributes": "{disabled, class='combobox'}",
+      "required": true,
+      "disabled": false
+    },
+    {
+      "id": 36,
+      "name": "email",
+      "type": "email",
+      "label": "E-mail",
+      "options": "",
+      "value": "",
+      "attributes": "{disabled, class='combobox'}",
+      "required": true,
+      "disabled": false
+    }
+  ],
+  "model_actions": [
+    {
+      "id": 23,
+      "label": "Crear",
+      "method": "POST",
+      "prefix": "web",
+      "icon": "fas fa-plus"
+    },
+    {
+      "id": 24,
+      "label": "Editar",
+      "method": "PUT",
+      "prefix": "web",
+      "icon": "fas fa-pen"
+    },
+    {
+      "id": 25,
+      "label": "Duplicar",
+      "method": "POST",
+      "prefix": "web/duplicate",
+      "icon": "fas fa-clone"
+    },
+    {
+      "id": 26,
+      "label": "Eliminar",
+      "method": "DELETE",
+      "prefix": "web",
+      "icon": "fas fa-trash-alt"
+    }
+  ]
+}

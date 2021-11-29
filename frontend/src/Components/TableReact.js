@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -8,10 +7,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import React from 'react';
+import DataTable from 'datatables.net';
 import $ from 'jquery';
-import DataTable from 'datatables.net'
+import React from 'react';
 import { usePagination, useRowSelect, useTable } from 'react-table';
 
 $.DataTable = DataTable;
@@ -106,15 +104,13 @@ function TableCheckBox({ columns, data, setSelected }) {
     }
   );
 
-
-
   React.useEffect(() => {
     if (selectedFlatRows.length > 0) {
       selectedFlatRows.map(u => setSelected(u.original))
+      console.log(selectedFlatRows[0].original)
     } else {
       setSelected({})
     }
-
 
   }, [selectedFlatRows])
 
@@ -170,10 +166,12 @@ function TableCheckBox({ columns, data, setSelected }) {
   )
 }
 
-const TableReact = (props) => {
+const TableReact = ({ data, columns, setSelected }) => {
 
   return (
-    <TableCheckBox columns={props.columns} data={props.data} setSelected={props.setSelected} />
+    <>
+      <TableCheckBox columns={columns} data={data} setSelected={setSelected} />
+    </>
   )
 }
 

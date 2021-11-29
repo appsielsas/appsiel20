@@ -19,7 +19,6 @@ export default function SimplePaper({ handleChange }) {
                 noValidate
                 autoComplete="off"
             >
-
                 <TextField fullWidth type="text" name="name" onChange={handleChange} onBlur={handleChange} label="Nombre" variant="standard" />
                 <TextField fullWidth type="email" name="email" onChange={handleChange} onBlur={handleChange} label="Email" variant="standard" />
                 <TextField fullWidth type="password" name="password" onChange={handleChange} onBlur={handleChange} label="Contraseña" variant="standard" />

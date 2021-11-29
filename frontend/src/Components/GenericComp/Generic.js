@@ -4,24 +4,31 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Skeleton, Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
-import UserContext from '../application/UserContext';
-import CreateUsers from './CreateUsers';
-import ModifyUsers from './ModifyUsers';
-import UserList from './UserList';
+import { Link, useParams } from "react-router-dom";
+import UserContext from '../../application/UserContext';
+import CreateG from './CreateG';
+import ModifyG from './ModifyG';
+import GenericList from './GenericList';
 
-const baseUrl = process.env.REACT_APP_URL + '/api/users/';
+const baseUrl = '/getGenericUser.json';
 
-const Users = () => {
+const Generic = () => {
+    //const { aplication, module, models } = useParams();
+    const [modelName, setModelName] = useState("");
+    const [headers, setHeaders] = useState([]);
     const [data, setData] = useState([]);
-
+    const [fields, setFields] = useState([]);
+    const [actions, setActions] = useState([]);
     const [cargando, setCargando] = React.useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const { SelectedUser, setSelectedUser } = React.useContext(UserContext);
+    const [selectedItem, setSelectedItem] = React.useState({ id: '' });
 
+    //open Modals
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
     const [openModifyModal, setOpenModifyModal] = React.useState(false);
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
+
+
 
     const handleOpenModal = (action) => {
         switch (action) {
@@ -29,14 +36,15 @@ const Users = () => {
                 setOpenCreateModal(true)
                 break;
             case 'Editar':
-                SelectedUser.id ?
+                selectedItem.id ?
                     setOpenModifyModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
                 break;
             case 'Eliminar':
-                SelectedUser.id ?
+                selectedItem.id ?
                     setOpenDeleteModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
                 break;
         }
+
     };
 
     const handleCloseModal = (action) => {
@@ -55,31 +63,30 @@ const Users = () => {
 
     const handleChange = e => {
         const { name, value } = e.target;
-        setSelectedUser(prevState => ({
+        setSelectedItem(prevState => ({
             ...prevState,
             [name]: value
         }))
-        //console.log(JSON.stringify(SelectedUser));
+        console.log(JSON.stringify(selectedItem));
     }
 
     const requestGet = async () => {
         setCargando(true)
         try {
             await fetch(baseUrl)
-                .then(res => {
-                    if (!res.ok) {
-                        throw Error(res.json);
-                    }
-                    return res.json()
-                })
+                .then(res => res.json())
                 .then(response => {
                     console.log(response)
-                    setData(response);
+                    setModelName(response.name)
+                    setHeaders(response.model_headers_table);
+                    setData(response.model_data_table);
+                    setFields(response.model_fields);
+                    setActions(response.model_actions);
                     enqueueSnackbar('Actualizado', { variant: 'success' });
                     setCargando(false)
                 })
                 .catch(error => {
-                    console.error(error.message)
+                    console.log(error.message)
                     enqueueSnackbar(error.message, { variant: 'error' });
                 })
 
@@ -89,41 +96,39 @@ const Users = () => {
     }
 
     const requestPost = async () => {
-        try {
-            let response = await fetch(baseUrl, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(SelectedUser),
+        await fetch(baseUrl, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(selectedItem),
+
+        })
+            .then(res => res.json())
+            .catch(error => {
+                console.log(error)
             })
-            let dataU = await response.json()
-            console.log(dataU)
-            if (response.ok) {
-                console.log("ok")
-                enqueueSnackbar('Usuario ' + response.name + ' agregado correctamente', { variant: 'success' })
-                setData(data.concat(data))
-                handleCloseModal("Crear")
-            } else {
-                console.log("error")
-                Validator(dataU)
-            }
-        } catch (error) {
-            console.log(error)
-        }
+            .then(response => {
+                //console.log(response['email'])
+
+                if (Validator(response)) {
+                    enqueueSnackbar('Usuario ' + response.name + ' agregado correctamente', { variant: 'success' })
+                    setData(data.concat(data))
+                    console.log(data)
+                    handleCloseModal("Crear")
+                }
 
 
-
-
+            })
     }
 
     const requestPut = async () => {
-        await fetch(baseUrl + SelectedUser.id, {
+        await fetch(baseUrl + selectedItem.id, {
             method: "PUT",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(SelectedUser),
+            body: JSON.stringify(selectedItem),
 
         }).then(res => res.json())
             .catch(error => {
@@ -132,10 +137,10 @@ const Users = () => {
             .then(response => {
                 var dataNueva = data;
                 dataNueva.map(Usuario => {
-                    if (SelectedUser.id === Usuario.id) {
-                        Usuario.name = SelectedUser.name;
-                        Usuario.email = SelectedUser.email;
-                        Usuario.password = SelectedUser.password;
+                    if (selectedItem.id === Usuario.id) {
+                        Usuario.name = selectedItem.name;
+                        Usuario.email = selectedItem.email;
+                        Usuario.password = selectedItem.password;
                     }
                 })
                 setData(dataNueva);
@@ -144,12 +149,12 @@ const Users = () => {
     }
 
     const requestDelete = async () => {
-        await fetch(baseUrl + SelectedUser.id, {
+        await fetch(baseUrl + selectedItem.id, {
             method: "DELETE",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(SelectedUser),
+            body: JSON.stringify(selectedItem),
 
         })
             .then(res => res.json())
@@ -157,16 +162,11 @@ const Users = () => {
                 console.log(error)
             })
             .then(response => {
-                setData(data.filter(Usuario => Usuario.id !== SelectedUser.id));
+                setData(data.filter(Usuario => Usuario.id !== selectedItem.id));
                 handleCloseModal("Eliminar");
                 enqueueSnackbar('Registro ' + response && response.name + ' eliminado', { variant: 'success' });
-                setSelectedUser({});
+                setSelectedItem({});
             })
-    }
-
-    const selectUser = (Usuario) => {
-        setSelectedUser(Usuario);
-        /* (caso === 'Editar') ? abrirCerrarModalEditar() : abrirCerrarModalEliminar()*/
     }
 
     useEffect(() => {
@@ -176,16 +176,20 @@ const Users = () => {
         fetchData()
     }, [])
 
-    function Validator(response) {
-        for (const property in response) {
-            if (property !== '0') {
-                response[property].forEach(element => {
-                    enqueueSnackbar(element, { variant: 'error' });
-                });
+    function Validator(data) {
+
+        if (data['0'] === 'errors') {
+            for (const property in data) {
+                if (property !== '0') {
+                    data[property].forEach(element => {
+                        enqueueSnackbar(element, { variant: 'error' });
+                    });
+                }
             }
+        } else {
+            return true
         }
     }
-
 
     return (
         <>
@@ -198,21 +202,24 @@ const Users = () => {
                     color="inherit"
                     to="/users/"
                 >
-                    User
+                    {useParams().module}
+                </Link>
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    to="/users/"
+                >
+                    {useParams().models}
                 </Link>
                 <Typography color="text.primary">Index</Typography>
             </Breadcrumbs>
             <hr />
             <Stack direction="row">
-                <IconButton aria-label="create" onClick={() => handleOpenModal("Crear")} size="large" color="primary">
-                    <AddCircleIcon />
-                </IconButton>
-                <IconButton aria-label="edit" onClick={() => handleOpenModal("Editar")} size="large" color="secondary">
-                    <CreateIcon />
-                </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleOpenModal("Eliminar")} size="large" color="error">
-                    <DeleteIcon />
-                </IconButton>
+                {actions.map((action) => (
+                    <IconButton key={action.id + ''} aria-label={action.label} onClick={() => handleOpenModal(action.label)} size="large" color="primary">
+                        <i className={action.icon}></i>
+                    </IconButton>
+                ))}
             </Stack>
 
             {cargando ?
@@ -221,15 +228,16 @@ const Users = () => {
                     <Skeleton animation="wave" variant="rectangular" width='100%' height={118} />
                 </Box>
                 :
-                <UserList data={data} setData={setData} />
+                <GenericList setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
             }
+
             <Dialog open={openCreateModal} onClose={() => handleCloseModal("Crear")}>
                 <DialogTitle>Insertar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>
 
                     </DialogContentText>
-                    <CreateUsers handleChange={handleChange} methodPost={requestPost}></CreateUsers>
+                    <CreateG modelName={modelName} fields={fields} handleChange={handleChange} methodPost={requestPost}></CreateG>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => handleCloseModal("Crear")}>Cancel</Button>
@@ -243,7 +251,7 @@ const Users = () => {
                     <DialogContentText>
 
                     </DialogContentText>
-                    <ModifyUsers handleChange={handleChange} methodPut={requestPut}></ModifyUsers>
+                    <ModifyG selectedItem={selectedItem} modelName={modelName} fields={fields} handleChange={handleChange} methodPut={requestPut}></ModifyG>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => handleCloseModal("Editar")}>Cancel</Button>
@@ -255,7 +263,7 @@ const Users = () => {
                 <DialogTitle>Eliminar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>
-                        Realmente desea eliminar este registro. <b>{SelectedUser.name}</b>
+                        Realmente desea eliminar este registro. <b>{selectedItem.id}</b>
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -267,4 +275,4 @@ const Users = () => {
     )
 }
 
-export default Users
+export default Generic
