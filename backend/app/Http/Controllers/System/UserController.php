@@ -50,9 +50,7 @@ class UserController extends Controller
 
         if ( $validator->fails() )
         {
-            $arr = json_decode( $validator->errors(), TRUE);
-            array_unshift( $arr, 'errors'  );
-            return json_encode($arr);
+            return response()->json($validator->errors(), 422);
         }
 
         $user = User::create( array_merge( $request->all(), ['company_id' => 1 ]  ) );
@@ -93,16 +91,15 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         $validator = Validator::make($request->all(), [
                                             'name' => 'required|max:250',
-                                            'email' => 'email|required|unique:users',
+                                            'email' => 'email|required|unique:users,email,'.$id,
                                         ]);
 
         if ( $validator->fails() )
         {
-            $arr = json_decode( $validator->errors(), TRUE);
-            array_unshift( $arr, 'errors'  );
-            return json_encode($arr);
+            return response()->json($validator->errors(), 422);
         }
 
         return User::where( 'id', $id )->update( $request->all() );
