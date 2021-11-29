@@ -8,14 +8,29 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 
 import { display } from '@mui/system';
+import { Button } from '@mui/material';
 
 const PdfCreator = () => {
-    const [component, setComponent] = React.useState('');
+    const [selectComponent, setSelectComponent] = React.useState('');
+    const [selectedItem, setSelectedItem] = React.useState({ id: '' });
 
-
-    const handleChange = (event) => {
-        setComponent(event.target.value);
+    const handleComponentChange = (event) => {
+        setSelectComponent(event.target.value);
     };
+
+    const handleChange = e => {
+        const { name, value } = e.target;
+        setSelectedItem(prevState => ({
+            ...prevState,
+            [name]: value
+        }))
+        console.log(JSON.stringify(selectedItem));
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault()
+
+    }
 
     return (
         <div>
@@ -27,6 +42,8 @@ const PdfCreator = () => {
                     }}
                     noValidate
                     autoComplete="off"
+                    _target="iframepreview"
+                    method="post"
                 >
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                         Usuarios
@@ -38,7 +55,7 @@ const PdfCreator = () => {
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    value={component}
+                                    value={selectComponent}
                                     label="Componentes"
                                     onChange={handleChange}
                                 >
@@ -52,7 +69,7 @@ const PdfCreator = () => {
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    value={component}
+                                    value={selectComponent}
                                     label="Contenido"
                                     onChange={handleChange}
                                 >
@@ -66,7 +83,7 @@ const PdfCreator = () => {
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    value={component}
+                                    value={selectComponent}
                                     label="Contenido"
                                     onChange={handleChange}
                                 >
@@ -75,8 +92,9 @@ const PdfCreator = () => {
                                     <MenuItem value={30}>DATA</MenuItem>
                                 </Select>
                             </FormControl>
+                            <Button type="submit" variant="contained">Enviar</Button>
                         </Paper>
-                        <Paper>
+                        <Paper component="iframe" name="iframepreview" width="100%" height="100%">
 
                         </Paper>
                     </Box>

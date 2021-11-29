@@ -12,19 +12,31 @@
   ],
   "model_data_table": [
     {
-      "id": 1,
-      "name": "ricardo",
-      "email": "ricardog@ho"
-    },
-    {
-      "id": 2,
-      "name": "jose",
-      "email": "joseg@ho"
-    },
-    {
       "id": 3,
-      "name": "garces",
-      "email": "garcesg@ho"
+      "company_id": 1,
+      "name": "ricardo garces j",
+      "email": "ricardo@hotmail.com",
+      "email_verified_at": null,
+      "created_at": "2021-11-29T15:30:25.000000Z",
+      "updated_at": "2021-11-29T20:11:15.000000Z"
+    },
+    {
+      "id": 4,
+      "company_id": 1,
+      "name": "arnaldo",
+      "email": "arnalgo@gmail.com",
+      "email_verified_at": null,
+      "created_at": "2021-11-29T22:01:22.000000Z",
+      "updated_at": "2021-11-29T22:01:22.000000Z"
+    },
+    {
+      "id": 5,
+      "company_id": 1,
+      "name": "jose",
+      "email": "jose@gmail.com",
+      "email_verified_at": null,
+      "created_at": "2021-11-29T22:03:20.000000Z",
+      "updated_at": "2021-11-29T22:03:20.000000Z"
     }
   ],
   "model_fields": [
@@ -49,12 +61,35 @@
       "attributes": "{disabled, class='combobox'}",
       "required": true,
       "disabled": false
+    },
+    {
+      "id": 37,
+      "name": "password",
+      "type": "password",
+      "label": "Contraseña",
+      "options": "",
+      "value": "",
+      "attributes": "{disabled, class='combobox'}",
+      "required": true,
+      "disabled": false
+    },
+    {
+      "id": 38,
+      "name": "password_confirmation",
+      "type": "password",
+      "label": "Confirmar Contraseña",
+      "options": "",
+      "value": "",
+      "attributes": "{disabled, class='combobox'}",
+      "required": true,
+      "disabled": false
     }
   ],
   "model_actions": [
     {
       "id": 23,
       "label": "Crear",
+      "type": "create",
       "method": "POST",
       "prefix": "web",
       "icon": "fas fa-plus"
@@ -62,6 +97,7 @@
     {
       "id": 24,
       "label": "Editar",
+      "type": "edit",
       "method": "PUT",
       "prefix": "web",
       "icon": "fas fa-pen"
@@ -69,6 +105,7 @@
     {
       "id": 25,
       "label": "Duplicar",
+      "type": "duplicate",
       "method": "POST",
       "prefix": "web/duplicate",
       "icon": "fas fa-clone"
@@ -76,9 +113,53 @@
     {
       "id": 26,
       "label": "Eliminar",
+      "type": "delete",
       "method": "DELETE",
       "prefix": "web",
       "icon": "fas fa-trash-alt"
+    },
+    {
+      "id": 27,
+      "label": "Cambiar Contraseña",
+      "type": "generic",
+      "method": "PUT",
+      "prefix": "web",
+      "icon": "fas fa-key",
+      "fields": [
+        {
+          "id": 45,
+          "name": "actual_password",
+          "type": "password",
+          "label": "Contraseña Actual",
+          "options": "",
+          "value": "",
+          "attributes": "{disabled, class='combobox'}",
+          "required": true,
+          "disabled": false
+        },
+        {
+          "id": 46,
+          "name": "password",
+          "type": "password",
+          "label": "Contraseña",
+          "options": "",
+          "value": "",
+          "attributes": "{disabled, class='combobox'}",
+          "required": true,
+          "disabled": false
+        },
+        {
+          "id": 47,
+          "name": "password_confirmation",
+          "type": "password",
+          "label": "Confirmar Contraseña",
+          "options": "",
+          "value": "",
+          "attributes": "{disabled, class='combobox'}",
+          "required": true,
+          "disabled": false
+        }
+      ]
     }
   ]
 }

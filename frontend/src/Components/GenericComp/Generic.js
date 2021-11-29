@@ -10,7 +10,8 @@ import CreateG from './CreateG';
 import ModifyG from './ModifyG';
 import GenericList from './GenericList';
 
-const baseUrl = '/getGenericUser.json';
+const baseUrl = process.env.REACT_APP_URL + '/api/users/';
+//const baseUrl = '/getGenericUser.json';
 
 const Generic = () => {
     //const { aplication, module, models } = useParams();
@@ -18,6 +19,7 @@ const Generic = () => {
     const [headers, setHeaders] = useState([]);
     const [data, setData] = useState([]);
     const [fields, setFields] = useState([]);
+    const [actionWithFields, setActionWithFields] = useState([]);
     const [actions, setActions] = useState([]);
     const [cargando, setCargando] = React.useState(false);
     const { enqueueSnackbar } = useSnackbar();
@@ -27,36 +29,47 @@ const Generic = () => {
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
     const [openModifyModal, setOpenModifyModal] = React.useState(false);
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
+    const [openGenericModal, setOpenGenericModal] = React.useState(false);
 
 
 
     const handleOpenModal = (action) => {
-        switch (action) {
-            case 'Crear':
+        switch (action.type) {
+            case 'create':
                 setOpenCreateModal(true)
                 break;
-            case 'Editar':
+            case 'edit':
                 selectedItem.id ?
                     setOpenModifyModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
                 break;
-            case 'Eliminar':
+            case 'delete':
                 selectedItem.id ?
                     setOpenDeleteModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
                 break;
+            default:
+                if (selectedItem.id) {
+                    setActionWithFields(action)
+                    setOpenGenericModal(true)
+                } else {
+                    enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
+                }
+                break;
         }
-
     };
 
     const handleCloseModal = (action) => {
-        switch (action) {
-            case 'Crear':
+        switch (action.type) {
+            case 'create':
                 setOpenCreateModal(false);
                 break;
-            case 'Editar':
+            case 'edit':
                 setOpenModifyModal(false);
                 break;
-            case 'Eliminar':
+            case 'delete':
                 setOpenDeleteModal(false);
+                break;
+            default:
+                setOpenGenericModal(false)
                 break;
         }
     };
@@ -73,7 +86,7 @@ const Generic = () => {
     const requestGet = async () => {
         setCargando(true)
         try {
-            await fetch(baseUrl)
+            await fetch('/getGenericUser.json')
                 .then(res => res.json())
                 .then(response => {
                     console.log(response)
@@ -89,84 +102,87 @@ const Generic = () => {
                     console.log(error.message)
                     enqueueSnackbar(error.message, { variant: 'error' });
                 })
-
         } catch (e) {
             console.log(e.message)
         }
     }
 
     const requestPost = async () => {
-        await fetch(baseUrl, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(selectedItem),
 
-        })
-            .then(res => res.json())
-            .catch(error => {
-                console.log(error)
+        try {
+            const response = await fetch(baseUrl, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(selectedItem),
             })
-            .then(response => {
-                //console.log(response['email'])
 
-                if (Validator(response)) {
-                    enqueueSnackbar('Usuario ' + response.name + ' agregado correctamente', { variant: 'success' })
-                    setData(data.concat(data))
-                    console.log(data)
-                    handleCloseModal("Crear")
-                }
+            let dataG = await response.json()
 
-
-            })
+            console.log(dataG)
+            if (response.ok) {
+                console.log("ok")
+                enqueueSnackbar(`${modelName} ${response.id} agregado correctamente`, { variant: 'success' })
+                setData(data.concat(dataG))
+                handleCloseModal({ type: "create" })
+            } else {
+                console.log("error")
+                Validator(dataG)
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const requestPut = async () => {
-        await fetch(baseUrl + selectedItem.id, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(selectedItem),
-
-        }).then(res => res.json())
-            .catch(error => {
-                console.log(error)
+        console.log(selectedItem)
+        try {
+            const response = await fetch(baseUrl + selectedItem.id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(selectedItem),
             })
-            .then(response => {
-                var dataNueva = data;
-                dataNueva.map(Usuario => {
-                    if (selectedItem.id === Usuario.id) {
-                        Usuario.name = selectedItem.name;
-                        Usuario.email = selectedItem.email;
-                        Usuario.password = selectedItem.password;
-                    }
-                })
+
+            let dataG = await response.json()
+            //var dataNueva = dataU;
+            if (response.ok) {
+                let dataNueva = data.map(Usuario => selectedItem.id === Usuario.id ? dataG : Usuario)
+                console.log(dataNueva)
                 setData(dataNueva);
+                handleCloseModal({ type: "edit" })
+            } else {
+                console.log("error")
+                Validator(dataG)
+            }
 
-            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const requestDelete = async () => {
-        await fetch(baseUrl + selectedItem.id, {
-            method: "DELETE",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(selectedItem),
+        try {
+            const response = await fetch(baseUrl + selectedItem.id, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
 
-        })
-            .then(res => res.json())
-            .catch(error => {
-                console.log(error)
-            })
-            .then(response => {
+            let dataG = await response.json();
+
+            if (response.ok) {
                 setData(data.filter(Usuario => Usuario.id !== selectedItem.id));
-                handleCloseModal("Eliminar");
-                enqueueSnackbar('Registro ' + response && response.name + ' eliminado', { variant: 'success' });
+                enqueueSnackbar('Registro ' + selectedItem.id + ' eliminado', { variant: 'success' });
                 setSelectedItem({});
-            })
+                handleCloseModal({ type: "delete" })
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     useEffect(() => {
@@ -176,18 +192,13 @@ const Generic = () => {
         fetchData()
     }, [])
 
-    function Validator(data) {
-
-        if (data['0'] === 'errors') {
-            for (const property in data) {
-                if (property !== '0') {
-                    data[property].forEach(element => {
-                        enqueueSnackbar(element, { variant: 'error' });
-                    });
-                }
+    function Validator(response) {
+        for (const property in response) {
+            if (property !== '0') {
+                response[property].forEach(element => {
+                    enqueueSnackbar(element, { variant: 'error' });
+                });
             }
-        } else {
-            return true
         }
     }
 
@@ -216,7 +227,7 @@ const Generic = () => {
             <hr />
             <Stack direction="row">
                 {actions.map((action) => (
-                    <IconButton key={action.id + ''} aria-label={action.label} onClick={() => handleOpenModal(action.label)} size="large" color="primary">
+                    <IconButton key={action.id + ''} aria-label={action.label} onClick={() => handleOpenModal(action)} size="large" color="primary">
                         <i className={action.icon}></i>
                     </IconButton>
                 ))}
@@ -231,7 +242,8 @@ const Generic = () => {
                 <GenericList setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
             }
 
-            <Dialog open={openCreateModal} onClose={() => handleCloseModal("Crear")}>
+            {/*Modal create*/}
+            <Dialog open={openCreateModal} onClose={() => handleCloseModal({ type: "create" })}>
                 <DialogTitle>Insertar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>
@@ -240,12 +252,13 @@ const Generic = () => {
                     <CreateG modelName={modelName} fields={fields} handleChange={handleChange} methodPost={requestPost}></CreateG>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => handleCloseModal("Crear")}>Cancel</Button>
+                    <Button onClick={() => handleCloseModal({ type: "create" })}>Cancel</Button>
                     <Button onClick={requestPost} variant="contained">Crear</Button>
                 </DialogActions>
             </Dialog>
 
-            <Dialog open={openModifyModal} onClose={() => handleCloseModal("Editar")}>
+            {/*Modal edit*/}
+            <Dialog open={openModifyModal} onClose={() => handleCloseModal({ type: "edit" })}>
                 <DialogTitle>Modificar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>
@@ -254,12 +267,12 @@ const Generic = () => {
                     <ModifyG selectedItem={selectedItem} modelName={modelName} fields={fields} handleChange={handleChange} methodPut={requestPut}></ModifyG>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => handleCloseModal("Editar")}>Cancel</Button>
+                    <Button onClick={() => handleCloseModal({ type: "edit" })}>Cancel</Button>
                     <Button type="submit" onClick={requestPut} variant="contained">Modificar</Button>
                 </DialogActions>
             </Dialog>
-
-            <Dialog open={openDeleteModal} onClose={() => handleCloseModal("Eliminar")} >
+            {/*Modal delete*/}
+            <Dialog open={openDeleteModal} onClose={() => handleCloseModal({ type: "delete" })} >
                 <DialogTitle>Eliminar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>
@@ -267,8 +280,23 @@ const Generic = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => handleCloseModal("Eliminar")}>Cancel</Button>
+                    <Button onClick={() => handleCloseModal({ type: "delete" })}>Cancel</Button>
                     <Button type="submit" onClick={requestDelete} variant="contained">Eliminar</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/*Modal generico*/}
+            <Dialog open={openGenericModal} onClose={() => handleCloseModal({ type: "generic" })}>
+                <DialogTitle>{actionWithFields.label}</DialogTitle>
+                <DialogContent sx={{ minWidth: 500 }}>
+                    <DialogContentText>
+
+                    </DialogContentText>
+                    <ModifyG selectedItem={selectedItem} modelName={modelName} fields={actionWithFields.fields} handleChange={handleChange} methodPut={requestPut}></ModifyG>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => handleCloseModal({ type: "generic" })}>Cancel</Button>
+                    <Button type="submit" onClick={requestPut} variant="contained">Modificar</Button>
                 </DialogActions>
             </Dialog>
         </>

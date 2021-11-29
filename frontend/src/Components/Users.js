@@ -24,31 +24,35 @@ const Users = () => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
 
     const handleOpenModal = (action) => {
-        switch (action) {
-            case 'Crear':
+        switch (action.type) {
+            case 'create':
                 setOpenCreateModal(true)
                 break;
-            case 'Editar':
+            case 'edit':
                 SelectedUser.id ?
                     setOpenModifyModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
                 break;
-            case 'Eliminar':
+            case 'delete':
                 SelectedUser.id ?
                     setOpenDeleteModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
+                break;
+            default:
                 break;
         }
     };
 
     const handleCloseModal = (action) => {
-        switch (action) {
-            case 'Crear':
+        switch (action.type) {
+            case 'create':
                 setOpenCreateModal(false);
                 break;
-            case 'Editar':
+            case 'edit':
                 setOpenModifyModal(false);
                 break;
-            case 'Eliminar':
+            case 'delete':
                 setOpenDeleteModal(false);
+                break;
+            default:
                 break;
         }
     };
@@ -89,6 +93,7 @@ const Users = () => {
     }
 
     const requestPost = async () => {
+        console.log(SelectedUser)
         try {
             let response = await fetch(baseUrl, {
                 method: "POST",
@@ -97,13 +102,15 @@ const Users = () => {
                 },
                 body: JSON.stringify(SelectedUser),
             })
+
             let dataU = await response.json()
+
             console.log(dataU)
             if (response.ok) {
                 console.log("ok")
                 enqueueSnackbar('Usuario ' + response.name + ' agregado correctamente', { variant: 'success' })
-                setData(data.concat(data))
-                handleCloseModal("Crear")
+                setData(data.concat(dataU))
+                handleCloseModal({ type: "create" })
             } else {
                 console.log("error")
                 Validator(dataU)
@@ -111,63 +118,62 @@ const Users = () => {
         } catch (error) {
             console.log(error)
         }
-
-
-
-
     }
 
     const requestPut = async () => {
-        await fetch(baseUrl + SelectedUser.id, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(SelectedUser),
-
-        }).then(res => res.json())
-            .catch(error => {
-                console.log(error)
+        console.log(SelectedUser)
+        try {
+            const response = await fetch(baseUrl + SelectedUser.id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(SelectedUser),
             })
-            .then(response => {
-                var dataNueva = data;
-                dataNueva.map(Usuario => {
-                    if (SelectedUser.id === Usuario.id) {
-                        Usuario.name = SelectedUser.name;
-                        Usuario.email = SelectedUser.email;
-                        Usuario.password = SelectedUser.password;
-                    }
-                })
+
+            let dataU = await response.json()
+            //var dataNueva = dataU;
+            if (response.ok) {
+                let dataNueva = data.map(Usuario => SelectedUser.id === Usuario.id ? dataU : Usuario)
+                console.log(dataNueva)
                 setData(dataNueva);
+                handleCloseModal({ type: "edit" })
+            } else {
+                console.log("error")
+                Validator(dataU)
+            }
 
-            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const requestDelete = async () => {
-        await fetch(baseUrl + SelectedUser.id, {
-            method: "DELETE",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(SelectedUser),
-
-        })
-            .then(res => res.json())
-            .catch(error => {
-                console.log(error)
+        try {
+            const response = await fetch(baseUrl + SelectedUser.id, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
-            .then(response => {
+
+            let dataU = await response.json();
+
+            if (response.ok) {
                 setData(data.filter(Usuario => Usuario.id !== SelectedUser.id));
-                handleCloseModal("Eliminar");
-                enqueueSnackbar('Registro ' + response && response.name + ' eliminado', { variant: 'success' });
+                enqueueSnackbar('Registro ' + SelectedUser.id + ' eliminado', { variant: 'success' });
                 setSelectedUser({});
-            })
+                handleCloseModal({ type: "delete" })
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    const selectUser = (Usuario) => {
+    /*const selectUser = (Usuario) => {
         setSelectedUser(Usuario);
-        /* (caso === 'Editar') ? abrirCerrarModalEditar() : abrirCerrarModalEliminar()*/
-    }
+         (caso === 'Editar') ? abrirCerrarModalEditar() : abrirCerrarModalEliminar()
+    }*/
 
     useEffect(() => {
         const fetchData = async () => {
@@ -204,13 +210,13 @@ const Users = () => {
             </Breadcrumbs>
             <hr />
             <Stack direction="row">
-                <IconButton aria-label="create" onClick={() => handleOpenModal("Crear")} size="large" color="primary">
+                <IconButton aria-label="create" onClick={() => handleOpenModal({ type: "create" })} size="large" color="primary">
                     <AddCircleIcon />
                 </IconButton>
-                <IconButton aria-label="edit" onClick={() => handleOpenModal("Editar")} size="large" color="secondary">
+                <IconButton aria-label="edit" onClick={() => handleOpenModal({ type: "edit" })} size="large" color="secondary">
                     <CreateIcon />
                 </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleOpenModal("Eliminar")} size="large" color="error">
+                <IconButton aria-label="delete" onClick={() => handleOpenModal({ type: "delete" })} size="large" color="error">
                     <DeleteIcon />
                 </IconButton>
             </Stack>
@@ -223,7 +229,7 @@ const Users = () => {
                 :
                 <UserList data={data} setData={setData} />
             }
-            <Dialog open={openCreateModal} onClose={() => handleCloseModal("Crear")}>
+            <Dialog open={openCreateModal} onClose={() => handleCloseModal({ type: "create" })}>
                 <DialogTitle>Insertar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>
@@ -232,12 +238,12 @@ const Users = () => {
                     <CreateUsers handleChange={handleChange} methodPost={requestPost}></CreateUsers>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => handleCloseModal("Crear")}>Cancel</Button>
+                    <Button onClick={() => handleCloseModal({ type: "create" })}>Cancel</Button>
                     <Button onClick={requestPost} variant="contained">Crear</Button>
                 </DialogActions>
             </Dialog>
 
-            <Dialog open={openModifyModal} onClose={() => handleCloseModal("Editar")}>
+            <Dialog open={openModifyModal} onClose={() => handleCloseModal({ type: "edit" })}>
                 <DialogTitle>Modificar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>
@@ -246,12 +252,12 @@ const Users = () => {
                     <ModifyUsers handleChange={handleChange} methodPut={requestPut}></ModifyUsers>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => handleCloseModal("Editar")}>Cancel</Button>
+                    <Button onClick={() => handleCloseModal({ type: "edit" })}>Cancel</Button>
                     <Button type="submit" onClick={requestPut} variant="contained">Modificar</Button>
                 </DialogActions>
             </Dialog>
 
-            <Dialog open={openDeleteModal} onClose={() => handleCloseModal("Eliminar")} >
+            <Dialog open={openDeleteModal} onClose={() => handleCloseModal({ type: "delete" })} >
                 <DialogTitle>Eliminar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>
@@ -259,7 +265,7 @@ const Users = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => handleCloseModal("Eliminar")}>Cancel</Button>
+                    <Button onClick={() => handleCloseModal({ type: "delete" })}>Cancel</Button>
                     <Button type="submit" onClick={requestDelete} variant="contained">Eliminar</Button>
                 </DialogActions>
             </Dialog>

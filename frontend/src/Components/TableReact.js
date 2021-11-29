@@ -106,8 +106,19 @@ function TableCheckBox({ columns, data, setSelected }) {
 
   React.useEffect(() => {
     if (selectedFlatRows.length > 0) {
-      selectedFlatRows.map(u => setSelected(u.original))
-      console.log(selectedFlatRows[0].original)
+      selectedFlatRows.map(u => {
+        const item = { ...u.original };
+        /*for (const property in item) {
+          if (columns.find(e => e.accessor === property) === undefined && property !== 'id') delete item[property]
+        }*/
+        delete item.created_at
+        delete item.updated_at
+
+        //console.log(item)
+        //console.log(u.original)
+        return setSelected(item)
+      })
+
     } else {
       setSelected({})
     }
