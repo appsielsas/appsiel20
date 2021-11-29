@@ -8,7 +8,7 @@ import {
   BrowserRouter as Router, Route, Switch, useParams
 } from "react-router-dom";
 import { UserContextProvider } from './application/UserContext';
-import Generic from './Components/Generic';
+import Generic from './Components/GenericComp/Generic';
 import PdfCreator from './Components/PdfCreator';
 import SideBar from './Components/SideBar';
 import Users from './Components/Users';

@@ -104,14 +104,14 @@ function TableCheckBox({ columns, data, setSelected }) {
     }
   );
 
-
-
   React.useEffect(() => {
     if (selectedFlatRows.length > 0) {
       selectedFlatRows.map(u => setSelected(u.original))
+      console.log(selectedFlatRows[0].original)
     } else {
       setSelected({})
     }
+
   }, [selectedFlatRows])
 
   // Render the UI for your table

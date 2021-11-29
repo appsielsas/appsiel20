@@ -30,7 +30,6 @@ const UserList = (props) => {
                 Usuarios
             </Typography>
             {<TableReact data={data} columns={columns} setSelected={setSelectedUser}></TableReact>}
-            {/*<TableDataTable data={data} columns={columns} setSelected={setSelectedUser}></TableDataTable>*/}
         </>
     )
 }
