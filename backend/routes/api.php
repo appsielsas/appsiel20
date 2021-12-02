@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\System\HomeController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\System\UserController;
 /*
 |--------------------------------------------------------------------------
@@ -16,11 +16,19 @@ use App\Http\Controllers\System\UserController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-});
+});*/
 
-Route::resource('users',UserController::class);
+Route::resource('users', UserController::class);
+
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'authenticate']);
+
+Route::group(['middleware' => ['jwt.verify']], function () {
+
+    Route::post('user', [UserController::class, 'getAuthenticatedUser']);
+});
 
 /*
 Route::get('users',[UserController::class,'index']);
@@ -29,4 +37,4 @@ Route::get('users/{id}',[UserController::class,'show']);
 Route::delete('users/{id}',[UserController::class,'destroy']);
 */
 
-Route::get('menu',[HomeController::class,'menu']);
+Route::get('menu', [HomeController::class, 'menu']);
