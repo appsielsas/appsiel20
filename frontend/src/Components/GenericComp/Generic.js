@@ -1,15 +1,18 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Skeleton, Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, Typography } from '@mui/material';
+import { Skeleton, Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, Typography, Avatar, Fab, Divider, Slide } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
-import UserContext from '../../application/UserContext';
 import CreateG from './CreateG';
 import ModifyG from './ModifyG';
 import GenericList from './GenericList';
 
+/**
+ * URL base del modelo actual
+ * @type {baseUrl: string} 
+ */
 const baseUrl = process.env.REACT_APP_URL + '/api/users/';
 //const baseUrl = '/getGenericUser.json';
 
@@ -28,11 +31,14 @@ const Generic = () => {
     //open Modals
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
     const [openModifyModal, setOpenModifyModal] = React.useState(false);
+    const [openDuplicateModal, setOpenDuplicateModal] = React.useState(false);
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const [openGenericModal, setOpenGenericModal] = React.useState(false);
 
-
-
+    /**
+     * Action Object
+     * @param {{type: string}} action 
+     */
     const handleOpenModal = (action) => {
         switch (action.type) {
             case 'create':
@@ -56,7 +62,10 @@ const Generic = () => {
                 break;
         }
     };
-
+    /**
+     * Action Object
+     * @param {{type: string}} action 
+     */
     const handleCloseModal = (action) => {
         switch (action.type) {
             case 'create':
@@ -68,12 +77,18 @@ const Generic = () => {
             case 'delete':
                 setOpenDeleteModal(false);
                 break;
+            case 'duplicate':
+
+                break;
             default:
                 setOpenGenericModal(false)
                 break;
         }
     };
 
+    /**
+     * Establece los valores del objeto seleccionado 
+     */
     const handleChange = e => {
         const { name, value } = e.target;
         setSelectedItem(prevState => ({
@@ -86,7 +101,12 @@ const Generic = () => {
     const requestGet = async () => {
         setCargando(true)
         try {
-            await fetch('/getGenericUser.json')
+            await fetch('/getGenericUser.json', {
+                method: "GET",
+                headers: {
+                    'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
+                },
+            })
                 .then(res => res.json())
                 .then(response => {
                     console.log(response)
@@ -95,7 +115,7 @@ const Generic = () => {
                     setData(response.model_data_table);
                     setFields(response.model_fields);
                     setActions(response.model_actions);
-                    enqueueSnackbar('Actualizado', { variant: 'success' });
+                    //enqueueSnackbar('Actualizado', { variant: 'success' });
                     setCargando(false)
                 })
                 .catch(error => {
@@ -141,7 +161,8 @@ const Generic = () => {
             const response = await fetch(baseUrl + selectedItem.id, {
                 method: "PUT",
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
                 },
                 body: JSON.stringify(selectedItem),
             })
@@ -168,7 +189,8 @@ const Generic = () => {
             const response = await fetch(baseUrl + selectedItem.id, {
                 method: "DELETE",
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
                 }
             })
 
@@ -225,12 +247,16 @@ const Generic = () => {
                 <Typography color="text.primary">Index</Typography>
             </Breadcrumbs>
             <hr />
-            <Stack direction="row">
+            <Stack direction="row" spacing={1}>
                 {actions.map((action) => (
-                    <IconButton key={action.id + ''} aria-label={action.label} onClick={() => handleOpenModal(action)} size="large" color="primary">
+                    <Fab key={action.id + ''} aria-label={action.label} onClick={() => handleOpenModal(action)} size="small" color="primary">
                         <i className={action.icon}></i>
-                    </IconButton>
+                    </Fab>
                 ))}
+                <Divider orientation="vertical" flexItem />
+                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "print" })} size="small" color="primary">
+                    <i className="fas fa-print"></i>
+                </Fab>
             </Stack>
 
             {cargando ?
@@ -271,8 +297,21 @@ const Generic = () => {
                     <Button type="submit" onClick={requestPut} variant="contained">Modificar</Button>
                 </DialogActions>
             </Dialog>
-            {/*Modal delete*/}
+            {/*Modal duplicate*/}
             <Dialog open={openDeleteModal} onClose={() => handleCloseModal({ type: "delete" })} >
+                <DialogTitle>Duplicate</DialogTitle>
+                <DialogContent sx={{ minWidth: 500 }}>
+                    <DialogContentText>
+                        Realmente desea duplicar este registro. <b>{selectedItem.id}</b>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => handleCloseModal({ type: "delete" })}>Cancel</Button>
+                    <Button type="submit" onClick={requestDelete} variant="contained">Eliminar</Button>
+                </DialogActions>
+            </Dialog>
+            {/*Modal delete*/}
+            <Dialog open={openDuplicateModal} onClose={() => handleCloseModal({ type: "delete" })} >
                 <DialogTitle>Eliminar</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
                     <DialogContentText>

@@ -18,7 +18,7 @@ export default function CreateG({ fields, handleChange, modelName }) {
                 }}
             >
                 {fields.map((item) => (
-                    item.required ? <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" required /> : <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" />
+                    <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} />
 
                 ))}
             </Box>

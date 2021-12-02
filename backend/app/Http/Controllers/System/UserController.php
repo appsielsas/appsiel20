@@ -126,12 +126,14 @@ class UserController extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->only('email', 'password');
+        //return $request;
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 400);
+                return response()->json(['error' => 'Correo o Contraseña incorrectas'], 400);
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => 'could_not_create_token'], 500);
+            //no se pudo crear el token - error de servidor
+            return response()->json(['error' => 'Error de servidor'], 500);
         }
         return response()->json(compact('token'));
     }
@@ -155,6 +157,8 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
+        $company_id = 1;
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -168,7 +172,8 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
+            'password' => Hash::make($request->get('password'), []),
+            'company_id' => 1
         ]);
 
         $token = JWTAuth::fromUser($user);

@@ -3,7 +3,6 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import UserContext from '../../application/UserContext';
 
 export default function SimplePaper({ fields, handleChange, modelName, selectedItem }) {
 

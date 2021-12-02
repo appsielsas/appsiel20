@@ -7,13 +7,13 @@ import React from 'react';
 import {
   BrowserRouter as Router, Route, Switch, useParams
 } from "react-router-dom";
-import { UserContextProvider } from './application/UserContext';
 import Generic from './Components/GenericComp/Generic';
-import PdfCreator from './Components/PdfCreator';
+import PdfCreator from './Components/Report/PdfCreator';
+import Report from './Components/Report/Report';
 import SideBar from './Components/SideBar';
-import Users from './Components/Users';
+import Users from './Components/ModelUser/Users';
 import CustomStyles, { ColorModeContext } from './CustomStyles';
-
+import UserProvider from './application/UserProvider';
 
 export default function App() {
   const theme = useTheme();
@@ -24,29 +24,32 @@ export default function App() {
     <Router>
       <CustomStyles>
         <SnackbarProvider maxSnack={7}>
-          <SideBar>
-            <Switch>
-              <Route path="/api/core/users" exact>
-                <UserContextProvider>
-                  <Users />
-                </UserContextProvider>
-              </Route>
-              <Route path="/pdfcreator" exact>
-                <PdfCreator></PdfCreator>
-              </Route>
-              <Route path="/:aplication/:module/:models">
-                <Generic></Generic>
-              </Route>
 
-              <Route path="/">
-                <Container>
-                  <Box component={Paper} sx={{ width: '100%', p: 3 }}>
-                    <h1 >Inicio Dashboard</h1>
-                  </Box>
-                </Container>
-              </Route>
-            </Switch>
-          </SideBar>
+          <UserProvider>
+            <SideBar>
+              <Switch>
+                <Route path="/api/core/users" exact>
+                  <Users />
+                </Route>
+                <Route path="/report" exact>
+                  <Report></Report>
+                </Route>
+                <Route path="/pdfcreator" exact>
+                  <PdfCreator></PdfCreator>
+                </Route>
+                <Route path="/:aplication/:module/:models">
+                  <Generic></Generic>
+                </Route>
+                <Route path="/">
+                  <Container>
+                    <Box component={Paper} sx={{ width: '100%', p: 3 }}>
+                      <h1 >Inicio Dashboard</h1>
+                    </Box>
+                  </Container>
+                </Route>
+              </Switch>
+            </SideBar>
+          </UserProvider>
         </SnackbarProvider>
       </CustomStyles>
       <div>
@@ -56,6 +59,6 @@ export default function App() {
             renders the first one that matches the current URL. */}
 
       </div>
-    </Router>
+    </Router >
   );
 }

@@ -36,3 +36,18 @@ code {
 *::-webkit-scrollbar-track {
   border-radius: 10px;
 }
+
+tr {
+  background-color: transparent;
+  animation-name: example;
+  animation-duration: 3s;
+}
+
+@keyframes example {
+  0% {
+    background-color: #50b794;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
