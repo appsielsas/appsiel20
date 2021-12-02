@@ -4,7 +4,7 @@ namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
 
-use App\Components\System\Menu;
+use App\Appsiel\System\Menu;
 
 class HomeController extends Controller
 {

@@ -1,13 +1,6 @@
 <?php
 
-namespace App\Components\System;
-
-use Illuminate\Database\Eloquent\Model;
-
-//use Spatie\Permission\Models\Role;
-//use Spatie\Permission\Models\Permission;
-//use App\Models\System\User;
-//use Auth;
+namespace App\Appsiel\System;
 
 use App\Models\System\Application;
 use App\Models\System\Permission;
@@ -20,45 +13,6 @@ class Menu
 
     public function __construct()
     {
-        /*$modelo1_modelo_teso1 = [
-                                    "label" => "Entradas de almacen",
-                                    "url" => "/web/tal"
-                                ];
-        
-        $modelo2_modelo_teso1 = [];
-
-        $modelos_modulos_teso1 = [ $modelo1_modelo_teso1, $modelo2_modelo_teso1 ];
-
-        $modulo_teso1 = [ 
-                            "label" => "inventarios",
-                            "icon" => "fas fa-cube",
-                            "url" => "/web/tal",
-                            "modelos" => $modelos_modulos_teso1
-                        ];
-
-        $modulo_teso2 = [];
-        
-        $modulos_teso = [ $modulo_teso1, $modulo_teso2 ];
-        
-        $app_teso = [
-                        "label" => "tesoreria",
-                        "icon" => "fas fa-box-open",
-                        "url" => "/web/tal",
-                        "modulos" => $modulos_teso
-                    ];
-        
-        $app_config = [
-                        "label" => "Configuracion",
-                        "icon" => "fas fa-box-open",
-                        "url" => "/web/tal",
-                        "modulos" => []
-                    ];
-
-        $menu = [
-            'applications' => [ $app_teso, $app_config ]
-        ];
-
-        dd($menu, json_encode($menu));*/
         $applications = Application::where('state','Activo')->orderBy('position')->get();
         
         $applications_items = [];
