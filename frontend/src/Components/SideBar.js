@@ -20,6 +20,8 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { Link } from "react-router-dom";
+import UserLogin from '../UserLogin';
+import { UserContext } from '../application/UserProvider';
 
 
 const drawerWidth = 240;
@@ -172,12 +174,14 @@ StyledTreeItem.propTypes = {
 
 export default function SideBar(props) {
 
-    const grayw = grey[100];
     const [navigationLayout, setNavigationLayout] = React.useState([]);
     const [shorcutLayout, setShorcutLayout] = React.useState([]);
     const theme = useTheme();
     const [openDrawer, setOpenDrawer] = React.useState(false);
     const [openCollapse, setOpenCollapse] = React.useState(true);
+
+    //sesiones de usuario
+    const { user, signIn, signOut } = React.useContext(UserContext);
 
     const handleDrawerOpen = () => {
         setOpenDrawer(true);
@@ -254,7 +258,8 @@ export default function SideBar(props) {
                             ))}
                         </BottomNavigation>
                     </Box>
-                    <Button color="inherit">Login</Button>
+                    {user ? <Button onClick={signOut} color="inherit">Cerrar sesión</Button> : ''}
+
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={openDrawer}>

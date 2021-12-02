@@ -1,12 +1,9 @@
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import UserContext from '../application/UserContext';
-import TableReact from './TableReact';
+import TableReact from './../TableReact';
 
 
 const UserList = (props) => {
-
-    const { setSelectedUser } = React.useContext(UserContext);
 
     const columns = React.useMemo(
         () => [
@@ -29,7 +26,7 @@ const UserList = (props) => {
             <Typography variant="h3" color="text.secondary" gutterBottom>
                 Usuarios
             </Typography>
-            {<TableReact data={data} columns={columns} setSelected={setSelectedUser}></TableReact>}
+            {<TableReact data={data} columns={columns} setSelected={props.setSelected}></TableReact>}
         </>
     )
 }

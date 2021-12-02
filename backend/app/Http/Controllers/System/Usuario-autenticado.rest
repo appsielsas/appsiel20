@@ -1,7 +1,9 @@
-POST http://localhost:8000/api/login HTTP/1.1
+POST http://localhost:8000/api/user HTTP/1.1
 content-type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3Q6ODAwMFwvYXBpXC9sb2dpbiIsImlhdCI6MTYzODQ1ODgzMiwiZXhwIjoxNjM4NDYyNDMyLCJuYmYiOjE2Mzg0NTg4MzIsImp0aSI6Ims2a1BEekVxclhLeHZoYlgiLCJzdWIiOjEyLCJwcnYiOiI3Y2M5MzZkYjZjOTZkM2Q5MDQ2Nzk4OTNkNDM3OGZjYmM3NmUyMTFmIn0.lby7h_VduKXBrxNj5_MwJE2RsveIOvPF0LtMJO31Zs8
 
 {
-    "email": "ricardog125@hotmail.com",
-    "password": "uzumaki01"
+    "email" : "randommail@mail.com",
+    "password" : "strongkey123"
+
 }

@@ -1,23 +1,27 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Skeleton, Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, Typography } from '@mui/material';
+import { Skeleton, Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, Typography, Fab } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
-import UserContext from '../application/UserContext';
 import CreateUsers from './CreateUsers';
 import ModifyUsers from './ModifyUsers';
 import UserList from './UserList';
 
-const baseUrl = process.env.REACT_APP_URL + '/api/users/';
+const baseUrl = process.env.REACT_APP_URL + '/api/users';
 
 const Users = () => {
     const [data, setData] = useState([]);
 
     const [cargando, setCargando] = React.useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const { SelectedUser, setSelectedUser } = React.useContext(UserContext);
+    const [SelectedUser, setSelectedUser] = useState({
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: ''
+    })
 
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
     const [openModifyModal, setOpenModifyModal] = React.useState(false);
@@ -69,26 +73,29 @@ const Users = () => {
     const requestGet = async () => {
         setCargando(true)
         try {
-            await fetch(baseUrl)
-                .then(res => {
-                    if (!res.ok) {
-                        throw Error(res.json);
-                    }
-                    return res.json()
-                })
-                .then(response => {
-                    console.log(response)
-                    setData(response);
-                    enqueueSnackbar('Actualizado', { variant: 'success' });
-                    setCargando(false)
-                })
-                .catch(error => {
-                    console.error(error.message)
-                    enqueueSnackbar(error.message, { variant: 'error' });
-                })
+            const response = await fetch(baseUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+            let data = await response.json();
+
+
+            if (response.ok) {
+                console.log(data)
+                setData(data);
+                //enqueueSnackbar('Actualizado', { variant: 'success' });
+                setCargando(false)
+            } else {
+                console.log('respuesta no ok')
+                setData(data);
+                console.log(data)
+            }
 
         } catch (e) {
-            console.log(e.message)
+            console.log(e);
+            enqueueSnackbar(e.message, { variant: 'error' });
         }
     }
 
@@ -209,16 +216,16 @@ const Users = () => {
                 <Typography color="text.primary">Index</Typography>
             </Breadcrumbs>
             <hr />
-            <Stack direction="row">
-                <IconButton aria-label="create" onClick={() => handleOpenModal({ type: "create" })} size="large" color="primary">
+            <Stack direction="row" sx={{ gap: 1 }}>
+                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "create" })} size="small" color="primary">
                     <AddCircleIcon />
-                </IconButton>
-                <IconButton aria-label="edit" onClick={() => handleOpenModal({ type: "edit" })} size="large" color="secondary">
+                </Fab>
+                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "edit" })} size="small" color="primary">
                     <CreateIcon />
-                </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleOpenModal({ type: "delete" })} size="large" color="error">
+                </Fab>
+                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "delete" })} size="small" color="primary">
                     <DeleteIcon />
-                </IconButton>
+                </Fab>
             </Stack>
 
             {cargando ?
@@ -227,7 +234,7 @@ const Users = () => {
                     <Skeleton animation="wave" variant="rectangular" width='100%' height={118} />
                 </Box>
                 :
-                <UserList data={data} setData={setData} />
+                <UserList data={data} setData={setData} setSelected={setSelectedUser} />
             }
             <Dialog open={openCreateModal} onClose={() => handleCloseModal({ type: "create" })}>
                 <DialogTitle>Insertar</DialogTitle>
