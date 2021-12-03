@@ -19,12 +19,18 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var string[]
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'company_id',
+    public $fillable = ['name', 'email', 'password', 'company_id'];
+
+    public $index_table_headers = [
+        ["Header" => "Nombre", "accessor" => "name"],
+        ["Header" => "E-mail", "accessor" => "email"]
     ];
+
+    public function get_rows()
+    {
+        return User::paginate(10);
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

@@ -2,9 +2,9 @@
 
 namespace App\Appsiel\System;
 
-use App\Models\System\Application;
-use App\Models\System\Permission;
-use App\Models\System\SysModel;
+use App\Appsiel\System\Models\Application;
+use App\Appsiel\System\Models\Permission;
+use App\Appsiel\System\Models\SysModel;
 
 
 class Menu

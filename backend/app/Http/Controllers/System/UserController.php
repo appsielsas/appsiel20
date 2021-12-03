@@ -48,18 +48,25 @@ class UserController extends Controller
         $company_id = 1;
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:250',
-            'email' => 'email|required|unique:users',
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $user = User::create(array_merge($request->all(), ['company_id' => 1]));
+        $user = User::create([
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password'), []),
+            'company_id' => 1
+        ]);
 
-        return $user;
+        $token = JWTAuth::fromUser($user);
+
+        return response()->json(compact('user', 'token'), 201);
     }
 
     /**
@@ -152,32 +159,5 @@ class UserController extends Controller
             return response()->json(['token_absent'], $e->getCode());
         }
         return response()->json(compact('user'));
-    }
-
-
-    public function register(Request $request)
-    {
-        $company_id = 1;
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-
-        $user = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password'), []),
-            'company_id' => 1
-        ]);
-
-        $token = JWTAuth::fromUser($user);
-
-        return response()->json(compact('user', 'token'), 201);
     }
 }

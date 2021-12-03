@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Action extends Model
 {
-    protected $fillable = [ 'label', 'type', 'method', 'prefix', 'icon'  ];
+    protected $table = 'sys_actions';
 
+    protected $fillable = ['label', 'type', 'method', 'prefix', 'icon'];
 }

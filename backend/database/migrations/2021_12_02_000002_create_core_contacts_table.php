@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCoreContacsTable extends Migration
+class CreateCoreContactsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,14 +15,14 @@ class CreateCoreContacsTable extends Migration
     {
         Schema::create('core_contacts', function (Blueprint $table) {
             $table->id();
-			$table->string('name');
-			$table->string('tradename'); // Nombre comercial
-			$table->integer('identity_number');
-			$table->string('address');
-			$table->string('phone');
-			$table->string('email');
-			$table->string('url_image');
-			$table->string('state');
+            $table->string('name');
+            $table->string('tradename'); // Nombre comercial
+            $table->integer('identity_number');
+            $table->string('address');
+            $table->string('phone');
+            $table->string('email');
+            $table->string('url_image');
+            $table->string('state');
             $table->timestamps();
         });
     }
