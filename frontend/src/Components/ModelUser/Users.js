@@ -89,7 +89,7 @@ const Users = () => {
                 setCargando(false)
             } else {
                 console.log('respuesta no ok')
-                setData(data);
+                //setData(data);
                 console.log(data)
             }
 
@@ -256,7 +256,7 @@ const Users = () => {
                     <DialogContentText>
 
                     </DialogContentText>
-                    <ModifyUsers handleChange={handleChange} methodPut={requestPut}></ModifyUsers>
+                    <ModifyUsers SelectedUser={SelectedUser} handleChange={handleChange} methodPut={requestPut} ></ModifyUsers>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => handleCloseModal({ type: "edit" })}>Cancel</Button>

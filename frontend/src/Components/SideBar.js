@@ -281,10 +281,10 @@ export default function SideBar(props) {
                         <StyledTreeItem url='' bgColor="#9e9e9e"
                             key={i} nodeId={item.id + item.name} labelText={item.label} labelIcon={item.icon} direction={!openDrawer && 'column'}>
                             {item.modules && item.modules.map((modul, j) => (
-                                <StyledTreeItem url={modul.url} bgColor="#e0e0e0"
+                                <StyledTreeItem url={`${modul.url}/${item.id}/${modul.id}`} bgColor="#e0e0e0"
                                     key={j} nodeId={modul.id + modul.name} labelText={modul.label} labelIcon="far fa-circle" direction={!openDrawer && 'column'} sx={openDrawer && { pl: 1 }}>
                                     {modul.models && modul.models.map((model, k) => (
-                                        <StyledTreeItem url={model.url} bgColor="#f5f5f5"
+                                        <StyledTreeItem url={`${model.url}/${item.id}/${model.id}`} bgColor="#f5f5f5"
                                             key={k} nodeId={model.id + model.name} labelText={model.label} labelIcon="fas fa-circle" sx={openDrawer && { pl: 1 }} direction={!openDrawer && 'column'}>
                                         </StyledTreeItem>
                                     ))}

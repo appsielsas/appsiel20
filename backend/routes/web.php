@@ -19,6 +19,6 @@ Route::get('/', function () {
 });
 
 
-Route::get( 'model_index', [CrudController::class, 'index']);
+//Route::get( 'model_index', [CrudController::class, 'index']);
 
 //Route::get('/user', [UserController::class, 'index']);

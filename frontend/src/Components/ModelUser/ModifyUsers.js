@@ -4,7 +4,9 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 
-export default function SimplePaper({ handleChange, ...props }) {
+export default function SimplePaper({ handleChange, SelectedUser }) {
+
+
 
     return (
 
@@ -21,8 +23,8 @@ export default function SimplePaper({ handleChange, ...props }) {
                 autoComplete="off"
             >
 
-                <TextField fullWidth name="name" onChange={handleChange} label="Nombre" variant="filled" value={props.SelectedUser && props.SelectedUser.name} />
-                <TextField fullWidth name="email" onChange={handleChange} label="Email" variant="filled" value={props.SelectedUser && props.SelectedUser.email} />
+                <TextField fullWidth name="name" onChange={handleChange} label="Nombre" variant="filled" value={SelectedUser && SelectedUser.name} />
+                <TextField fullWidth name="email" onChange={handleChange} label="Email" variant="filled" value={SelectedUser && SelectedUser.email} />
                 <TextField fullWidth type="password" name="password" onChange={handleChange} label="Contraseña" variant="filled" />
                 <TextField fullWidth type="password" name="password_confirmation" onChange={handleChange} onBlur={handleChange} label="Confirmar Contraseña" variant="filled" />
             </Box>

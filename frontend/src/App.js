@@ -1,4 +1,4 @@
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
@@ -14,10 +14,11 @@ import SideBar from './Components/SideBar';
 import Users from './Components/ModelUser/Users';
 import CustomStyles, { ColorModeContext } from './CustomStyles';
 import UserProvider from './application/UserProvider';
+import Catalogs from './Components/Catalogs';
 
 export default function App() {
-  const theme = useTheme();
-  const colorMode = React.useContext(ColorModeContext);
+  const pathGenerics = "crud"
+  const pathCatalogs = "app_catalogs"
 
   return (
 
@@ -37,13 +38,18 @@ export default function App() {
                 <Route path="/pdfcreator" exact>
                   <PdfCreator></PdfCreator>
                 </Route>
-                <Route path="/:aplication/:module/:models">
-                  <Generic></Generic>
+                <Route path={`/${pathGenerics}/:app/:model`}>
+                  {/* app_catalogs?app */}
+                  <Generic path={pathGenerics}></Generic>
+                </Route>
+                <Route path={`/${pathCatalogs}/:app`}>
+                  {/* app_catalogs?app */}
+                  <Catalogs path={pathGenerics}></Catalogs>
                 </Route>
                 <Route path="/">
-                  <Container>
+                  <Container >
                     <Box component={Paper} sx={{ width: '100%', p: 3 }}>
-                      <h1 >Inicio Dashboard</h1>
+                      <Typography variant="h1">Inicio Dashboard Appsiel</Typography>
                     </Box>
                   </Container>
                 </Route>

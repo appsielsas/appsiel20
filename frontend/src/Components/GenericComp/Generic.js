@@ -1,23 +1,23 @@
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import CreateIcon from '@mui/icons-material/Create';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Skeleton, Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, Typography, Avatar, Fab, Divider, Slide } from '@mui/material';
+import { Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, Skeleton, Stack, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import CreateG from './CreateG';
-import ModifyG from './ModifyG';
 import GenericList from './GenericList';
+import ModifyG from './ModifyG';
 
-/**
- * URL base del modelo actual
- * @type {baseUrl: string} 
- */
-const baseUrl = process.env.REACT_APP_URL + '/api/users/';
-//const baseUrl = '/getGenericUser.json';
 
-const Generic = () => {
-    //const { aplication, module, models } = useParams();
+const Generic = ({ path }) => {
+    /**
+     * Parametros obtenidos por la URL
+     */
+    const { app, model } = useParams();
+    /**
+     * URL base del modelo actual
+     * @type {baseUrl: string} 
+     */
+    const baseUrl = `${process.env.REACT_APP_URL}/api/${path}?app_id=${app}&model_id=${model}`;
+
     const [modelName, setModelName] = useState("");
     const [headers, setHeaders] = useState([]);
     const [data, setData] = useState([]);
@@ -101,7 +101,7 @@ const Generic = () => {
     const requestGet = async () => {
         setCargando(true)
         try {
-            await fetch('/getGenericUser.json', {
+            await fetch(baseUrl, {
                 method: "GET",
                 headers: {
                     'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
@@ -112,7 +112,7 @@ const Generic = () => {
                     console.log(response)
                     setModelName(response.name)
                     setHeaders(response.model_headers_table);
-                    setData(response.model_data_table);
+                    setData(response.model_data_table.data);
                     setFields(response.model_fields);
                     setActions(response.model_actions);
                     //enqueueSnackbar('Actualizado', { variant: 'success' });
@@ -124,63 +124,6 @@ const Generic = () => {
                 })
         } catch (e) {
             console.log(e.message)
-        }
-    }
-
-    const requestPost = async () => {
-
-        try {
-            const response = await fetch(baseUrl, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(selectedItem),
-            })
-
-            let dataG = await response.json()
-
-            console.log(dataG)
-            if (response.ok) {
-                console.log("ok")
-                enqueueSnackbar(`${modelName} ${response.id} agregado correctamente`, { variant: 'success' })
-                setData(data.concat(dataG))
-                handleCloseModal({ type: "create" })
-            } else {
-                console.log("error")
-                Validator(dataG)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    const requestPut = async () => {
-        console.log(selectedItem)
-        try {
-            const response = await fetch(baseUrl + selectedItem.id, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
-                },
-                body: JSON.stringify(selectedItem),
-            })
-
-            let dataG = await response.json()
-            //var dataNueva = dataU;
-            if (response.ok) {
-                let dataNueva = data.map(Usuario => selectedItem.id === Usuario.id ? dataG : Usuario)
-                console.log(dataNueva)
-                setData(dataNueva);
-                handleCloseModal({ type: "edit" })
-            } else {
-                console.log("error")
-                Validator(dataG)
-            }
-
-        } catch (error) {
-            console.log(error)
         }
     }
 
@@ -212,17 +155,7 @@ const Generic = () => {
             await requestGet()
         }
         fetchData()
-    }, [])
-
-    function Validator(response) {
-        for (const property in response) {
-            if (property !== '0') {
-                response[property].forEach(element => {
-                    enqueueSnackbar(element, { variant: 'error' });
-                });
-            }
-        }
-    }
+    }, [app, model])
 
     return (
         <>
@@ -235,14 +168,14 @@ const Generic = () => {
                     color="inherit"
                     to="/users/"
                 >
-                    {useParams().module}
+                    {useParams().app}
                 </Link>
                 <Link
                     underline="hover"
                     color="inherit"
                     to="/users/"
                 >
-                    {useParams().models}
+                    {useParams().model}
                 </Link>
                 <Typography color="text.primary">Index</Typography>
             </Breadcrumbs>
@@ -270,33 +203,37 @@ const Generic = () => {
 
             {/*Modal create*/}
             <Dialog open={openCreateModal} onClose={() => handleCloseModal({ type: "create" })}>
-                <DialogTitle>Insertar</DialogTitle>
-                <DialogContent sx={{ minWidth: 500 }}>
-                    <DialogContentText>
-
-                    </DialogContentText>
-                    <CreateG modelName={modelName} fields={fields} handleChange={handleChange} methodPost={requestPost}></CreateG>
-                </DialogContent>
-                <DialogActions>
+                <CreateG
+                    baseUrl={baseUrl}
+                    modelName={modelName}
+                    fields={fields}
+                    handleChange={handleChange}
+                    data={data}
+                    setData={setData}
+                    handleCloseModal={handleCloseModal}
+                >
                     <Button onClick={() => handleCloseModal({ type: "create" })}>Cancel</Button>
-                    <Button onClick={requestPost} variant="contained">Crear</Button>
-                </DialogActions>
+                </CreateG>
             </Dialog>
 
             {/*Modal edit*/}
-            <Dialog open={openModifyModal} onClose={() => handleCloseModal({ type: "edit" })}>
-                <DialogTitle>Modificar</DialogTitle>
-                <DialogContent sx={{ minWidth: 500 }}>
-                    <DialogContentText>
 
-                    </DialogContentText>
-                    <ModifyG selectedItem={selectedItem} modelName={modelName} fields={fields} handleChange={handleChange} methodPut={requestPut}></ModifyG>
-                </DialogContent>
-                <DialogActions>
+            <Dialog open={openModifyModal} onClose={() => handleCloseModal({ type: "edit" })}>
+                <ModifyG
+                    baseUrl={baseUrl}
+                    selectedItem={selectedItem}
+                    modelName={modelName}
+                    fields={fields}
+                    handleChange={handleChange}
+                    data={data}
+                    setData={setData}
+                    handleCloseModal={handleCloseModal}
+                >
                     <Button onClick={() => handleCloseModal({ type: "edit" })}>Cancel</Button>
-                    <Button type="submit" onClick={requestPut} variant="contained">Modificar</Button>
-                </DialogActions>
+                </ModifyG>
             </Dialog>
+
+
             {/*Modal duplicate*/}
             <Dialog open={openDeleteModal} onClose={() => handleCloseModal({ type: "delete" })} >
                 <DialogTitle>Duplicate</DialogTitle>
@@ -331,11 +268,11 @@ const Generic = () => {
                     <DialogContentText>
 
                     </DialogContentText>
-                    <ModifyG selectedItem={selectedItem} modelName={modelName} fields={actionWithFields.fields} handleChange={handleChange} methodPut={requestPut}></ModifyG>
+                    <ModifyG selectedItem={selectedItem} modelName={modelName} fields={actionWithFields.fields} handleChange={handleChange}></ModifyG>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => handleCloseModal({ type: "generic" })}>Cancel</Button>
-                    <Button type="submit" onClick={requestPut} variant="contained">Modificar</Button>
+                    <Button type="submit" variant="contained">Modificar</Button>
                 </DialogActions>
             </Dialog>
         </>

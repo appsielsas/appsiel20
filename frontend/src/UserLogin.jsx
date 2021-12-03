@@ -49,6 +49,7 @@ function UserLogin() {
       }
     } catch (error) {
       console.log(error);
+      enqueueSnackbar(error.message, { variant: "error" });
     }
   };
 
@@ -64,6 +65,8 @@ function UserLogin() {
         });
         if (logged.ok) {
           signIn();
+        } else {
+          signOut();
         }
       } catch (e) {
         console.log(e);
