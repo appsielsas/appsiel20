@@ -143,7 +143,7 @@ function StyledTreeItem(props) {
                         <img src={labelIcon} alt={labelText} height="40px" style={{ paddingRight: 8 }} />
                     }
 
-                    <Typography variant="body2" color="black" sx={direction ?
+                    <Typography variant="body2" color="text.primary" sx={direction ?
                         { fontWeight: 'inherit', flexGrow: 1, textTransform: 'capitalize', whiteSpace: 'normal', textAlign: 'center', fontSize: 10 } :
                         { fontWeight: 'inherit', flexGrow: 1, textTransform: 'capitalize', whiteSpace: 'normal' }
                     }>

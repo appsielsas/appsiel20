@@ -34,7 +34,7 @@ export default function SimplePaper(props) {
                 enqueueSnackbar(`${modelName} ${response.id} modificado correctamente`, { variant: 'success' })
             } else {
                 console.log("error")
-                Validator(dataG)
+                Validator(dataG, response.status)
             }
 
         } catch (error) {
