@@ -14,6 +14,11 @@
       "label": "PdfCreator",
       "icon": "fas fa-file-pdf",
       "url": "/pdfcreator"
+    },
+    {
+      "label": "Show",
+      "icon": "fas fa-file",
+      "url": "/show"
     }
   ]
 }

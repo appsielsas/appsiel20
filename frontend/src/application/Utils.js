@@ -7,15 +7,13 @@ export default function Validator(data, status) {
     const { enqueueSnackbar } = useSnackbar();
     const { user, signIn, signOut } = useContext(UserContext);
 
-    if (status == 401) {
+    if (status === 401) {
         signOut()
     }
     for (const property in data) {
-        if (property !== '0') {
-            data[property].forEach(element => {
-                enqueueSnackbar(element, { variant: 'error' });
-            });
-        }
+        data[property].forEach(element => {
+            enqueueSnackbar(element, { variant: 'error' });
+        });
     }
 }
 

@@ -217,13 +217,13 @@ const Users = () => {
             </Breadcrumbs>
             <hr />
             <Stack direction="row" sx={{ gap: 1 }}>
-                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "create" })} size="small" color="primary">
+                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "create" })} size="small" color="primary" sx={{ color: 'white' }}>
                     <AddCircleIcon />
                 </Fab>
-                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "edit" })} size="small" color="primary">
+                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "edit" })} size="small" color="primary" sx={{ color: 'white' }}>
                     <CreateIcon />
                 </Fab>
-                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "delete" })} size="small" color="primary">
+                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "delete" })} size="small" color="primary" sx={{ color: 'white' }}>
                     <DeleteIcon />
                 </Fab>
             </Stack>

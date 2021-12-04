@@ -2,6 +2,7 @@ import { Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogC
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
+import Show from '../Show';
 import CreateG from './CreateG';
 import GenericList from './GenericList';
 import ModifyG from './ModifyG';
@@ -34,6 +35,8 @@ const Generic = ({ path }) => {
     const [openDuplicateModal, setOpenDuplicateModal] = React.useState(false);
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const [openGenericModal, setOpenGenericModal] = React.useState(false);
+
+    const [showView, setShowView] = React.useState(true)
 
     /**
      * Action Object
@@ -182,13 +185,16 @@ const Generic = ({ path }) => {
             <hr />
             <Stack direction="row" spacing={1}>
                 {actions.map((action) => (
-                    <Fab key={action.id + ''} aria-label={action.label} onClick={() => handleOpenModal(action)} size="small" color="primary">
+                    <Fab key={action.id + ''} aria-label={action.label} onClick={() => handleOpenModal(action)} size="small" color="primary" sx={{ color: 'white' }}>
                         <i className={action.icon}></i>
                     </Fab>
                 ))}
                 <Divider orientation="vertical" flexItem />
-                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "print" })} size="small" color="primary">
+                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "print" })} size="small" color="primary" sx={{ color: 'white' }}>
                     <i className="fas fa-print"></i>
+                </Fab>
+                <Fab aria-label="print" onClick={() => setShowView(!showView)} size="small" color="primary" sx={{ color: 'white' }}>
+                    <i className="fas fa-file"></i>
                 </Fab>
             </Stack>
 
@@ -198,7 +204,10 @@ const Generic = ({ path }) => {
                     <Skeleton animation="wave" variant="rectangular" width='100%' height={118} />
                 </Box>
                 :
-                <GenericList setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
+                showView ?
+                    <GenericList setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
+                    :
+                    <Show data={selectedItem}></Show>
             }
 
             {/*Modal create*/}

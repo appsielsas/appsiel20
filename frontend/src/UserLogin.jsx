@@ -66,7 +66,7 @@ function UserLogin() {
         if (logged.ok) {
           signIn();
         } else {
-          signOut();
+          //signOut();
         }
       } catch (e) {
         console.log(e);

@@ -12,12 +12,13 @@ import PdfCreator from './Components/Report/PdfCreator';
 import Report from './Components/Report/Report';
 import SideBar from './Components/Layout';
 import Users from './Components/ModelUser/Users';
-import CustomStyles, { ColorModeContext } from './CustomStyles';
+import { ColorModeContext } from './CustomStyles';
 import UserProvider from './application/UserProvider';
 import Catalogs from './Components/Catalogs';
 
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import Show from './Components/Show';
 
 export default function App() {
   const pathGenerics = "crud"
@@ -39,11 +40,14 @@ export default function App() {
               <Route path="/report" exact>
                 <Report></Report>
               </Route>
+              <Route path="/show" exact>
+                <Show></Show>
+              </Route>
               <Route path="/pdfcreator" exact>
                 <PdfCreator></PdfCreator>
               </Route>
               <Route path={`/${pathGenerics}/:app/:model`}>
-                {/* app_catalogs?app */}
+                {/* crud?app */}
                 <Generic path={pathGenerics}></Generic>
               </Route>
               <Route path={`/${pathCatalogs}/:app`}>
@@ -54,10 +58,7 @@ export default function App() {
                 <Container >
                   <Box component={Paper} sx={{ width: '100%', p: 3 }}>
                     <Typography variant="h1">Inicio Dashboard Appsiel</Typography>
-                    {theme.palette.mode} mode
-                    <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-                      {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-                    </IconButton>
+
                   </Box>
                 </Container>
               </Route>
