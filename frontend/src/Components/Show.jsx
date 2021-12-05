@@ -41,39 +41,29 @@ const Show = (props) => {
 
   useEffect(() => {
     console.log(props.data);
+    let tempData = []
     for (const property in props.data) {
-      setData(data.concat(...data, { field: property, value: props.data[property] }));
+      tempData.push({ field: property, value: props.data[property] })
+
     }
-  }, [props.data]);
+    setData(tempData);
+  }, []);
 
   return (
     <>
-      {/*<Breadcrumbs aria-label="breadcrumb">
-        <Link underline="hover" color="inherit" to="/">
-          Appsiel
-        </Link>
-        <Link underline="hover" color="inherit" to="/users/">
-          {useParams().app}
-        </Link>
-        <Link underline="hover" color="inherit" to="/users/">
-          {useParams().model}
-        </Link>
-        <Typography color="text.primary">Index</Typography>
-      </Breadcrumbs>
-      <hr />*/}
       <Container component={Paper} sx={{ p: 4 }}>
         <Typography variant="h3">Vista Show</Typography>
         <hr />
         <Grid container spacing={2}>
           {data.map((i) => (
-            <Grid container item xs={6} md={4} spacing={3}>
-              <Grid item>
+            <>
+              <Grid item xs={4} sm={2} md={1} spacing={3}>
                 <Typography variant="subtitle2">{i.field}</Typography>
               </Grid>
-              <Grid item>
+              <Grid item xs={8} sm={4} md={3} spacing={3}>
                 <Typography variant="body2">{i.value}</Typography>
               </Grid>
-            </Grid>
+            </>
           ))}
         </Grid>
       </Container>
