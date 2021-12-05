@@ -36,7 +36,7 @@ const Generic = ({ path }) => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const [openGenericModal, setOpenGenericModal] = React.useState(false);
 
-    const [showView, setShowView] = React.useState(true)
+    const [showView, setShowView] = React.useState(false)
 
     /**
      * Action Object
@@ -49,11 +49,15 @@ const Generic = ({ path }) => {
                 break;
             case 'edit':
                 selectedItem.id ?
-                    setOpenModifyModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
+                    setOpenModifyModal(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
                 break;
             case 'delete':
                 selectedItem.id ?
-                    setOpenDeleteModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
+                    setOpenDeleteModal(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
+                break;
+            case 'show':
+                selectedItem.id ?
+                    setShowView(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
                 break;
             default:
                 if (selectedItem.id) {
@@ -193,7 +197,7 @@ const Generic = ({ path }) => {
                 <Fab aria-label="print" onClick={() => handleOpenModal({ type: "print" })} size="small" color="primary" sx={{ color: 'white' }}>
                     <i className="fas fa-print"></i>
                 </Fab>
-                <Fab aria-label="print" onClick={() => setShowView(!showView)} size="small" color="primary" sx={{ color: 'white' }}>
+                <Fab aria-label="print" onClick={!showView ? () => handleOpenModal({ type: "show" }) : () => setShowView(false)} size="small" color="primary" sx={{ color: 'white' }}>
                     <i className="fas fa-file"></i>
                 </Fab>
             </Stack>
@@ -205,9 +209,9 @@ const Generic = ({ path }) => {
                 </Box>
                 :
                 showView ?
-                    <GenericList setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
-                    :
                     <Show data={selectedItem}></Show>
+                    :
+                    <GenericList setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
             }
 
             {/*Modal create*/}
