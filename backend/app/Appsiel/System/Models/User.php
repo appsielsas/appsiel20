@@ -9,16 +9,16 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
     public $fillable = ['name', 'email', 'password', 'company_id'];
 
     public $index_table_headers = [
@@ -31,6 +31,40 @@ class User extends Authenticatable implements JWTSubject
         return User::paginate(10);
     }
 
+    public function validator($data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+    }
+
+    public function store($data)
+    {
+        $company_id = 1;
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password'], []),
+            'company_id' => $company_id
+        ]);
+
+        $token = JWTAuth::fromUser($user);
+
+        return compact('user', 'token');
+    }
+
+    public function show($id)
+    {
+        //
+    }
+
+    public function model_delete()
+    {
+        //
+    }
 
     /**
      * The attributes that should be hidden for serialization.

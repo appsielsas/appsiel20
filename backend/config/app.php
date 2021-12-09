@@ -175,6 +175,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * APPSIEL Service Providers...
+         */
+        App\Providers\SystemServiceProvider::class,
+
     ],
 
     /*
@@ -231,6 +236,7 @@ return [
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Input' => Illuminate\Support\Facades\Input::class,
+        //'CRUD' => App\Appsiel\System\Facades\CRUD::class,
     ],
 
 ];

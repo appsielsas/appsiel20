@@ -22,4 +22,9 @@ class Contact extends Model
     {
         return Contact::paginate(10);
     }
+
+    public function show($id)
+    {
+        //
+    }
 }

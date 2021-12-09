@@ -5,7 +5,6 @@ namespace App\Http\Controllers\System;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
@@ -17,81 +16,47 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+
+    public function authenticate(Request $request)
     {
-        return User::all();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $company_id = 1;
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+        $credentials = $request->only('email', 'password');
+        //return $request;
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json(['error' => 'Correo o Contraseña incorrectas'], 400);
+            }
+        } catch (JWTException $e) {
+            //no se pudo crear el token - error de servidor
+            return response()->json(['error' => 'Error de servidor'], 500);
         }
-
-        $user = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password'), []),
-            'company_id' => 1
-        ]);
-
-        $token = JWTAuth::fromUser($user);
-
-        return response()->json(compact('user', 'token'), 201);
+        return response()->json(compact('token'));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function getAuthenticatedUser()
     {
-        //$user = 
-        //return $user->response()->tojson();
-        return User::findOrFail($id);
+        try {
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json(['user_not_found'], 404);
+            }
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+            return response()->json(['token_expired'], $e->getCode());
+        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            return response()->json(['token_invalid'], $e->getCode());
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return response()->json(['token_absent'], $e->getCode());
+        }
+        return response()->json(compact('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+
+
+
+    // CODIGO VIEJO
+
+
+
+
 
     /**
      * Update the specified resource in storage.
@@ -128,36 +93,5 @@ class UserController extends Controller
             "id" => $id
         );
         return $user;
-    }
-
-    public function authenticate(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-        //return $request;
-        try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Correo o Contraseña incorrectas'], 400);
-            }
-        } catch (JWTException $e) {
-            //no se pudo crear el token - error de servidor
-            return response()->json(['error' => 'Error de servidor'], 500);
-        }
-        return response()->json(compact('token'));
-    }
-
-    public function getAuthenticatedUser()
-    {
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['user_not_found'], 404);
-            }
-        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            return response()->json(['token_expired'], $e->getCode());
-        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return response()->json(['token_invalid'], $e->getCode());
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json(['token_absent'], $e->getCode());
-        }
-        return response()->json(compact('user'));
     }
 }
