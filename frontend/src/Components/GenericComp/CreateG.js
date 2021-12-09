@@ -55,10 +55,30 @@ export default function CreateG(props) {
                             }}
                             onSubmit={requestPost}
                         >
-                            {fields.map((item) => (
-                                <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} />
+                            {fields.map((item) => {
 
-                            ))}
+                                switch (item.type) {
+                                "select":
+                            return <>
+                                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={age}
+                                    label="Age"
+                                    onChange={handleChange}
+                                >
+                                    <MenuItem value={10}>Ten</MenuItem>
+                                    <MenuItem value={20}>Twenty</MenuItem>
+                                    <MenuItem value={30}>Thirty</MenuItem>
+                                </Select>
+                            </>
+                            default:
+                            return <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} /> 
+                                }
+                                
+
+})}
                         </Box>
                     </Paper>
                 </DialogContentText>
