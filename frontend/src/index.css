@@ -37,13 +37,14 @@ code {
   border-radius: 10px;
 }
 
-a:has(td) {
+tbody .MuiTableRow-root {
   background-color: transparent;
   animation-name: example;
-  animation-duration: 3s;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
 }
 
-a:hover {
+tbody .MuiTableRow-root:hover {
   background-color: #50b794;
 }
 

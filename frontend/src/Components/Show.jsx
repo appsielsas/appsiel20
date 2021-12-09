@@ -39,7 +39,7 @@ const Show = (props) => {
   const { app, model, id } = useParams();
 
   const [value, setValue] = React.useState(0);
-  const [data, setData] = React.useState({ fields: [] });
+  const [data, setData] = React.useState({ fields: [], tabs: [] });
   const baseUrl = `${process.env.REACT_APP_URL}/api/crud/${id}?app_id=${app}&model_id=${model}`;
 
   const handleChange = (event, newValue) => {
@@ -106,20 +106,16 @@ const Show = (props) => {
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: "divider", marginTop: 4 }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          {data.tabs.map((item, i) => (
+            <Tab label={item.label} {...a11yProps(i)} />
+          ))}
         </Tabs>
       </Box>
-      <TabPanel value={value} index={0}>
-        <Generic path={false} tab={0} breadcrumbs={false}></Generic>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Item Three
-      </TabPanel>
+      {data.tabs.map((item, i) => (
+        <TabPanel value={value} index={i}>
+          <Generic path={false} tab={i} breadcrumbs={false}></Generic>
+        </TabPanel>
+      ))}
     </>
   );
 };

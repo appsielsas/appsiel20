@@ -87,7 +87,7 @@ export default function TableReact({ columns, data, setSelected }) {
         },
         ...columns,
         // Let's make a column for selection
-        {
+        /*{
           //id: 'selection',
           // The header can use the table's getToggleAllRowsSelectedProps method
           // to render a checkbox
@@ -103,7 +103,7 @@ export default function TableReact({ columns, data, setSelected }) {
               <Button variant="contained" color="primary">{row.original.id}</Button>
             </div>
           ),
-        },
+        },*/
       ]);
     }
   );
@@ -147,7 +147,7 @@ export default function TableReact({ columns, data, setSelected }) {
           {rows.map((row, i) => {
             prepareRow(row)
             return (
-              <TableRow {...row.getRowProps()} component={Link} to={`/crud/${app}/model/${model}/index/${row.original.id}`}>
+              <TableRow {...row.getRowProps()} component={Link} to={`/crud/${app}/model/${model}/index/${row.original.id}`} sx={{ textDecoration: 'none' }}>
                 {row.cells.map(cell => {
                   return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
                 })}
