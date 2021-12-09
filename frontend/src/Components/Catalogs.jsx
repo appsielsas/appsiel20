@@ -25,8 +25,21 @@ function Catalogs({ path }) {
     color: theme.palette.text.secondary,
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
     i: {
       fontSize: "36px",
+      height: "70px",
+      aspectRatio: "auto 1 / 1",
+      borderRadius: "50%",
+      backgroundImage: "linear-gradient(to right, #3ab5b0 0%, #3d99be 31%, #56317a 100%)",
+      color: "white",
+      position: "relative",
+      "&:before": {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%,-50%)",
+      },
     },
   }));
 

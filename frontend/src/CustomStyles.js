@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { PaletteMode } from '@mui/material';
+import App from './App';
 
-export const ColorModeContext = React.createContext({ toggleColorMode: () => { console.log('object') } });
+export const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
 const properties = {
   MuiButton: {
@@ -43,77 +45,112 @@ const properties = {
     size: 'small',
   },
   MuiAppBar: {
-    color: 'transparent',
+    color: 'primary',
   },
 }
 
-const themeDark = createTheme({
+
+
+
+const getDesignTokens = (mode) => ({
   palette: {
-    type: 'dark',
-    primary: {
-      main: '#42A3DC',
-    },
-    secondary: {
-      main: '#50B794',
-    },
-    background: {
-      default: '#303030',
-    }
-
+    mode,
+    ...(mode === 'light'
+      ? {
+        // palette values for light mode
+        primary: {
+          main: '#574696',
+        },
+        secondary: {
+          main: '#50B794',
+        },
+        background: {
+          default: '#fafafa',
+        }
+      }
+      : {
+        // palette values for dark mode
+        primary: {
+          main: '#42A3DC',
+        },
+        secondary: {
+          main: '#50B794',
+        },
+        background: {
+          default: '#303030',
+        }
+      }),
   },
-  shape: {
-    borderRadius: 20,
-  },
-  props: properties,
-  spacing: 8,
+  props: {
+    MuiButton: {
+      size: 'medium',
+    },
+    MuiButtonGroup: {
+      size: 'small',
+    },
+    MuiCheckbox: {
+      size: 'small',
+    },
+    MuiFab: {
+      size: 'small',
+    },
+    MuiFormControl: {
+      margin: 'dense',
+      size: 'small',
+    },
+    MuiFormHelperText: {
+      margin: 'dense',
+    },
+    MuiIconButton: {
+      size: 'small',
+    },
+    MuiInputBase: {
+      margin: 'dense',
+    },
+    MuiInputLabel: {
+      margin: 'dense',
+    },
+    MuiRadio: {
+      size: 'small',
+    },
+    MuiSwitch: {
+      size: 'small',
+    },
+    MuiTextField: {
+      margin: 'dense',
+      size: 'small',
+    },
+    MuiAppBar: {
+      color: 'primary',
+    },
+  }
 });
-
-const themeLight = createTheme({
-  palette: {
-    type: 'light',
-    primary: {
-      main: '#574696',
-    },
-    secondary: {
-      main: '#50B794',
-    },
-    background: {
-      default: '#fafafa',
-    }
-  },
-  props: properties,
-  spacing: 8,
-});
-
-
 
 export default function CustomStyles(props) {
 
   const [mode, setMode] = React.useState('light');
-  console.log('1')
   const colorMode = React.useMemo(
     () => ({
+      // The dark mode switch would invoke this method
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        setMode((prevMode) =>
+          prevMode === 'light' ? 'dark' : 'light',
+        );
       },
     }),
     [],
   );
 
-  const themeF = React.useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-        },
-      }),
-    [mode],
-  );
+  // Update the theme only if the mode changes
+  const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+
 
   return (
     <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={themeLight}>
-        {props.children}
+      <ThemeProvider theme={theme}>
+        <App>
+
+        </App>
       </ThemeProvider>
     </ColorModeContext.Provider >
 

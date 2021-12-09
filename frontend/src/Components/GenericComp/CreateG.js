@@ -12,7 +12,7 @@ export default function CreateG(props) {
     const { enqueueSnackbar } = useSnackbar();
     const { baseUrl, modelName, fields, handleChange, selectedItem, handleCloseModal, data, setData, children } = props;
 
-    const requestPost = async () => {
+    const requestPost = async (e) => {
 
         try {
             const response = await fetch(baseUrl, {
@@ -32,8 +32,7 @@ export default function CreateG(props) {
                 setData(data.concat(dataG))
                 handleCloseModal({ type: "create" })
             } else {
-                console.log("error")
-                Validator(dataG)
+                Validator(dataG, response.status)
             }
         } catch (error) {
             console.log(error)
@@ -54,6 +53,7 @@ export default function CreateG(props) {
                             sx={{
                                 '& .MuiTextField-root': { m: 1 }, display: 'grid', gridTemplateColumns: '1fr', gap: 2
                             }}
+                            onSubmit={requestPost}
                         >
                             {fields.map((item) => (
                                 <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} />
@@ -66,7 +66,7 @@ export default function CreateG(props) {
             </DialogContent>
             <DialogActions>
                 {children}
-                <Button onClick={requestPost} variant="contained">Crear</Button>
+                <Button type="submit" variant="contained">Crear</Button>
             </DialogActions>
 
         </>

@@ -2,6 +2,7 @@ import { Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogC
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
+import Show from '../Show';
 import CreateG from './CreateG';
 import GenericList from './GenericList';
 import ModifyG from './ModifyG';
@@ -35,6 +36,8 @@ const Generic = ({ path }) => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const [openGenericModal, setOpenGenericModal] = React.useState(false);
 
+    const [showView, setShowView] = React.useState(false)
+
     /**
      * Action Object
      * @param {{type: string}} action 
@@ -46,11 +49,15 @@ const Generic = ({ path }) => {
                 break;
             case 'edit':
                 selectedItem.id ?
-                    setOpenModifyModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
+                    setOpenModifyModal(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
                 break;
             case 'delete':
                 selectedItem.id ?
-                    setOpenDeleteModal(true) : enqueueSnackbar('Debe seleccionar un usuario', { variant: 'warning' })
+                    setOpenDeleteModal(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
+                break;
+            case 'show':
+                selectedItem.id ?
+                    setShowView(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
                 break;
             default:
                 if (selectedItem.id) {
@@ -182,13 +189,16 @@ const Generic = ({ path }) => {
             <hr />
             <Stack direction="row" spacing={1}>
                 {actions.map((action) => (
-                    <Fab key={action.id + ''} aria-label={action.label} onClick={() => handleOpenModal(action)} size="small" color="primary">
+                    <Fab key={action.id + ''} aria-label={action.label} onClick={() => handleOpenModal(action)} size="small" color="primary" sx={{ color: 'white' }}>
                         <i className={action.icon}></i>
                     </Fab>
                 ))}
                 <Divider orientation="vertical" flexItem />
-                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "print" })} size="small" color="primary">
+                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "print" })} size="small" color="primary" sx={{ color: 'white' }}>
                     <i className="fas fa-print"></i>
+                </Fab>
+                <Fab aria-label="print" onClick={!showView ? () => handleOpenModal({ type: "show" }) : () => setShowView(false)} size="small" color="primary" sx={{ color: 'white' }}>
+                    <i className="fas fa-file"></i>
                 </Fab>
             </Stack>
 
@@ -198,7 +208,10 @@ const Generic = ({ path }) => {
                     <Skeleton animation="wave" variant="rectangular" width='100%' height={118} />
                 </Box>
                 :
-                <GenericList setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
+                showView ?
+                    <Show data={selectedItem}></Show>
+                    :
+                    <GenericList setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
             }
 
             {/*Modal create*/}

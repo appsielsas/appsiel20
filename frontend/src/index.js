@@ -5,10 +5,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import CustomStyles from './CustomStyles';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <CustomStyles />
   </React.StrictMode>,
   document.getElementById('root')
 );
