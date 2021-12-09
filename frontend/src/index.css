@@ -37,10 +37,14 @@ code {
   border-radius: 10px;
 }
 
-tr {
+a:has(td) {
   background-color: transparent;
   animation-name: example;
   animation-duration: 3s;
+}
+
+a:hover {
+  background-color: #50b794;
 }
 
 @keyframes example {

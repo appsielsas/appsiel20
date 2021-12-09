@@ -9,7 +9,7 @@ import CreateUsers from './CreateUsers';
 import ModifyUsers from './ModifyUsers';
 import UserList from './UserList';
 
-const baseUrl = process.env.REACT_APP_URL + '/api/users';
+const baseUrl = process.env.REACT_APP_URL + '/api/users/';
 
 const Users = () => {
     const [data, setData] = useState([]);

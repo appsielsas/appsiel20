@@ -5,52 +5,6 @@ import App from './App';
 
 export const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
-const properties = {
-  MuiButton: {
-    size: 'medium',
-  },
-  MuiButtonGroup: {
-    size: 'small',
-  },
-  MuiCheckbox: {
-    size: 'small',
-  },
-  MuiFab: {
-    size: 'small',
-  },
-  MuiFormControl: {
-    margin: 'dense',
-    size: 'small',
-  },
-  MuiFormHelperText: {
-    margin: 'dense',
-  },
-  MuiIconButton: {
-    size: 'small',
-  },
-  MuiInputBase: {
-    margin: 'dense',
-  },
-  MuiInputLabel: {
-    margin: 'dense',
-  },
-  MuiRadio: {
-    size: 'small',
-  },
-  MuiSwitch: {
-    size: 'small',
-  },
-  MuiTextField: {
-    margin: 'dense',
-    size: 'small',
-  },
-  MuiAppBar: {
-    color: 'primary',
-  },
-}
-
-
-
 
 const getDesignTokens = (mode) => ({
   palette: {
@@ -123,7 +77,9 @@ const getDesignTokens = (mode) => ({
     MuiAppBar: {
       color: 'primary',
     },
-  }
+  }, shape: {
+    borderRadius: 12,
+  },
 });
 
 export default function CustomStyles(props) {

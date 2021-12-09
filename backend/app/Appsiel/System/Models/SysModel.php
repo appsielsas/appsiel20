@@ -44,11 +44,11 @@ class SysModel extends Model
         return [
             [
                 'label' => 'Campos',
-                'data' => [CRUD::get_model_index_data(13)]
+                'data' => CRUD::get_model_index_data(16)
             ],
             [
                 'label' => 'Acciones',
-                'data' => [CRUD::get_model_index_data(14)]
+                'data' => CRUD::get_model_index_data(14)
             ]
         ];
     }

@@ -46,10 +46,18 @@ export default function App() {
               <Route path="/pdfcreator" exact>
                 <PdfCreator></PdfCreator>
               </Route>
-              <Route path={`/${pathGenerics}/:app/:model`}>
-                {/* crud?app */}
-                <Generic path={pathGenerics}></Generic>
+              <Route path={`/${pathGenerics}/:app/model/:model/index/:id`}>
+                {/* vista index 
+
+                <Generic breadcrumbs={false}></Generic>*/}
+                <Show></Show>
               </Route>
+              <Route path={[`/${pathGenerics}/:app/model/:model/page/:page`, `/${pathGenerics}/:app/model/:model`]}>
+                {/* vista show */}
+
+                <Generic></Generic>
+              </Route>
+
               <Route path={`/${pathCatalogs}/:app`}>
                 {/* app_catalogs?app */}
                 <Catalogs path={pathGenerics}></Catalogs>

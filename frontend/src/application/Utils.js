@@ -39,10 +39,12 @@ export const optionsPUT = (selectedItem) => {
     }
 }
 
-export const optionsDELETE = {
-    method: "DELETE",
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
+export const optionsDELETE = () => {
+    return {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
+        }
     }
 }

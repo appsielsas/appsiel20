@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import React, { useEffect } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import Generic from "./GenericComp/Generic";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -32,33 +33,69 @@ function a11yProps(index) {
 }
 
 const Show = (props) => {
+  /**
+   * Parametros obtenidos por la URL
+   */
+  const { app, model, id } = useParams();
+
   const [value, setValue] = React.useState(0);
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState({ fields: [] });
+  const baseUrl = `${process.env.REACT_APP_URL}/api/crud/${id}?app_id=${app}&model_id=${model}`;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  useEffect(() => {
-    console.log(props.data);
-    let tempData = []
-    for (const property in props.data) {
-      tempData.push({ field: property, value: props.data[property] })
+  const requestGet = async () => {
+    try {
+      const response = await fetch(baseUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`,
+        },
+      });
 
+      let dataG = await response.json();
+
+      if (response.ok) {
+        setData(dataG);
+        console.log(dataG);
+      } else {
+        //Validator(dataG, response.status)
+      }
+    } catch (e) {
+      console.log(e.message);
+      //enqueueSnackbar(e.message, { variant: 'error' });
     }
-    setData(tempData);
+  };
+
+  useEffect(() => {
+    requestGet();
+    console.log(data);
   }, []);
 
   return (
     <>
-      <Container component={Paper} sx={{ p: 4 }}>
-        <Typography variant="h3">Vista Show</Typography>
-        <hr />
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link underline="hover" color="inherit" to="/">
+          Appsiel
+        </Link>
+        <Link underline="hover" color="inherit" to="/users/">
+          {app}
+        </Link>
+        <Link underline="hover" color="inherit" to="/users/">
+          {model}
+        </Link>
+        <Typography color="text.primary">Index</Typography>
+      </Breadcrumbs>
+      <hr />
+      <Typography variant="h3">Vista Show</Typography>
+      <Box component={Paper} sx={{ p: 4 }}>
         <Grid container spacing={2}>
-          {data.map((i) => (
+          {data.fields.map((i) => (
             <>
               <Grid item xs={4} sm={2} md={1} spacing={3}>
-                <Typography variant="subtitle2">{i.field}</Typography>
+                <Typography variant="subtitle2">{i.label}</Typography>
               </Grid>
               <Grid item xs={8} sm={4} md={3} spacing={3}>
                 <Typography variant="body2">{i.value}</Typography>
@@ -66,7 +103,7 @@ const Show = (props) => {
             </>
           ))}
         </Grid>
-      </Container>
+      </Box>
       <Box sx={{ borderBottom: 1, borderColor: "divider", marginTop: 4 }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Item One" {...a11yProps(0)} />
@@ -75,7 +112,7 @@ const Show = (props) => {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        Item One
+        <Generic path={false} tab={0} breadcrumbs={false}></Generic>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two

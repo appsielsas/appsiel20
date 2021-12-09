@@ -273,7 +273,7 @@ export default function SideBar(props) {
               {shorcutLayout &&
                 shorcutLayout.map((item, i) => (
                   <BottomNavigationAction
-                    sx={{ "& > i, span": { color: "white" } }}
+                    sx={{ "& > i, span": { color: "inherit" } }}
                     label={item.label}
                     component={Link}
                     to={item.url}
@@ -335,7 +335,7 @@ export default function SideBar(props) {
                 {item.modules &&
                   item.modules.map((modul, j) => (
                     <StyledTreeItem
-                      {...(modul.url && { url: `${modul.url}/${item.id}/${modul.id}` })}
+                      {...(modul.url && { url: `${modul.url}/${item.id}/model/${modul.id}` })}
                       {...(theme.palette.mode === "light"
                         ? { bgColor: "#e0e0e0" }
                         : { bgColor: "#616161" })}
@@ -349,7 +349,9 @@ export default function SideBar(props) {
                       {modul.models &&
                         modul.models.map((model, k) => (
                           <StyledTreeItem
-                            {...(model.url && { url: `${model.url}/${item.id}/${model.id}` })}
+                            {...(model.url && {
+                              url: `${model.url}/${item.id}/model/${model.model_id}`,
+                            })}
                             {...(theme.palette.mode === "light"
                               ? { bgColor: "#f5f5f5" }
                               : { bgColor: "#424242" })}
