@@ -38,7 +38,7 @@ class Menu
                 foreach ($models as $model) {
                     $models_items[] =
                         [
-                            'id' => $model->model_id,
+                            'model_id' => $model->model_id,
                             'label' => $model->label,
                             'name' => $model->name,
                             'url' => $model->url
@@ -47,7 +47,7 @@ class Menu
 
                 $modules_items[] =
                     [
-                        'id' => $module->id,
+                        'id' => $module->model_id,
                         'label' => $module->label,
                         'name' => $module->name,
                         'url' => $module->url,

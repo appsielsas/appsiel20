@@ -66,6 +66,11 @@ class User extends Authenticatable implements JWTSubject
         //
     }
 
+    public function get_tabs($row)
+    {
+        return [];
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

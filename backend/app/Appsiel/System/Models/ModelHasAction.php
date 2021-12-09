@@ -18,7 +18,7 @@ class ModelHasAction extends Model
 
     public function get_rows()
     {
-        return User::paginate(10);
+        return ModelHasAction::paginate(10);
     }
 
     public function show()
@@ -27,5 +27,10 @@ class ModelHasAction extends Model
 
     public function model_delete()
     {
+    }
+
+    public function get_tabs($row)
+    {
+        return [];
     }
 }

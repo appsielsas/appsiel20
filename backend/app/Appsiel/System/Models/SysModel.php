@@ -10,6 +10,12 @@ class SysModel extends Model
 {
     protected $fillable = ['label', 'name', 'name_space'];
 
+    public $index_table_headers = [
+        ["Header" => "Etiqueta", "accessor" => "label"],
+        ["Header" => "Nombre", "accessor" => "name"],
+        ["Header" => "Name Space", "accessor" => "name_space"]
+    ];
+
     public function actions()
     {
         return $this->belongsToMany(Action::class, 'sys_model_has_actions', 'model_id', 'action_id');
@@ -22,7 +28,7 @@ class SysModel extends Model
 
     public function get_rows()
     {
-        return User::paginate(10);
+        return SysModel::paginate(10);
     }
 
     public function show()

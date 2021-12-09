@@ -10,6 +10,17 @@ class Field extends Model
 
     protected $fillable = ['label', 'type', 'name', 'options', 'value', 'attributes', 'definition'];
 
+    public $index_table_headers = [
+        ["Header" => "Etiqueta", "accessor" => "label"],
+        ["Header" => "Nombre", "accessor" => "name"],
+        ["Header" => "Tipo", "accessor" => "type"],
+        ["Header" => "Opciones", "accessor" => "options"],
+        ["Header" => "Valor", "accessor" => "value"],
+        ["Header" => "Atributos", "accessor" => "attributes"],
+        ["Header" => "Definicion", "accessor" => "definition"],
+
+    ];
+
     public function get_value_to_show($model_row)
     {
         $field_name = $this->name;
@@ -31,5 +42,25 @@ class Field extends Model
                 return $model_row->$field_name;
                 break;
         }
+    }
+
+    public function get_rows()
+    {
+        return Field::paginate(10);
+    }
+
+    public function show($id)
+    {
+        //
+    }
+
+    public function model_delete()
+    {
+        //
+    }
+
+    public function get_tabs($row)
+    {
+        return [];
     }
 }

@@ -27,4 +27,14 @@ class Contact extends Model
     {
         //
     }
+
+    public function model_delete()
+    {
+        //
+    }
+
+    public function get_tabs($row)
+    {
+        return [];
+    }
 }

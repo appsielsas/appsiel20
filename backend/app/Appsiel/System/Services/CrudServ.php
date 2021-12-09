@@ -11,7 +11,6 @@ class CrudServ
     public function get_model_index_data($model_id)
     {
         $obj_model_serv = new ModelServ($model_id);
-        //dd($model_id, $obj_model_serv);
         return [
             'name' => $obj_model_serv->model->label,
             'model_headers_table' => $obj_model_serv->index_table_headers(),
