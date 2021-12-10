@@ -178,7 +178,9 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
     useEffect(() => {
         const fetchData = async () => {
             await requestGet()
+
         }
+
         fetchData()
     }, [app, model, page])
 

@@ -1,4 +1,4 @@
-import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle, InputLabel, Select, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
@@ -58,27 +58,28 @@ export default function CreateG(props) {
                             {fields.map((item) => {
 
                                 switch (item.type) {
-                                "select":
-                            return <>
-                                <InputLabel id="demo-simple-select-label">Age</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={age}
-                                    label="Age"
-                                    onChange={handleChange}
-                                >
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
-                                </Select>
-                            </>
-                            default:
-                            return <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} /> 
-                                }
-                                
+                                    case "select":
+                                        return <>
+                                            <InputLabel id="demo-simple-select-label">Age</InputLabel>
 
-})}
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={''}
+                                                label="Age"
+                                                onChange={handleChange}
+                                            >
+                                                <MenuItem value={10}>Ten</MenuItem>
+                                                <MenuItem value={20}>Twenty</MenuItem>
+                                                <MenuItem value={30}>Thirty</MenuItem>
+                                            </Select>
+                                        </>
+                                    default:
+                                        return <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} />
+                                }
+
+
+                            })}
                         </Box>
                     </Paper>
                 </DialogContentText>
