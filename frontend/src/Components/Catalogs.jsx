@@ -1,4 +1,4 @@
-import { Container, Grid, Paper, Typography } from "@mui/material";
+import { Button, Container, Grid, Paper, Typography } from "@mui/material";
 import { Box, styled } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
@@ -18,7 +18,7 @@ function Catalogs({ path }) {
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState([]);
 
-  const Icon = styled(Box)(({ theme }) => ({
+  const Icon = styled(Button)(({ theme }) => ({
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: "center",
