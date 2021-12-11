@@ -35,9 +35,4 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 });
 
 Route::get('menu', [HomeController::class, 'menu']);
-/*
-Route::get('users',[UserController::class,'index']);
-Route::post('users',[UserController::class,'store']);
-Route::get('users/{id}',[UserController::class,'show']);
-Route::delete('users/{id}',[UserController::class,'destroy']);
-*/
+Route::get('app_catalogs', [HomeController::class, 'catalogs']);
