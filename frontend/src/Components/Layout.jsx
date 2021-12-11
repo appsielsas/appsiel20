@@ -134,7 +134,6 @@ function StyledTreeItem(props) {
               p: 0.5,
               pr: 0,
               flexDirection: direction,
-              textDecoration: "none",
             }}
           >
             {labelIcon.startsWith("fa") ? (
@@ -261,7 +260,7 @@ export default function SideBar(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div">
-            <LinkMUI component={Link} to="/" underline="none" color="white">
+            <LinkMUI component={Link} to="/" underline="none" color="primary.contrastText">
               Appsiel
             </LinkMUI>
           </Typography>
@@ -273,7 +272,7 @@ export default function SideBar(props) {
               {shorcutLayout &&
                 shorcutLayout.map((item, i) => (
                   <BottomNavigationAction
-                    sx={{ "& > i, span": { color: "inherit" } }}
+                    sx={{ "& > i, span": { color: "primary.contrastText" } }}
                     label={item.label}
                     component={Link}
                     to={item.url}
@@ -319,7 +318,7 @@ export default function SideBar(props) {
           }}
         >
           {navigationLayout &&
-            navigationLayout.map((item, i) => (
+            navigationLayout.map((app, i) => (
               <StyledTreeItem
                 url=""
                 bgColor="#9e9e9e"
@@ -327,15 +326,15 @@ export default function SideBar(props) {
                   ? { bgColor: "#9e9e9e" }
                   : { bgColor: "#757575" })}
                 key={i}
-                nodeId={item.id + item.name}
-                labelText={item.label}
-                labelIcon={item.icon}
+                nodeId={app.id + app.name}
+                labelText={app.label}
+                labelIcon={app.icon}
                 direction={!openDrawer && "column"}
               >
-                {item.modules &&
-                  item.modules.map((modul, j) => (
+                {app.modules &&
+                  app.modules.map((modul, j) => (
                     <StyledTreeItem
-                      {...(modul.url && { url: `${modul.url}/${item.id}/model/${modul.id}` })}
+                      {...(modul.url && { url: `${modul.url}/${app.id}/model/${modul.id}` })}
                       {...(theme.palette.mode === "light"
                         ? { bgColor: "#e0e0e0" }
                         : { bgColor: "#616161" })}
@@ -350,7 +349,7 @@ export default function SideBar(props) {
                         modul.models.map((model, k) => (
                           <StyledTreeItem
                             {...(model.url && {
-                              url: `${model.url}/${item.id}/model/${model.model_id}`,
+                              url: `${model.url}/${app.id}/model/${model.model_id}`,
                             })}
                             {...(theme.palette.mode === "light"
                               ? { bgColor: "#f5f5f5" }

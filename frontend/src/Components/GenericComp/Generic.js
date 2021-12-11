@@ -1,12 +1,13 @@
-import { Box, Breadcrumbs, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Fab, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Button, Dialog, Divider, Fab, Skeleton, Stack, Typography, Link as LinkMui } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
-import Validator from '../../application/Utils';
-import Show from '../Show';
+import { UserContext } from '../../application/UserProvider';
 import CreateG from './CreateG';
+import DeleteG from './DeleteG';
 import GenericList from './GenericList';
 import ModifyG from './ModifyG';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 
 const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
@@ -19,10 +20,14 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
      * @type {baseUrl: string} 
      */
     const baseUrl = path ?
-        `${process.env.REACT_APP_URL}/api/crud?app_id=${app}&model_id=${model}&page=${page}` :
+        `${process.env.REACT_APP_URL}/api/crud` :
         `${process.env.REACT_APP_URL}/api/crud/${id}?app_id=${app}&model_id=${model}`;
 
+    //const baseUrl = path ?
+    //`${process.env.REACT_APP_URL}/api/crud?app_id=${app}&model_id=${model}&page=${page}` :
+    //`${process.env.REACT_APP_URL}/api/crud/${id}?app_id=${app}&model_id=${model}`;
 
+    const { user, signIn, signOut } = React.useContext(UserContext);
 
     const [modelName, setModelName] = useState("");
     const [headers, setHeaders] = useState([]);
@@ -110,7 +115,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
     const requestGet = async () => {
         setCargando(true)
         try {
-            const response = await fetch(baseUrl, {
+            const response = await fetch(`${baseUrl}?app_id=${app}&model_id=${model}&page=${page}`, {
                 method: "GET",
                 headers: {
                     'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
@@ -127,11 +132,11 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
 
             if (response.ok) {
                 setModelName(dataG.name)
-                setHeaders(dataG.model_headers_table);
-                setData(dataG.model_data_table.data);
+                setHeaders(dataG.model_table_headers);
+                setData(dataG.model_table_rows.data);
                 setFields(dataG.model_fields);
                 setActions(dataG.model_actions);
-                setNumberPages(dataG.model_data_table.last_page)
+                setNumberPages(dataG.model_table_rows.last_page)
                 console.log(dataG)
             } else {
                 Validator(dataG, response.status)
@@ -145,29 +150,17 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
         }
     }
 
-    const requestDelete = async () => {
-        try {
-            const response = await fetch(baseUrl + selectedItem.id, {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
-                }
-            })
+    function Validator(data, status) {
 
-            let dataG = await response.json();
+        if (status === 401) {
+            signOut()
+        }
 
-            if (response.ok) {
-                setData(data.filter(Usuario => Usuario.id !== selectedItem.id));
-                enqueueSnackbar('Registro ' + selectedItem.id + ' eliminado', { variant: 'success' });
-                setSelectedItem({});
-                handleCloseModal({ type: "delete" })
-            } else {
-                Validator(dataG, response.status)
-            }
-        } catch (e) {
-            console.log(e)
-            enqueueSnackbar(e.message, { variant: 'error' });
+        for (const property in data) {
+            console.log(data[property])
+            data[property].forEach(element => {
+                enqueueSnackbar(element, { variant: 'error' });
+            });
         }
     }
 
@@ -182,25 +175,25 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
 
     return (
         <> {breadcrumbs &&
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" to="/">
+            <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon fontSize="small" />}>
+                <LinkMui component={Link} underline="hover" color="inherit" to="/">
                     Appsiel
-                </Link>
-                <Link
+                </LinkMui>
+                <LinkMui component={Link}
                     underline="hover"
                     color="inherit"
                     to="/users/"
                 >
                     {app}
-                </Link>
-                <Link
+                </LinkMui>
+                <LinkMui component={Link}
                     underline="hover"
                     color="inherit"
                     to="/users/"
                 >
                     {model}
-                </Link>
-                <Typography color="text.primary">Index</Typography>
+                </LinkMui>
+                <Typography color="inherit">Registros</Typography>
             </Breadcrumbs>
         }
             <hr />
@@ -237,8 +230,8 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     data={data}
                     setData={setData}
                     handleCloseModal={handleCloseModal}
+                    Validator={Validator}
                 >
-                    <Button onClick={() => handleCloseModal({ type: "create" })}>Cancel</Button>
                 </CreateG>
             </Dialog>
 
@@ -254,13 +247,14 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     data={data}
                     setData={setData}
                     handleCloseModal={handleCloseModal}
+                    Validator={Validator}
                 >
-                    <Button onClick={() => handleCloseModal({ type: "edit" })}>Cancel</Button>
+
                 </ModifyG>
             </Dialog>
 
 
-            {/*Modal duplicate*/}
+            {/*Modal duplicate
             <Dialog open={openDeleteModal} onClose={() => handleCloseModal({ type: "delete" })} >
                 <DialogTitle>Duplicate</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
@@ -270,24 +264,23 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => handleCloseModal({ type: "delete" })}>Cancel</Button>
-                    <Button type="submit" onClick={requestDelete} variant="contained">Eliminar</Button>
+                    <Button type="submit" variant="contained">Eliminar</Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog>*/}
             {/*Modal delete*/}
-            <Dialog open={openDuplicateModal} onClose={() => handleCloseModal({ type: "delete" })} >
-                <DialogTitle>Eliminar</DialogTitle>
-                <DialogContent sx={{ minWidth: 500 }}>
-                    <DialogContentText>
-                        Realmente desea eliminar este registro. <b>{selectedItem.id}</b>
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => handleCloseModal({ type: "delete" })}>Cancel</Button>
-                    <Button type="submit" onClick={requestDelete} variant="contained">Eliminar</Button>
-                </DialogActions>
+            <Dialog open={openDeleteModal} onClose={() => handleCloseModal({ type: "delete" })} >
+                <DeleteG
+                    baseUrl={baseUrl}
+                    selectedItem={selectedItem}
+                    modelName={modelName}
+                    data={data}
+                    setData={setData}
+                    handleCloseModal={handleCloseModal}
+                    Validator={Validator}
+                ></DeleteG>
             </Dialog>
 
-            {/*Modal generico*/}
+            {/*Modal generico
             <Dialog open={openGenericModal} onClose={() => handleCloseModal({ type: "generic" })}>
                 <DialogTitle>{actionWithFields.label}</DialogTitle>
                 <DialogContent sx={{ minWidth: 500 }}>
@@ -300,7 +293,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     <Button onClick={() => handleCloseModal({ type: "generic" })}>Cancel</Button>
                     <Button type="submit" variant="contained">Modificar</Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog>*/}
         </>
     )
 }

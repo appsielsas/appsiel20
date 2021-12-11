@@ -1,34 +1,25 @@
-import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import { Box, Button, Paper, TextField, Typography, DialogActions, DialogContent, DialogTitle, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import Validator from '../../application/Utils';
-import * as React from 'react';
+import { useParams } from 'react-router-dom';
+import { optionsPOST } from './../../application/Utils'
 
 export default function CreateG(props) {
 
     const { enqueueSnackbar } = useSnackbar();
-    const { baseUrl, modelName, fields, handleChange, selectedItem, handleCloseModal, data, setData, children } = props;
+    const { baseUrl, modelName, fields, handleChange, selectedItem, handleCloseModal, data, setData, Validator } = props;
+    const { app, model, page = 1, id } = useParams();
 
     const requestPost = async (e) => {
-
+        e.preventDefault()
         try {
-            const response = await fetch(baseUrl, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(selectedItem),
-            })
+            const response = await fetch(`${baseUrl}?app_id=${app}&model_id=${model}&page=${page}`, optionsPOST(selectedItem))
 
             let dataG = await response.json()
 
             console.log(dataG)
             if (response.ok) {
                 console.log("ok")
-                enqueueSnackbar(`${modelName} ${response.id} agregado correctamente`, { variant: 'success' })
+                enqueueSnackbar(`${modelName} ${dataG.id} agregado correctamente`, { variant: 'success' })
                 setData(data.concat(dataG))
                 handleCloseModal({ type: "create" })
             } else {
@@ -39,8 +30,10 @@ export default function CreateG(props) {
         }
     }
 
+
     return (
         <>
+
             <DialogTitle>Insertar</DialogTitle>
             <DialogContent sx={{ minWidth: 500 }}>
                 <Paper sx={{ padding: 2 }}>
@@ -55,10 +48,10 @@ export default function CreateG(props) {
                         onSubmit={requestPost}
                     >
                         {fields.map((item) => {
-
+                            console.log(item)
                             switch (item.type) {
                                 case "select":
-                                    return <FormControl variant="standard" key={item.id + ''}>
+                                    return <FormControl variant="standard" {...(item.pivot.required === 1 && { required: true })} key={item.id + ''}>
                                         <InputLabel id="demo-simple-select-label">{item.label}</InputLabel>
                                         <Select
                                             labelId={`simple-select-label-${item.label}`}
@@ -67,23 +60,23 @@ export default function CreateG(props) {
                                             value={selectedItem[item.name] || ''}
                                             label={item.label}
                                             onChange={handleChange}
+
                                         >
-                                            <MenuItem value={10}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
+                                            <MenuItem value={1}>demoAppsiel</MenuItem>
                                         </Select>
                                     </FormControl>
                                 default:
-                                    return <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} />
+                                    return <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.pivot.required === 1 && { required: true })} />
                             }
                         })}
+                        <DialogActions>
+                            <Button onClick={() => handleCloseModal({ type: "create" })}>Cancel</Button>
+                            <Button type="submit" variant="contained">Crear</Button>
+                        </DialogActions>
                     </Box>
                 </Paper>
             </DialogContent>
-            <DialogActions>
-                {children}
-                <Button type="submit" variant="contained">Crear</Button>
-            </DialogActions>
+
 
         </>
 

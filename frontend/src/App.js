@@ -1,24 +1,20 @@
-import { Container, IconButton, Typography } from '@mui/material';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
+import { Box, Paper, Container, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import {
-  BrowserRouter as Router, Route, Switch, useParams
+  BrowserRouter as Router, Route, Switch
 } from "react-router-dom";
-import Generic from './Components/GenericComp/Generic';
-import PdfCreator from './Components/Report/PdfCreator';
-import Report from './Components/Report/Report';
-import SideBar from './Components/Layout';
-import Users from './Components/ModelUser/Users';
-import { ColorModeContext } from './CustomStyles';
 import UserProvider from './application/UserProvider';
 import Catalogs from './Components/Catalogs';
-
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import Generic from './Components/GenericComp/Generic';
+import SideBar from './Components/Layout';
+import Users from './Components/ModelUser/Users';
+import PdfCreator from './Components/Report/PdfCreator';
+import Report from './Components/Report/Report';
 import Show from './Components/Show';
+import { ColorModeContext } from './CustomStyles';
+
 
 export default function App() {
   const pathGenerics = "crud"

@@ -1,8 +1,17 @@
-import { Button, Container, Grid, Paper, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  Link as LinkMui,
+  Skeleton,
+} from "@mui/material";
 import { Box, styled } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 
 function Catalogs({ path }) {
   /**
@@ -13,7 +22,7 @@ function Catalogs({ path }) {
    * URL base del modelo actual
    * @type {baseUrl: string}
    */
-  const baseUrl = `${process.env.REACT_APP_URL}/api/${path}?app_id=${app}`;
+  const baseUrl = `${process.env.REACT_APP_URL}/api/app_catalogs?app_id=${app}`;
   const [cargando, setCargando] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState([]);
@@ -46,81 +55,29 @@ function Catalogs({ path }) {
   const requestGet = async () => {
     setCargando(true);
     try {
-      await fetch(baseUrl, {
+      const response = await fetch(baseUrl, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`,
         },
-      })
-        .then((res) => res.json())
-        .then((response) => {
-          console.log(response);
-          setData(response.name);
-          setCargando(false);
-        })
-        .catch((error) => {
-          console.log(error.message);
-          enqueueSnackbar(error.message, { variant: "error" });
-        });
+      });
+
+      let dataG = await response.json();
+
+      if (response.ok) {
+        setData(dataG);
+      }
+
+      setCargando(false);
     } catch (e) {
       console.log(e.message);
+      enqueueSnackbar(e.message, { variant: "error" });
     }
   };
 
-  const icons = [
-    {
-      icon: "fab fa-500px",
-      label: "",
-    },
-    {
-      icon: "fab fa-500px",
-      label: "",
-    },
-    {
-      icon: "fab fa-accusoft",
-      label: "",
-    },
-    {
-      icon: "fab fa-accusoft",
-      label: "",
-    },
-    {
-      icon: "fab fa-adversal",
-      label: "",
-    },
-    {
-      icon: "fab fa-adversal",
-      label: "",
-    },
-    {
-      icon: "fab fa-500px",
-      label: "",
-    },
-    {
-      icon: "fab fa-500px",
-      label: "",
-    },
-    {
-      icon: "fab fa-accusoft",
-      label: "",
-    },
-    {
-      icon: "fab fa-accusoft",
-      label: "",
-    },
-    {
-      icon: "fab fa-adversal",
-      label: "",
-    },
-    {
-      icon: "fab fa-adversal",
-      label: "",
-    },
-  ];
-
   useEffect(() => {
-    //requestGet();
-    setData(icons);
+    requestGet();
+    //setData(icons);
   }, [app]);
 
   return (
@@ -128,14 +85,57 @@ function Catalogs({ path }) {
       <Typography variant="h2">Catalogo</Typography>
       <hr />
       <Grid container rowSpacing={8} columnSpacing={4} sx={{ width: "100%" }}>
-        {data.map((item, index) => (
-          <Grid item xs={6} sm={4} md={3} lg={2} key={index}>
-            <Icon>
-              <i className={item.icon}></i>
-              <Typography variant="subtitle1">item.label</Typography>
-            </Icon>
-          </Grid>
-        ))}
+        {cargando ? (
+          <>
+            <Grid item xs={6} sm={4} md={3} lg={2}>
+              <Icon>
+                <Skeleton variant="circular" width={70} height={70} />
+                <Typography variant="subtitle1" width="60px">
+                  <Skeleton />
+                </Typography>
+              </Icon>
+            </Grid>
+            <Grid item xs={6} sm={4} md={3} lg={2}>
+              <Icon>
+                <Skeleton variant="circular" width={70} height={70} />
+                <Typography variant="subtitle1" width="60px">
+                  <Skeleton />
+                </Typography>
+              </Icon>
+            </Grid>
+            <Grid item xs={6} sm={4} md={3} lg={2}>
+              <Icon>
+                <Skeleton variant="circular" width={70} height={70} />
+                <Typography variant="subtitle1" width="60px">
+                  <Skeleton />
+                </Typography>
+              </Icon>
+            </Grid>
+            <Grid item xs={6} sm={4} md={3} lg={2}>
+              <Icon>
+                <Skeleton variant="circular" width={70} height={70} />
+                <Typography variant="subtitle1" width="60px">
+                  <Skeleton />
+                </Typography>
+              </Icon>
+            </Grid>
+          </>
+        ) : (
+          data.map((item, index) => (
+            <Grid item xs={6} sm={4} md={3} lg={2} key={index}>
+              <LinkMui
+                component={Link}
+                to={`/crud/${item.app_id}/model/${item.model_id}`}
+                underline="none"
+              >
+                <Icon>
+                  <i className={`fas fa-${item.icon}`}></i>
+                  <Typography variant="subtitle1">{item.label}</Typography>
+                </Icon>
+              </LinkMui>
+            </Grid>
+          ))
+        )}
       </Grid>
     </Container>
   );

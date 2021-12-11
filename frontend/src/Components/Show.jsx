@@ -1,9 +1,21 @@
-import { Breadcrumbs, Container, Grid, Paper, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Breadcrumbs,
+  Container,
+  Grid,
+  IconButton,
+  Paper,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+  Link as LinkMui,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import React, { Fragment, useEffect } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import Generic from "./GenericComp/Generic";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -77,16 +89,16 @@ const Show = (props) => {
   return (
     <>
       <Breadcrumbs aria-label="breadcrumb">
-        <Link underline="hover" color="inherit" to="/">
+        <LinkMui underline="hover" color="inherit" to="/">
           Appsiel
-        </Link>
-        <Link underline="hover" color="inherit" to="/users/">
+        </LinkMui>
+        <LinkMui underline="hover" color="inherit" to="/users/">
           {app}
-        </Link>
-        <Link underline="hover" color="inherit" to="/users/">
+        </LinkMui>
+        <LinkMui underline="hover" color="inherit" to="/users/">
           {model}
-        </Link>
-        <Typography color="text.primary">Index</Typography>
+        </LinkMui>
+        <Typography color="inherit">Registros</Typography>
       </Breadcrumbs>
       <hr />
       <Typography variant="h3">Vista Show</Typography>
@@ -94,11 +106,22 @@ const Show = (props) => {
         <Grid container spacing={2}>
           {data.fields.map((i) => (
             <Fragment key={i.id + i.label}>
-              <Grid item xs={4} sm={2} md={1} spacing={3}>
+              <Grid item xs={4} sm={2} md={1}>
                 <Typography variant="subtitle2">{i.label}</Typography>
               </Grid>
-              <Grid item xs={8} sm={4} md={3} spacing={3}>
-                <Typography variant="body2">{i.value}</Typography>
+              <Grid item xs={8} sm={4} md={3}>
+                <Typography variant="body2">
+                  {i.value}
+                  <Tooltip title="Copiar al portapapeles">
+                    <IconButton
+                      color="secondary"
+                      onClick={() => navigator.clipboard.writeText(i.value)}
+                      size="small"
+                    >
+                      <ContentCopyIcon fontSize="inherit" />
+                    </IconButton>
+                  </Tooltip>
+                </Typography>
               </Grid>
             </Fragment>
           ))}

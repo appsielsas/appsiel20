@@ -1,4 +1,4 @@
-import { Button, Grow, Link as LinkMui, Pagination, PaginationItem, Slide } from '@mui/material';
+import { TextField, Tooltip } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -6,13 +6,13 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import DataTable from 'datatables.net';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useParams } from 'react-router';
-import { Link, useHistory } from 'react-router-dom';
-import { usePagination, useRowSelect, useTable } from 'react-table';
+import { useHistory } from 'react-router-dom';
+import { useColumnOrder, useFilters, useResizeColumns, useRowSelect, useSortBy, useTable } from 'react-table';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 // Define a default UI for filtering
 function DefaultColumnFilter({
@@ -21,15 +21,20 @@ function DefaultColumnFilter({
   const count = preFilteredRows.length
 
   return (
-    <input
+    <TextField
+      variant="standard"
       value={filterValue || ''}
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
       }}
-      placeholder={`Search ${count} records...`}
-    />
+      placeholder={`Buscar ${count} registros...`}
+      size="small"
+    >
+    </TextField>
   )
 }
+
+
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -52,35 +57,33 @@ export default function TableReact({ columns, data, setSelected }) {
 
   const { app, model } = useParams();
   const history = useHistory()
+  const [search, setSearch] = React.useState({});
 
   const defaultColumn = React.useMemo(
     () => ({
       // Let's set up our default Filter UI
-      Filter: DefaultColumnFilter,
+
     }),
     []
   )
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setSearch(prevState => ({
+      ...prevState,
+      [name]: value
+    }))
+    console.log(search);
+  }
 
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
     getTableBodyProps,
+    getSortByToggleProps,
     headerGroups,
     prepareRow,
-
     rows,
-    page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
-
-    // The rest of these things are super handy, too ;)
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
     selectedFlatRows,
     state: { pageIndex, pageSize, selectedRowIds },
   } = useTable(
@@ -89,8 +92,9 @@ export default function TableReact({ columns, data, setSelected }) {
       data,
       defaultColumn,
     },
-    usePagination,
+    useSortBy,
     useRowSelect,
+
     hooks => {
       hooks.visibleColumns.push((columns) => [
         // Let's make a column for selection
@@ -143,45 +147,66 @@ export default function TableReact({ columns, data, setSelected }) {
 
         return setSelected(item)
       })
-
     } else {
       setSelected({})
     }
-
   }, [selectedFlatRows])
 
   // Render the UI for your table
   return (
 
-    <TableContainer component={Paper} >
-      <Table size="small" {...getTableProps()} id="table1">
-        <TableHead>
-          {headerGroups.map(headerGroup => (
-            <TableRow {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <TableCell {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                  <div>{column.canFilter ? column.render('Filter') : null}</div>
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row)
-            return (
-              <TableRow {...row.getRowProps()} >
-                {row.cells.map(cell => {
-                  return <TableCell {...cell.getCellProps()} onClick={() => history.push(`/crud/${app}/model/${model}/index/${row.original.id}`)} sx={{ cursor: 'pointer' }}>
-                    {cell.render('Cell')}
-                  </TableCell>
-                })}
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
+    <TableContainer  >
+      <Tooltip title="Doble clic para abrir registro" followCursor>
+        <Table size="small" {...getTableProps()} id="table1">
+          <TableHead>
+            {headerGroups.map((headerGroup, i) => (
+              <Fragment key={i}>
+                <TableRow {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map(column => (
+                    <TableCell {...column.getHeaderProps()}>
+                      <div>
+                        {column.canFilter ? <TextField
+                          variant="standard"
+                          name={column.id}
+                          onChange={handleChange}
+                          placeholder={`Buscar ${column.Header}...`}
+                          size="small"
+                        >
+                        </TextField> : null}
+                      </div>
+                      {column.render('Header')}
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? <ArrowDropDownIcon fontSize='inherit' />
+                            : <ArrowDropUpIcon fontSize='inherit' />
+                          : ''}
+                      </span>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </Fragment >
+            ))}
+          </TableHead>
+
+          <TableBody {...getTableBodyProps()} >
+            {rows.map((row, i) => {
+              prepareRow(row)
+              return (
+                <TableRow {...row.getRowProps()} >
+                  {row.cells.map(cell => {
+                    return <TableCell {...cell.getCellProps()} onDoubleClick={() => history.push(`/crud/${app}/model/${model}/index/${row.original.id}`)} sx={{ cursor: 'pointer' }}>
+                      {console.log(cell)}
+                      {cell.render('Cell')}
+
+                    </TableCell>
+                  })}
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </Tooltip>
     </TableContainer >
   )
 }

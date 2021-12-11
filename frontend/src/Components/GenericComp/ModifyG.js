@@ -1,28 +1,18 @@
-import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import { Box, Paper, Button, TextField, Typography, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import Validator from '../../application/Utils';
-import * as React from 'react';
+import { useParams } from 'react-router-dom';
+import { optionsPUT } from './../../application/Utils'
 
 export default function SimplePaper(props) {
 
     const { enqueueSnackbar } = useSnackbar();
-    const { baseUrl, modelName, fields, handleChange, selectedItem, handleCloseModal, data, setData, children } = props;
+    const { baseUrl, modelName, fields, handleChange, selectedItem, handleCloseModal, data, setData, Validator } = props;
+    const { app, model, page = 1, id } = useParams();
 
     const requestPut = async () => {
         console.log(selectedItem)
         try {
-            const response = await fetch(baseUrl + selectedItem.id, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`
-                },
-                body: JSON.stringify(selectedItem),
-            })
+            const response = await fetch(`${baseUrl}/${selectedItem.id}?app_id=${app}&model_id=${model}`, optionsPUT(selectedItem))
 
             let dataG = await response.json()
             //var dataNueva = dataU;
@@ -31,7 +21,7 @@ export default function SimplePaper(props) {
                 console.log(dataNueva)
                 setData(dataNueva);
                 handleCloseModal({ type: "edit" })
-                enqueueSnackbar(`${modelName} ${response.id} modificado correctamente`, { variant: 'success' })
+                enqueueSnackbar(`${modelName} ${dataG.id} modificado correctamente`, { variant: 'success' })
             } else {
                 console.log("error")
                 Validator(dataG, response.status)
@@ -73,20 +63,18 @@ export default function SimplePaper(props) {
                                             label={item.label}
                                             onChange={handleChange}
                                         >
-                                            <MenuItem value={10}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
+                                            <MenuItem value={1}>Ten</MenuItem>
                                         </Select>
                                     </FormControl>
                                 default:
-                                    return <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} />
+                                    return item.pivot.editable === 1 ? <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} value={selectedItem && selectedItem[item.name]} /> : ''
                             }
                         })}
                     </Box>
                 </Paper>
             </DialogContent>
             <DialogActions>
-                {children}
+                <Button onClick={() => handleCloseModal({ type: "edit" })}>Cancel</Button>
                 <Button type="submit" onClick={requestPut} variant="contained">Modificar</Button>
             </DialogActions>
         </>

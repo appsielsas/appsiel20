@@ -122,7 +122,7 @@ const PdfCreator = () => {
                                     <Select
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        value={selectComponent.label1}
+                                        value={selectComponent.label1 || ''}
                                         label="Componente"
                                         onChange={(e) => setSelectComponent({ ...selectComponent, label1: e.target.value })}
                                     >
@@ -136,7 +136,7 @@ const PdfCreator = () => {
                                     <Select
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        value={selectComponent.label2}
+                                        value={selectComponent.label2 || ''}
                                         label="Componente"
                                         onChange={(e) => setSelectComponent({ ...selectComponent, label2: e.target.value })}
                                     >
@@ -150,7 +150,7 @@ const PdfCreator = () => {
                                     <Select
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        value={selectComponent.label3}
+                                        value={selectComponent.label3 || ''}
                                         label="Componente"
                                         onChange={(e) => setSelectComponent({ ...selectComponent, label3: e.target.value })}
                                         disabled
