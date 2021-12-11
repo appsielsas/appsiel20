@@ -18,15 +18,15 @@ class CrudController extends Controller
 
     public function store(Request $request)
     {
-        $validator = CRUD::ModelValidator(Input::get('model_id'), $request->all());
+        $validator = CRUD::ModelValidator(Input::get('model_id'), $request->all(), 'store');
 
         if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+            return response()->json($validator->errors(), 400);
         }
 
         $result = CRUD::store(Input::get('model_id'), $request->all());
 
-        return response()->json($result, 201);
+        return response($result, 201);
     }
 
     public function show($id)
@@ -43,17 +43,15 @@ class CrudController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:250',
-            'email' => 'email|required|unique:users,email,' . $id,
-        ]);
+        $validator = CRUD::ModelValidator(Input::get('model_id'), $request->all(), 'update', $id);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        return User::where('id', $id)->update($request->all());
+        $result = CRUD::update(Input::get('model_id'), $request->all(), $id);
+
+        return response($result, 201);
     }
 
     /**

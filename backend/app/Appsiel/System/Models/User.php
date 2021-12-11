@@ -31,7 +31,7 @@ class User extends Authenticatable implements JWTSubject
         return User::paginate(10);
     }
 
-    public function validator($data)
+    public function validator_store($data)
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
@@ -40,20 +40,29 @@ class User extends Authenticatable implements JWTSubject
         ]);
     }
 
+    public function validator_update($data, $user_id)
+    {
+        return Validator::make($data, [
+            'name' => 'required|max:250',
+            'email' => 'email|required|unique:users,email,' . $user_id,
+        ]);
+    }
+
     public function store($data)
     {
         $company_id = 1;
 
-        $user = User::create([
+        return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password'], []),
             'company_id' => $company_id
         ]);
+    }
 
-        $token = JWTAuth::fromUser($user);
-
-        return compact('user', 'token');
+    public function model_update($data, $id)
+    {
+        return User::where('id', $id)->update($data);
     }
 
     public function show($id)

@@ -24,14 +24,24 @@ class ModelServ
         return app($this->model->name_space)->get_rows();
     }
 
-    public function validator($data)
+    public function validator_store($data)
     {
-        return app($this->model->name_space)->validator($data);
+        return app($this->model->name_space)->validator_store($data);
+    }
+
+    public function validator_update($data, $id)
+    {
+        return app($this->model->name_space)->validator_update($data, $id);
     }
 
     public function store($data)
     {
         return app($this->model->name_space)->store($data);
+    }
+
+    public function model_update($data, $id)
+    {
+        return app($this->model->name_space)->model_update($data, $id);
     }
 
     public function actions()

@@ -3,6 +3,7 @@
 namespace App\Appsiel\System\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 
 class Field extends Model
 {
@@ -47,6 +48,30 @@ class Field extends Model
     public function get_rows()
     {
         return Field::paginate(10);
+    }
+
+    public function validator_store($data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|string|max:255'
+        ]);
+    }
+
+    public function validator_update($data, $id)
+    {
+        return Validator::make($data, [
+            'name' => 'required|max:250'
+        ]);
+    }
+
+    public function store($data)
+    {
+        return Field::create($data);
+    }
+
+    public function model_update($data, $id)
+    {
+        return Field::where('id', $id)->update($data);
     }
 
     public function show($id)

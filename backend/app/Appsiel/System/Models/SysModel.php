@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Appsiel\System\Facades\CRUD;
 
+use App\Appsiel\System\Services\ModelServ;
+use Illuminate\Support\Facades\Validator;
+
 class SysModel extends Model
 {
     protected $fillable = ['label', 'name', 'name_space'];
@@ -23,12 +26,36 @@ class SysModel extends Model
 
     public function fields()
     {
-        return $this->belongsToMany(Field::class, 'sys_model_has_fields', 'model_id', 'field_id');
+        return $this->belongsToMany(Field::class, 'sys_model_has_fields', 'model_id', 'field_id')->withPivot('position', 'required', 'editable', 'unique');
     }
 
     public function get_rows()
     {
         return SysModel::paginate(10);
+    }
+
+    public function validator_store($data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|string|max:255'
+        ]);
+    }
+
+    public function validator_update($data, $id)
+    {
+        return Validator::make($data, [
+            'name' => 'required|max:250'
+        ]);
+    }
+
+    public function store($data)
+    {
+        return SysModel::create($data);
+    }
+
+    public function model_update($data, $id)
+    {
+        return SysModel::where('id', $id)->update($data);
     }
 
     public function show()
@@ -44,12 +71,48 @@ class SysModel extends Model
         return [
             [
                 'label' => 'Campos',
-                'data' => CRUD::get_model_index_data(16)
+                'data' => $this->get_data_for_tab1($row)
             ],
             [
                 'label' => 'Acciones',
-                'data' => CRUD::get_model_index_data(14)
+                'data' => $this->get_data_for_tab2($row)
             ]
+        ];
+    }
+
+    public function get_data_for_tab1($row)
+    {
+        $obj_related_model_serv = new ModelServ(SysModel::where('name', 'model_has_fields')->value('id'));
+
+        /*
+        $fields_list = $row->fields;
+        foreach ($fields_list as $field) {
+            $field->position = $field->pivot->position;
+            $field->required = ($field->pivot->required) ? 'Si' : 'No';
+            $field->editable = ($field->pivot->editable) ? 'Si' : 'No';
+            $field->unique = ($field->pivot->unique) ? 'Si' : 'No';
+        }
+        $model_table_rows = $fields_list->sortBy('position')->all()
+        */
+        return [
+            'name' => $obj_related_model_serv->model->label,
+            'model_table_headers' => $obj_related_model_serv->index_table_headers(),
+            "model_table_rows" => app($obj_related_model_serv->model->name_space)->get_rows($row->id),
+            "model_fields" => $obj_related_model_serv->fields(),
+            "model_actions" => $obj_related_model_serv->actions(),
+        ];
+    }
+
+    public function get_data_for_tab2($row)
+    {
+        $obj_related_model_serv = new ModelServ(SysModel::where('name', 'model_has_actions')->value('id'));
+
+        return [
+            'name' => $obj_related_model_serv->model->label,
+            'model_table_headers' => $obj_related_model_serv->index_table_headers(),
+            "model_table_rows" => app($obj_related_model_serv->model->name_space)->get_rows($row->id),
+            "model_fields" => $obj_related_model_serv->fields(),
+            "model_actions" => $obj_related_model_serv->actions(),
         ];
     }
 }
