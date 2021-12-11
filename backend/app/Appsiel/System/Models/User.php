@@ -62,7 +62,13 @@ class User extends Authenticatable implements JWTSubject
 
     public function model_update($data, $id)
     {
-        return User::where('id', $id)->update($data);
+        $record = User::where('id', $id)->get()->first();
+
+        $record->fill($data);
+
+        $record->update();
+
+        return $record;
     }
 
     public function show($id)

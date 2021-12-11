@@ -73,6 +73,11 @@ class ModelServ
         return $fields_to_show;
     }
 
+    public function get_options_to_select($row)
+    {
+        //
+    }
+
     public function get_tabs($row)
     {
         return app($this->model->name_space)->get_tabs($row);

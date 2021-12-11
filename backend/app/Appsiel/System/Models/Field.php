@@ -71,7 +71,13 @@ class Field extends Model
 
     public function model_update($data, $id)
     {
-        return Field::where('id', $id)->update($data);
+        $record = Field::where('id', $id)->get()->first();
+
+        $record->fill($data);
+
+        $record->update();
+
+        return $record;
     }
 
     public function show($id)

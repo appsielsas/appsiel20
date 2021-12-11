@@ -29,4 +29,9 @@ class Company extends Model
     {
         return $this->tradename;
     }
+
+    public function get_options_to_select()
+    {
+        return Company::select('id', 'tradename')->get();
+    }
 }

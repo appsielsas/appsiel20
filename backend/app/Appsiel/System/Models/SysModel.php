@@ -55,7 +55,13 @@ class SysModel extends Model
 
     public function model_update($data, $id)
     {
-        return SysModel::where('id', $id)->update($data);
+        $record = SysModel::where('id', $id)->get()->first();
+
+        $record->fill($data);
+
+        $record->update();
+
+        return $record;
     }
 
     public function show()
@@ -84,16 +90,6 @@ class SysModel extends Model
     {
         $obj_related_model_serv = new ModelServ(SysModel::where('name', 'model_has_fields')->value('id'));
 
-        /*
-        $fields_list = $row->fields;
-        foreach ($fields_list as $field) {
-            $field->position = $field->pivot->position;
-            $field->required = ($field->pivot->required) ? 'Si' : 'No';
-            $field->editable = ($field->pivot->editable) ? 'Si' : 'No';
-            $field->unique = ($field->pivot->unique) ? 'Si' : 'No';
-        }
-        $model_table_rows = $fields_list->sortBy('position')->all()
-        */
         return [
             'name' => $obj_related_model_serv->model->label,
             'model_table_headers' => $obj_related_model_serv->index_table_headers(),

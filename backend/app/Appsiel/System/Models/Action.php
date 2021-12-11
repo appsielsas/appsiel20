@@ -45,7 +45,13 @@ class Action extends Model
 
     public function model_update($data, $id)
     {
-        return Action::where('id', $id)->update($data);
+        $record = Action::where('id', $id)->get()->first();
+
+        $record->fill($data);
+
+        $record->update();
+
+        return $record;
     }
 
     public function show($id)

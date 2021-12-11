@@ -5,6 +5,9 @@ namespace App\Appsiel\System\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 
+use App\Appsiel\System\Models\SysModel;
+use App\Appsiel\System\Models\Action;
+
 class ModelHasAction extends Model
 {
     protected $table = 'sys_model_has_actions';
@@ -20,6 +23,16 @@ class ModelHasAction extends Model
         ["Header" => "Posición", "accessor" => "position"]
     ];
 
+    public function model()
+    {
+        return $this->belongsTo(SysModel::class, 'model_id');
+    }
+
+    public function action()
+    {
+        return $this->belongsTo(Action::class, 'action_id');
+    }
+
     public function get_rows($model_id)
     {
         $items = ModelHasAction::where('model_id', $model_id)
@@ -29,6 +42,11 @@ class ModelHasAction extends Model
         $updatedItems = $items->getCollection();
 
         foreach ($updatedItems as $item) {
+            $item->label = $item->action->label;
+            $item->type = $item->action->type;
+            $item->method = $item->action->method;
+            $item->prefix = $item->action->prefix;
+            $item->icon = $item->action->icon;
             $item->position = $item->position;
         }
         $items->setCollection($updatedItems);
@@ -52,12 +70,18 @@ class ModelHasAction extends Model
 
     public function store($data)
     {
-        return ModelHasField::create($data);
+        return ModelHasAction::create($data);
     }
 
     public function model_update($data, $id)
     {
-        return ModelHasField::where('id', $id)->update($data);
+        $record = ModelHasAction::where('id', $id)->get()->first();
+
+        $record->fill($data);
+
+        $record->update();
+
+        return $record;
     }
 
     public function show()

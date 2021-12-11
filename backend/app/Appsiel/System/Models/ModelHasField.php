@@ -80,7 +80,13 @@ class ModelHasField extends Model
 
     public function model_update($data, $id)
     {
-        return ModelHasField::where('id', $id)->update($data);
+        $record = ModelHasField::where('id', $id)->get()->first();
+
+        $record->fill($data);
+
+        $record->update();
+
+        return $record;
     }
 
     public function show()
