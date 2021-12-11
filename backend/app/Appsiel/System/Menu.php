@@ -4,8 +4,6 @@ namespace App\Appsiel\System;
 
 use App\Appsiel\System\Models\Application;
 use App\Appsiel\System\Models\Permission;
-use App\Appsiel\System\Models\SysModel;
-
 
 class Menu
 {

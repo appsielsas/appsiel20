@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Request as Input;
 
 class Catalogs
 {
+    public $catalog;
+
     public function __construct()
     {
         $parent_id = Permission::where(
@@ -35,5 +37,6 @@ class Catalogs
                     'label' => $child->label
                 ];
         }
+        $this->catalog = $items;
     }
 }

@@ -21,6 +21,6 @@ class HomeController extends Controller
 
 	public function catalogs()
 	{
-		return (new Catalogs());
+		return (new Catalogs())->catalog;
 	}
 }
