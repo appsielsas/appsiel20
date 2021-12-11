@@ -42,7 +42,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const [openGenericModal, setOpenGenericModal] = React.useState(false);
 
-    const [showView, setShowView] = React.useState(false)
+
 
     /**
      * Action Object
@@ -60,10 +60,6 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
             case 'delete':
                 selectedItem.id ?
                     setOpenDeleteModal(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
-                break;
-            case 'show':
-                selectedItem.id ?
-                    setShowView(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
                 break;
             default:
                 if (selectedItem.id) {
@@ -178,7 +174,9 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
     useEffect(() => {
         const fetchData = async () => {
             await requestGet()
+
         }
+
         fetchData()
     }, [app, model, page])
 
@@ -216,9 +214,6 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                 <Fab aria-label="print" onClick={() => handleOpenModal({ type: "print" })} size="small" color="primary" sx={{ color: 'white' }}>
                     <i className="fas fa-print"></i>
                 </Fab>
-                <Fab aria-label="print" onClick={!showView ? () => handleOpenModal({ type: "show" }) : () => setShowView(false)} size="small" color="primary" sx={{ color: 'white' }}>
-                    <i className="fas fa-file"></i>
-                </Fab>
             </Stack>
 
             {cargando ?
@@ -228,10 +223,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     <Typography variant="h3" width="300px"><Skeleton animation="wave" /></Typography>
                 </Box>
                 :
-                showView ?
-                    <Show data={selectedItem}></Show>
-                    :
-                    <GenericList pages={numberPages} setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
+                <GenericList pages={numberPages} setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
             }
 
             {/*Modal create*/}
@@ -240,6 +232,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     baseUrl={baseUrl}
                     modelName={modelName}
                     fields={fields}
+                    selectedItem={selectedItem}
                     handleChange={handleChange}
                     data={data}
                     setData={setData}

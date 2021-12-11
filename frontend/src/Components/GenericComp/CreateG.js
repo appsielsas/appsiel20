@@ -1,4 +1,4 @@
-import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
@@ -43,26 +43,42 @@ export default function CreateG(props) {
         <>
             <DialogTitle>Insertar</DialogTitle>
             <DialogContent sx={{ minWidth: 500 }}>
-                <DialogContentText>
-                    <Paper sx={{ padding: 2 }}>
-                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                            Crear {modelName}
-                        </Typography>
-                        <Box
-                            component="form"
-                            sx={{
-                                '& .MuiTextField-root': { m: 1 }, display: 'grid', gridTemplateColumns: '1fr', gap: 2
-                            }}
-                            onSubmit={requestPost}
-                        >
-                            {fields.map((item) => (
-                                <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} />
+                <Paper sx={{ padding: 2 }}>
+                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        Crear {modelName}
+                    </Typography>
+                    <Box
+                        component="form"
+                        sx={{
+                            '& .MuiTextField-root, & .MuiFormControl-root': { m: 1 }, display: 'grid', gridTemplateColumns: '1fr', gap: 2
+                        }}
+                        onSubmit={requestPost}
+                    >
+                        {fields.map((item) => {
 
-                            ))}
-                        </Box>
-                    </Paper>
-                </DialogContentText>
-
+                            switch (item.type) {
+                                case "select":
+                                    return <FormControl variant="standard" key={item.id + ''}>
+                                        <InputLabel id="demo-simple-select-label">{item.label}</InputLabel>
+                                        <Select
+                                            labelId={`simple-select-label-${item.label}`}
+                                            id={`simple-select-${item.label}`}
+                                            name={item.name}
+                                            value={selectedItem[item.name] || ''}
+                                            label={item.label}
+                                            onChange={handleChange}
+                                        >
+                                            <MenuItem value={10}>Ten</MenuItem>
+                                            <MenuItem value={20}>Twenty</MenuItem>
+                                            <MenuItem value={30}>Thirty</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                default:
+                                    return <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} />
+                            }
+                        })}
+                    </Box>
+                </Paper>
             </DialogContent>
             <DialogActions>
                 {children}

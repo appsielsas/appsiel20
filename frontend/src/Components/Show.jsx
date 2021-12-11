@@ -1,6 +1,6 @@
 import { Breadcrumbs, Container, Grid, Paper, Tab, Tabs, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import Generic from "./GenericComp/Generic";
@@ -93,26 +93,26 @@ const Show = (props) => {
       <Box component={Paper} sx={{ p: 4 }}>
         <Grid container spacing={2}>
           {data.fields.map((i) => (
-            <>
+            <Fragment key={i.id + i.label}>
               <Grid item xs={4} sm={2} md={1} spacing={3}>
                 <Typography variant="subtitle2">{i.label}</Typography>
               </Grid>
               <Grid item xs={8} sm={4} md={3} spacing={3}>
                 <Typography variant="body2">{i.value}</Typography>
               </Grid>
-            </>
+            </Fragment>
           ))}
         </Grid>
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: "divider", marginTop: 4 }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           {data.tabs.map((item, i) => (
-            <Tab label={item.label} {...a11yProps(i)} />
+            <Tab label={item.label} {...a11yProps(i)} key={item.label + i} />
           ))}
         </Tabs>
       </Box>
       {data.tabs.map((item, i) => (
-        <TabPanel value={value} index={i}>
+        <TabPanel value={value} index={i} key={value + i}>
           <Generic path={false} tab={i} breadcrumbs={false}></Generic>
         </TabPanel>
       ))}
