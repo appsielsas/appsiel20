@@ -125,7 +125,7 @@ export default function TableReact({ columns, data, setSelected }) {
   // Render the UI for your table
   return (
 
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{ overflowX: 'scroll', width: "100%" }}>
       <Tooltip title="Doble clic para abrir registro" followCursor>
         <Table size="small" {...getTableProps()} id="table1">
           <TableHead>

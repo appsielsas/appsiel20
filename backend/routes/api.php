@@ -1,5 +1,6 @@
 <?php
 
+use App\Appsiel\System\Models\Field;
 use App\Http\Controllers\System\CrudController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,8 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'authenticate']);
 
 Route::resource('crud', CrudController::class);
+
+Route::get('model_company', [UserController::class, 'buscarCompania']);
 
 Route::group(['middleware' => ['jwt.verify']], function () {
 

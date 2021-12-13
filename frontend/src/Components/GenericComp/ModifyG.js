@@ -1,13 +1,14 @@
-import { Box, Paper, Button, TextField, Typography, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Box, Paper, Button, TextField, Typography, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Grid } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useParams } from 'react-router-dom';
 import { optionsPUT } from './../../application/Utils'
+import Asynchronous from '../Inputs/Asynchronous'
 
 export default function SimplePaper(props) {
 
     const { enqueueSnackbar } = useSnackbar();
     const { baseUrl, modelName, fields, handleChange, selectedItem, handleCloseModal, data, setData, Validator } = props;
-    const { app, model, page = 1, id } = useParams();
+    const { app, model } = useParams();
 
     const requestPut = async () => {
         console.log(selectedItem)
@@ -35,25 +36,18 @@ export default function SimplePaper(props) {
 
     return (
         <>
-            <DialogTitle>Modificar</DialogTitle>
-            <DialogContent sx={{ minWidth: 500 }}>
+            <DialogTitle>Modificar {modelName}</DialogTitle>
+            <DialogContent dividers sx={{ minWidth: 500 }}>
                 <Paper sx={{ padding: 2 }}>
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Modificar {modelName}
+                        Formulario modificar
                     </Typography>
-                    <Box
-                        component="form"
-                        sx={{
-                            '& .MuiTextField-root': { m: 1 }, display: 'grid', gridTemplateColumns: '1fr', gap: 2
-                        }}
-                        noValidate
-                        autoComplete="off"
-                    >
-                        {fields.map((item) => {
-
-                            switch (item.type) {
-                                case "select":
-                                    return <FormControl variant="standard" key={item.id + ''}>
+                    <Grid container spacing={2} sx={{ p: 2 }}>
+                        {fields.map((item, i, arr) => {
+                            return item.pivot.editable === 1 &&
+                                <Grid item xs={12} sm={arr.length > 5 ? 6 : 12}>
+                                    {item.type === "autocomplete" && <Asynchronous key={item.id + ''} item={item} />}
+                                    {item.type === "select" && <FormControl fullWidth variant="standard" key={item.id + ''}>
                                         <InputLabel id="demo-simple-select-label">{item.label}</InputLabel>
                                         <Select
                                             labelId={`simple-select-label-${item.label}`}
@@ -63,14 +57,16 @@ export default function SimplePaper(props) {
                                             label={item.label}
                                             onChange={handleChange}
                                         >
-                                            <MenuItem value={1}>Ten</MenuItem>
+                                            {JSON.parse(item.options).map((el) => {
+                                                const [value, label] = el;
+                                                return <MenuItem value={value}>{label}</MenuItem>
+                                            })}
                                         </Select>
-                                    </FormControl>
-                                default:
-                                    return item.pivot.editable === 1 ? <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} value={selectedItem && selectedItem[item.name]} /> : ''
-                            }
+                                    </FormControl>}
+                                    {item.type !== "select" && item.type !== "autocomplete" && <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} value={selectedItem && selectedItem[item.name]} />}
+                                </Grid>
                         })}
-                    </Box>
+                    </Grid>
                 </Paper>
             </DialogContent>
             <DialogActions>

@@ -75,10 +75,10 @@ const getDesignTokens = (mode) => ({
     },
     MuiAppBar: {
       color: 'primary',
-    }, shape: {
-      borderRadius: 12,
-    },
-  }
+    }
+  }, shape: {
+    borderRadius: 12,
+  },
 });
 
 export default function CustomStyles(props) {

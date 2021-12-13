@@ -1,5 +1,6 @@
+import { useTheme } from '@emotion/react';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { Box, Breadcrumbs, Dialog, Divider, Fab, Link as LinkMui, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Dialog, Divider, Fab, Link as LinkMui, Skeleton, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
@@ -48,6 +49,8 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
     const [openGenericModal, setOpenGenericModal] = React.useState(false);
 
 
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     /**
      * Action Object
@@ -220,7 +223,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
             }
 
             {/*Modal create*/}
-            <Dialog open={openCreateModal} onClose={() => handleCloseModal({ type: "create" })}>
+            <Dialog fullScreen={fullScreen} fullWidth maxWidth={'lg'} component="form" open={openCreateModal} onClose={() => handleCloseModal({ type: "create" })}>
                 <CreateG
                     baseUrl={baseUrl}
                     modelName={modelName}
@@ -237,7 +240,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
 
             {/*Modal edit*/}
 
-            <Dialog open={openModifyModal} onClose={() => handleCloseModal({ type: "edit" })}>
+            <Dialog fullScreen={fullScreen} fullWidth maxWidth={'lg'} component="form" open={openModifyModal} onClose={() => handleCloseModal({ type: "edit" })}>
                 <ModifyG
                     baseUrl={baseUrl}
                     selectedItem={selectedItem}
@@ -248,9 +251,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     setData={setData}
                     handleCloseModal={handleCloseModal}
                     Validator={Validator}
-                >
-
-                </ModifyG>
+                />
             </Dialog>
 
 
@@ -268,7 +269,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                 </DialogActions>
             </Dialog>*/}
             {/*Modal delete*/}
-            <Dialog open={openDeleteModal} onClose={() => handleCloseModal({ type: "delete" })} >
+            <Dialog fullScreen={fullScreen} open={openDeleteModal} onClose={() => handleCloseModal({ type: "delete" })} >
                 <DeleteG
                     baseUrl={baseUrl}
                     selectedItem={selectedItem}

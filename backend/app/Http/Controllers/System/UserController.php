@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Appsiel\System\Models\Field;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -9,9 +10,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
 use App\Appsiel\System\Models\User;
-
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Request as Input;
 
 
 class UserController extends Controller
@@ -54,7 +55,17 @@ class UserController extends Controller
 
     // CODIGO VIEJO
 
+    public function buscarCompania()
+    {
+        //dd(Input::get('search'));
 
+        $records = Field::where('label', 'like', '%' . Input::get('search') . '%')->limit(10)->get();
+        if (Input::get('search') == null) {
+            $records = Field::limit(10)->get();
+        }
+
+        return $records;
+    }
 
 
 
