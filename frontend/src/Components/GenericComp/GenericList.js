@@ -13,7 +13,8 @@ const GenericList = (props) => {
         []
     )
 
-    const data = React.useMemo(() => [...props.data], [props.data])
+    //const data = React.useMemo(() => [...props.data], [props.data])
+    const data = props.data
     /**
      * @param {number} page
      */
@@ -31,7 +32,6 @@ const GenericList = (props) => {
                     to={`/crud/${app}/model/${model}/page/${item.page}`}
                     {...item}
                 />
-
             )} />
         </>
     )

@@ -1,15 +1,11 @@
 import {
   Button,
   Container,
-  Grid,
-  Paper,
-  Typography,
-  Link as LinkMui,
-  Skeleton,
+  Grid, Link as LinkMui, Paper, Skeleton, Typography
 } from "@mui/material";
-import { Box, styled } from "@mui/system";
-import { useEffect, useState } from "react";
+import { styled } from "@mui/system";
 import { useSnackbar } from "notistack";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 

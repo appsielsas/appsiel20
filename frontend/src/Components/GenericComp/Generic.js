@@ -1,4 +1,5 @@
-import { Box, Breadcrumbs, Button, Dialog, Divider, Fab, Skeleton, Stack, Typography, Link as LinkMui } from '@mui/material';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { Box, Breadcrumbs, Dialog, Divider, Fab, Link as LinkMui, Skeleton, Stack, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
@@ -7,7 +8,6 @@ import CreateG from './CreateG';
 import DeleteG from './DeleteG';
 import GenericList from './GenericList';
 import ModifyG from './ModifyG';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 
 const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {

@@ -51,18 +51,23 @@ export default function CreateG(props) {
                             console.log(item)
                             switch (item.type) {
                                 case "select":
+                                    const options = JSON.parse(item.options)
+                                    //const options = [['demoAppsiel', '1']]
                                     return <FormControl variant="standard" {...(item.pivot.required === 1 && { required: true })} key={item.id + ''}>
                                         <InputLabel id="demo-simple-select-label">{item.label}</InputLabel>
                                         <Select
                                             labelId={`simple-select-label-${item.label}`}
                                             id={`simple-select-${item.label}`}
                                             name={item.name}
-                                            value={selectedItem[item.name] || ''}
+                                            value={selectedItem[item.name] || item.value}
                                             label={item.label}
                                             onChange={handleChange}
 
                                         >
-                                            <MenuItem value={1}>demoAppsiel</MenuItem>
+                                            {options.map((el) => {
+                                                const [value, label] = el;
+                                                return <MenuItem value={value}>{label}</MenuItem>
+                                            })}
                                         </Select>
                                     </FormControl>
                                 default:

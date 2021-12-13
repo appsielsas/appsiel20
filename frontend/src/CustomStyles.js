@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { PaletteMode } from '@mui/material';
 import App from './App';
 
 export const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
@@ -76,10 +75,10 @@ const getDesignTokens = (mode) => ({
     },
     MuiAppBar: {
       color: 'primary',
+    }, shape: {
+      borderRadius: 12,
     },
-  }, shape: {
-    borderRadius: 12,
-  },
+  }
 });
 
 export default function CustomStyles(props) {

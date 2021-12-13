@@ -8,7 +8,7 @@ function UserLogin() {
   const [email, setEmail] = React.useState("randommail@mail.com");
   const [password, setPassword] = React.useState("strongkey123");
   const { enqueueSnackbar } = useSnackbar();
-  const { user, signIn, signOut } = React.useContext(UserContext);
+  const { signIn } = React.useContext(UserContext);
 
   const requestPost = async (e) => {
     e.preventDefault();

@@ -1,5 +1,4 @@
-import { Box, Paper, Container, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { Box, Container, Paper, Typography } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import {
@@ -13,14 +12,11 @@ import Users from './Components/ModelUser/Users';
 import PdfCreator from './Components/Report/PdfCreator';
 import Report from './Components/Report/Report';
 import Show from './Components/Show';
-import { ColorModeContext } from './CustomStyles';
 
 
 export default function App() {
   const pathGenerics = "crud"
   const pathCatalogs = "app_catalogs"
-  const theme = useTheme();
-  const colorMode = React.useContext(ColorModeContext);
 
   return (
 

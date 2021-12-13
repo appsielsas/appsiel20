@@ -1,21 +1,16 @@
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {
-  Breadcrumbs,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
+  Breadcrumbs, Grid,
+  IconButton, Link as LinkMui, Paper,
   Tab,
   Tabs,
   Tooltip,
-  Typography,
-  Link as LinkMui,
+  Typography
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { Fragment, useEffect } from "react";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
 import Generic from "./GenericComp/Generic";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -83,7 +78,6 @@ const Show = (props) => {
 
   useEffect(() => {
     requestGet();
-    console.log(data);
   }, []);
 
   return (
