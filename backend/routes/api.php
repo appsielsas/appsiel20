@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\System\HomeController;
+use App\Http\Controllers\System\HtmlController;
 use App\Http\Controllers\System\UserController;
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,7 @@ Route::post('login', [UserController::class, 'authenticate']);
 
 Route::resource('crud', CrudController::class);
 
-Route::get('model_company', [UserController::class, 'buscarCompania']);
+Route::get('get_suggestions_autocomplete', [HtmlController::class, 'get_suggestions_autocomplete']);
 
 Route::group(['middleware' => ['jwt.verify']], function () {
 

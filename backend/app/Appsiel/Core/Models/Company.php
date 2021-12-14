@@ -25,13 +25,29 @@ class Company extends Model
         //
     }
 
+    public function model_delete()
+    {
+        //
+    }
+
     public function get_value_to_show()
     {
         return $this->tradename;
     }
 
-    public function get_options_to_select()
+    public function suggestions_autocomplete($search)
     {
-        return Company::select('id', 'tradename')->get();
+        $records = Company::where('tradename', 'like', '%' . $search . '%')
+            ->select('id', 'tradename AS label')
+            ->limit(10)
+            ->get();
+
+        if ($search == null) {
+            $records = Company::select('id', 'tradename AS label')
+                ->limit(10)
+                ->get();
+        }
+
+        return $records;
     }
 }

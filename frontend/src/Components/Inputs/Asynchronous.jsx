@@ -14,8 +14,8 @@ export default function Asynchronous({ item, handleChange, keyDown, path = "mode
 
   async function fetchData(input) {
     const response = await fetch(
-      //`http://localhost:8000/api/get_suggestions_autocomplete/?options=${path}&search=${input}`
-      `http://localhost:8000/api/${path}?search=${input}`
+      `http://localhost:8000/api/get_suggestions_autocomplete/?options=${path}&search=${input}`
+      //`http://localhost:8000/api/${path}?search=${input}`
     );
     const data = await response.json();
     return data;

@@ -12,9 +12,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
-use Tymon\JWTAuth\Facades\JWTAuth;
-
-
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -50,13 +47,11 @@ class User extends Authenticatable implements JWTSubject
 
     public function store($data)
     {
-        $company_id = 1;
-
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password'], []),
-            'company_id' => $company_id
+            'company_id' => $data['company_id']
         ]);
     }
 

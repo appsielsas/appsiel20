@@ -8,9 +8,17 @@ class ModelServ
 {
     public $model;
 
-    public function __construct($model_id)
+    public function __construct($model_id, $model_name = null)
     {
-        $this->model  = SysModel::find($model_id);
+        if ($model_id != 0) {
+            $this->model  = SysModel::find($model_id);
+        }
+
+        if ($model_name != null) {
+            $this->model  = SysModel::where('name', $model_name)->get()->first();
+            $model_id = $this->model->id;
+        }
+
         $this->validate_exits($model_id);
     }
 
@@ -73,9 +81,9 @@ class ModelServ
         return $fields_to_show;
     }
 
-    public function get_options_to_select($row)
+    public function get_suggestions_autocomplete($search)
     {
-        //
+        return app($this->model->name_space)->suggestions_autocomplete($search);
     }
 
     public function get_tabs($row)

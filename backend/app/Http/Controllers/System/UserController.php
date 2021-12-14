@@ -51,46 +51,6 @@ class UserController extends Controller
     }
 
 
-
-
-    // CODIGO VIEJO
-
-    public function buscarCompania()
-    {
-        //dd(Input::get('search'));
-
-        $records = Field::where('label', 'like', '%' . Input::get('search') . '%')->limit(10)->get();
-        if (Input::get('search') == null) {
-            $records = Field::limit(10)->get();
-        }
-
-        return $records;
-    }
-
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:250',
-            'email' => 'email|required|unique:users,email,' . $id,
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        return User::where('id', $id)->update($request->all());
-    }
-
     /**
      * Remove the specified resource from storage.
      *

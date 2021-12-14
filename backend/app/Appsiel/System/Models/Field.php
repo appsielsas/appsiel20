@@ -94,4 +94,18 @@ class Field extends Model
     {
         return [];
     }
+
+    public function suggestions_autocomplete($search)
+    {
+        $records = Field::where('label', 'like', '%' . $search . '%')
+            ->select('id', 'label')
+            ->limit(10)
+            ->get();
+
+        if ($search == null) {
+            $records = Field::limit(10)->get();
+        }
+
+        return $records;
+    }
 }
