@@ -11,7 +11,7 @@ export default function SimplePaper(props) {
     const { app, model } = useParams();
 
     const requestPut = async () => {
-        console.log(selectedItem)
+        //console.log(selectedItem)
         try {
             const response = await fetch(`${baseUrl}/${selectedItem.id}?app_id=${app}&model_id=${model}`, optionsPUT(selectedItem))
 
@@ -19,12 +19,12 @@ export default function SimplePaper(props) {
             //var dataNueva = dataU;
             if (response.ok) {
                 let dataNueva = data.map(row => selectedItem.id === row.id ? dataG : row)
-                console.log(dataNueva)
+                //console.log(dataNueva)
                 setData(dataNueva);
                 handleCloseModal({ type: "edit" })
                 enqueueSnackbar(`${modelName} ${dataG.id} modificado correctamente`, { variant: 'success' })
             } else {
-                console.log("error")
+                //console.log("error")
                 Validator(dataG, response.status)
             }
 
@@ -46,7 +46,7 @@ export default function SimplePaper(props) {
                         {fields.map((item, i, arr) => {
                             return item.pivot.editable === 1 &&
                                 <Grid item xs={12} sm={arr.length > 5 ? 6 : 12}>
-                                    {item.type === "autocomplete" && <Asynchronous key={item.id + ''} item={item} />}
+                                    {item.type === "autocomplete" && <Asynchronous key={item.id + ''} item={item} path={item.options} />}
                                     {item.type === "select" && <FormControl fullWidth variant="standard" key={item.id + ''}>
                                         <InputLabel id="demo-simple-select-label">{item.label}</InputLabel>
                                         <Select

@@ -1,13 +1,18 @@
 import {
   Button,
   Container,
-  Grid, Link as LinkMui, Paper, Skeleton, Typography
+  Grid,
+  Link as LinkMui,
+  Paper,
+  Skeleton,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { useSnackbar } from "notistack";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { IconCatalogs } from "../CustomStyles";
 
 function Catalogs({ path }) {
   /**
@@ -22,31 +27,6 @@ function Catalogs({ path }) {
   const [cargando, setCargando] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState([]);
-
-  const Icon = styled(Button)(({ theme }) => ({
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    i: {
-      fontSize: "36px",
-      height: "70px",
-      aspectRatio: "auto 1 / 1",
-      borderRadius: "50%",
-      backgroundImage: "linear-gradient(to right, #3ab5b0 0%, #3d99be 31%, #56317a 100%)",
-      color: "white",
-      position: "relative",
-      "&:before": {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%,-50%)",
-      },
-    },
-  }));
 
   const requestGet = async () => {
     setCargando(true);
@@ -84,36 +64,36 @@ function Catalogs({ path }) {
         {cargando ? (
           <>
             <Grid item xs={6} sm={4} md={3} lg={2}>
-              <Icon>
+              <IconCatalogs>
                 <Skeleton variant="circular" width={70} height={70} />
                 <Typography variant="subtitle1" width="60px">
                   <Skeleton />
                 </Typography>
-              </Icon>
+              </IconCatalogs>
             </Grid>
             <Grid item xs={6} sm={4} md={3} lg={2}>
-              <Icon>
+              <IconCatalogs>
                 <Skeleton variant="circular" width={70} height={70} />
                 <Typography variant="subtitle1" width="60px">
                   <Skeleton />
                 </Typography>
-              </Icon>
+              </IconCatalogs>
             </Grid>
             <Grid item xs={6} sm={4} md={3} lg={2}>
-              <Icon>
+              <IconCatalogs>
                 <Skeleton variant="circular" width={70} height={70} />
                 <Typography variant="subtitle1" width="60px">
                   <Skeleton />
                 </Typography>
-              </Icon>
+              </IconCatalogs>
             </Grid>
             <Grid item xs={6} sm={4} md={3} lg={2}>
-              <Icon>
+              <IconCatalogs>
                 <Skeleton variant="circular" width={70} height={70} />
                 <Typography variant="subtitle1" width="60px">
                   <Skeleton />
                 </Typography>
-              </Icon>
+              </IconCatalogs>
             </Grid>
           </>
         ) : (
@@ -124,10 +104,10 @@ function Catalogs({ path }) {
                 to={`/crud/${item.app_id}/model/${item.model_id}`}
                 underline="none"
               >
-                <Icon>
+                <IconCatalogs>
                   <i className={`fas fa-${item.icon}`}></i>
                   <Typography variant="subtitle1">{item.label}</Typography>
-                </Icon>
+                </IconCatalogs>
               </LinkMui>
             </Grid>
           ))

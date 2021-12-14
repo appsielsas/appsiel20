@@ -7,6 +7,7 @@ import {
 import UserProvider from './application/UserProvider';
 import Catalogs from './Components/Catalogs';
 import Generic from './Components/GenericComp/Generic';
+import GenericListLines from './Components/GenericComp/GenericListLines';
 import SideBar from './Components/Layout';
 import Users from './Components/ModelUser/Users';
 import PdfCreator from './Components/Report/PdfCreator';
@@ -32,24 +33,21 @@ export default function App() {
               <Route path="/report" exact>
                 <Report></Report>
               </Route>
-              <Route path="/show" exact>
-                <Show></Show>
+              <Route path="/show" render={() => <GenericListLines key={'tableEditable'} />} exact>
+
               </Route>
               <Route path="/pdfcreator" exact>
                 <PdfCreator></PdfCreator>
               </Route>
               <Route path={`/${pathGenerics}/:app/model/:model/index/:id`}>
                 {/* vista index 
-
                 <Generic breadcrumbs={false}></Generic>*/}
                 <Show></Show>
               </Route>
               <Route path={[`/${pathGenerics}/:app/model/:model/page/:page`, `/${pathGenerics}/:app/model/:model`]}>
                 {/* vista show */}
-
                 <Generic></Generic>
               </Route>
-
               <Route path={`/${pathCatalogs}/:app`}>
                 {/* app_catalogs?app */}
                 <Catalogs path={pathGenerics}></Catalogs>

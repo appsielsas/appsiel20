@@ -3,8 +3,7 @@ import { useSnackbar } from 'notistack';
 import { useParams } from 'react-router-dom';
 import { optionsPOST } from './../../application/Utils'
 import Asynchronous from '../Inputs/Asynchronous'
-import { useTheme } from '@emotion/react';
-
+import React, { useEffect } from 'react';
 
 export default function CreateG(props) {
 
@@ -34,6 +33,7 @@ export default function CreateG(props) {
     }
 
 
+
     return (
         <>
             <DialogTitle>Insertar {modelName}</DialogTitle>
@@ -46,27 +46,10 @@ export default function CreateG(props) {
                         {fields.map((item, i, arr) => {
                             return item.pivot.editable === 1 &&
                                 <Grid item xs={12} sm={arr.length > 5 ? 6 : 12}>
-                                    {item.type === "autocomplete" && <Asynchronous key={item.id + ''} item={item} />}
-                                    {item.type === "select" && <FormControl fullWidth variant="standard" {...(item.pivot.required === 1 && { required: true })} key={item.id + ''}>
-                                        <InputLabel id="demo-simple-select-label">{item.label}</InputLabel>
-                                        <Select
-                                            labelId={`simple-select-label-${item.label}`}
-                                            id={`simple-select-${item.label}`}
-                                            name={item.name}
-                                            value={selectedItem[item.name] || item.value}
-                                            label={item.label}
-                                            onChange={handleChange}
-                                        >
-                                            {JSON.parse(item.options).map((el) => {
-                                                const [value, label] = el;
-                                                return <MenuItem value={value}>{label}</MenuItem>
-                                            })}
-                                        </Select>
-                                    </FormControl>}
-                                    {item.type !== "select" && item.type !== "autocomplete" && <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} />}
+                                    <GenerateFields item={item} selectedItem={selectedItem} handleChange={handleChange} />
+                                    {console.log(arr[i])}
                                 </Grid>
                         })}
-
                     </Grid>
                 </Paper>
             </DialogContent>
@@ -77,4 +60,36 @@ export default function CreateG(props) {
         </ >
 
     );
+}
+
+export const GenerateFields = ({ item, selectedItem, handleChange, keyDown }) => {
+
+    useEffect(() => {
+        console.log('re-render')
+    }, [])
+
+    return <>
+        {item.type === "autocomplete" && <Asynchronous key={item.id + ''} item={item} handleChange={handleChange} keyDown={keyDown} path={item.options} />}
+        {
+            item.type === "select" && <FormControl fullWidth variant="standard" {...(item.pivot.required === 1 && { required: true })} key={item.id + ''}>
+                <InputLabel id="demo-simple-select-label">{item.label}</InputLabel>
+                <Select
+                    labelId={`simple-select-label-${item.label}`}
+                    id={`simple-select-${item.label}`}
+                    name={item.name}
+                    value={selectedItem[item.name] || item.value}
+                    label={item.label}
+                    onChange={handleChange}
+                >
+                    {JSON.parse(item.options).map((el) => {
+                        const [value, label] = el;
+                        return <MenuItem value={value}>{label}</MenuItem>
+                    })}
+                </Select>
+            </FormControl>
+        }
+        {item.type !== "select" && item.type !== "autocomplete" && <TextField key={item.id + ''} fullWidth type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.required && { required: item.required })} value={selectedItem[item.name] || ''} onKeyDown={keyDown}
+
+        />}
+    </>
 }
