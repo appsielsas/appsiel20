@@ -53,7 +53,7 @@ export default function SimplePaper(props) {
                                             labelId={`simple-select-label-${item.label}`}
                                             id={`simple-select-${item.label}`}
                                             name={item.name}
-                                            value={selectedItem[item.name] || ''}
+                                            value={selectedItem[item.name] || item.value || ''}
                                             label={item.label}
                                             onChange={handleChange}
                                         >
@@ -71,7 +71,7 @@ export default function SimplePaper(props) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => handleCloseModal({ type: "edit" })}>Cancel</Button>
-                <Button type="submit" onClick={requestPut} variant="contained">Modificar</Button>
+                <Button onClick={requestPut} variant="contained">Modificar</Button>
             </DialogActions>
         </>
 

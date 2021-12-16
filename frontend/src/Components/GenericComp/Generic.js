@@ -112,7 +112,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
             ...prevState,
             [name]: value
         }))
-        console.log(JSON.stringify(selectedItem));
+
     }
 
     const requestGet = async () => {
@@ -168,8 +168,17 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
     }
 
     useEffect(() => {
+
         const fetchData = async () => {
             await requestGet()
+            const tempFields = fields.reduce((acc, item) => {
+                acc = { ...acc, [item.name]: '' }
+                return acc
+            }, {})
+
+            console.log(tempFields)
+
+            setSelectedItem(tempFields)
 
         }
 

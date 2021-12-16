@@ -5,12 +5,18 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import debounce from "lodash.debounce";
 import { useMemo } from "react";
+import { FormControl, FormHelperText } from "@mui/material";
 
-export default function Asynchronous({ item, handleChange, keyDown, path = "model_company" }) {
-  const [value, setValue] = React.useState({ id: "" });
+export default function Asynchronous({
+  item,
+  handleChange,
+  keyDown,
+  path = "model_company",
+  validateForm,
+}) {
+  const [value, setValue] = React.useState({ label: "" });
   const [options, setOptions] = React.useState([]);
   const [inputSearch, setInputSearch] = React.useState("");
-  //const loading = open && options.length === 0;
 
   async function fetchData(input) {
     const response = await fetch(
@@ -34,31 +40,35 @@ export default function Asynchronous({ item, handleChange, keyDown, path = "mode
     })();
   }, [inputSearch]);
 
+  React.useEffect(() => {
+    value && value.label && handleChange({ target: { name: item.name, value: value.label } });
+  }, [value]);
+
   return (
-    <Autocomplete
-      fullWidth
-      disablePortal
-      filterOptions={(x) => x}
-      options={options}
-      onChange={(event, newValue) => {
-        setOptions(newValue ? [newValue, ...options] : options);
-        setValue(newValue);
-        console.log(value);
-      }}
-      onBlur={throttledEventHandler}
-      onInputChange={throttledEventHandler}
-      renderInput={(params) => (
-        <TextField
-          onKeyDown={keyDown}
-          name={item.name}
-          onChange={handleChange}
-          onBlur={handleChange}
-          {...(item.pivot.required === 1 && { required: true })}
-          variant="standard"
-          {...params}
-          label={item.label || item.error}
-        />
-      )}
-    />
+    <FormControl fullWidth>
+      <Autocomplete
+        disablePortal
+        filterOptions={(x) => x}
+        options={options}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+          console.log(newValue);
+        }}
+        onInputChange={throttledEventHandler}
+        renderInput={(params) => (
+          <TextField
+            onKeyDown={keyDown}
+            name={item.name}
+            value={value}
+            {...(validateForm && item.pivot.required === 1 && { required: true })}
+            variant="standard"
+            {...params}
+            //onClick={handleChange}
+            label={item.label || item.error}
+          />
+        )}
+      />
+      <FormHelperText error>{(validateForm && validateForm[item.name]) || ""}</FormHelperText>
+    </FormControl>
   );
 }

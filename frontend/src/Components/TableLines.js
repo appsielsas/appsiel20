@@ -1,6 +1,6 @@
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { Fab, TableFooter } from '@mui/material';
+import { Fab, Input, TableFooter } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -9,7 +9,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { useRowSelect, useSortBy, useTable } from 'react-table';
@@ -34,21 +34,13 @@ const IndeterminateCheckbox = React.forwardRef(
     }
 );
 
-export default function TableLines({ columns, data, setData }) {
+export default function TableLines({ columns, dataTable, setDataTable, selectedItem, handleChange }) {
 
     const { app, model } = useParams();
     const history = useHistory()
     const [search, setSearch] = React.useState({});
-    const [selectedItem, setSelectedItem] = React.useState({});
+    const [validateForm, setValidateForm] = React.useState({})
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setSelectedItem(prevState => ({
-            ...prevState,
-            [name]: value
-        }))
-        console.log(selectedItem)
-    }
 
     const keyDown = (e, next) => {
         if (e.code === 'Enter') {
@@ -61,118 +53,74 @@ export default function TableLines({ columns, data, setData }) {
             if (nextfield !== null) {
                 nextfield.focus();
             } else {
-                setData(data.concat(selectedItem))
+                console.log(selectedItem)
+                setDataTable(dataTable.concat(selectedItem))
+                console.log(JSON.stringify(dataTable))
             }
             console.log('enter')
         }
     }
 
-    // Use the state and functions returned from useTable to build your UI
-    const {
-        getTableProps,
-        getTableBodyProps,
-        getSortByToggleProps,
-        headerGroups,
-        footerGroups,
-        prepareRow,
-        rows,
-        selectedFlatRows,
-        state: { selectedRowIds },
-    } = useTable(
-        {
-            columns,
-            data,
-        },
-        useSortBy,
-        useRowSelect,
-
-        hooks => {
-            hooks.visibleColumns.push((columns) => [
-                {
-                    id: 'selection',
-                    Header: ({ getToggleAllRowsSelectedProps }) => (
-                        <div>
-                            <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-                        </div>
-                    ),
-                    Cell: ({ row }) => (
-                        <div>
-                            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-                        </div>
-                    ),
-                },
-                ...columns,
-                {
-                    Header: () => (
-                        <div>
-                            Eliminar
-                        </div>
-                    ),
-                    Cell: ({ row }) => (
-                        <div>
-                            <Fab aria-label="print" onClick={() => console.log(row.original.id)} size="small" color="primary" sx={{ color: 'white' }}>
-                                <i className="fas fa-trash"></i>
-                            </Fab>
-                        </div>
-                    ),
-                },
-            ]);
-        }
-    );
-
+    /**
+     * 
+     * @param {number} id 
+     */
+    const handlerDelete = (id) => {
+        console.log(id)
+        const newData = dataTable.filter(el => el.id !== id)
+        console.log(newData)
+        setDataTable(newData)
+        //console.log(id)
+    }
 
     // Render the UI for your table
     return (
-        <form>
-            <TableContainer component={Paper} sx={{ overflowX: 'scroll', width: "100%" }}>
-                <Table size="small" {...getTableProps()} id="table1">
-                    <TableHead>
-                        {headerGroups.map((headerGroup, i) => (
-                            <StyledTableRow {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map(column => (
-                                    <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                        {column.render('Header')}
-                                        <span>
-                                            {column.isSorted
-                                                ? column.isSortedDesc
-                                                    ? <ArrowDropDownIcon fontSize='inherit' />
-                                                    : <ArrowDropUpIcon fontSize='inherit' />
-                                                : ''}
-                                        </span>
-                                    </TableCell>
-                                ))}
-                            </StyledTableRow>
+        <TableContainer component={Paper} sx={{ overflowX: 'scroll', width: "100%" }}>
+            <Table size="small" id="table1">
+                <TableHead>
+                    <StyledTableRow>
+                        {columns.map(column => (
+                            <TableCell>
+                                {column.Header}
+                            </TableCell>
                         ))}
-                    </TableHead>
-                    <TableBody {...getTableBodyProps()} >
-                        {rows.map((row, i) => {
-                            prepareRow(row)
-                            return (
-                                <TableRow {...row.getRowProps()} >
-                                    {row.cells.map(cell => {
-                                        return <TableCell {...cell.getCellProps()} sx={{ cursor: 'pointer' }}>
-                                            {cell.render('Cell')}
-                                        </TableCell>
-                                    })}
-                                </TableRow>
-                            )
-                        })}
-                    </TableBody>
-                    <TableFooter>
-                        {headerGroups.map((headerGroup, i) => (
-                            <StyledTableRow {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map((column, i, arr) => (
-                                    <TableCell {...column.getHeaderProps()}>
-                                        {column.item && <GenerateFields key={column.item.id} item={column.item} selectedItem={selectedItem} handleChange={handleChange} keyDown={(e) => keyDown(e, arr[i + 1].id)} />}
-
-                                    </TableCell>
-                                ))}
-                            </StyledTableRow>
+                        <TableCell>
+                            Eliminar
+                        </TableCell>
+                    </StyledTableRow>
+                </TableHead>
+                <TableBody>
+                    {dataTable.map((row, i, arr) => (
+                        <TableRow >
+                            {columns.map(el => <TableCell >
+                                {row[el.accessor]}
+                            </TableCell>
+                            )}
+                            < TableCell >
+                                <Fab aria-label="print" onClick={() => { handlerDelete(row.id); }} size="small" color="primary" sx={{ color: 'white' }}>
+                                    <i className="fas fa-trash"></i>
+                                </Fab>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+                <TableFooter>
+                    <StyledTableRow >
+                        {columns.map((column, i, arr) => (
+                            <TableCell>
+                                {/*arr[i + 1].accessor*/}
+                                {
+                                    column.item && <GenerateFields key={column.item.id} item={column.item} selectedItem={selectedItem} handleChange={handleChange} keyDown={(e) => keyDown(e, ((i + 1) < (arr.length)) && arr[i + 1].accessor)} validateForm={validateForm} />
+                                }
+                            </TableCell>
                         ))}
-                    </TableFooter>
-                </Table>
-            </TableContainer >
-        </form>
+                        <TableCell>
+                            <Input type="button">Insertar linea</Input>
+                        </TableCell>
+                    </StyledTableRow>
+                </TableFooter>
+            </Table >
+        </TableContainer >
     )
 }
 
