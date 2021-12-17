@@ -39,7 +39,8 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
     const [actions, setActions] = useState([]);
     const [cargando, setCargando] = React.useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const [selectedItem, setSelectedItem] = React.useState({ id: '' });
+    const [selectedItem, setSelectedItem] = React.useState({});
+    const [selectedItemsToDelete, setSelectedItemsToDelete] = React.useState([]);
 
     //open Modals
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
@@ -62,11 +63,11 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                 setOpenCreateModal(true)
                 break;
             case 'edit':
-                selectedItem.id ?
+                selectedItemsToDelete.length < 2 && selectedItem.id ?
                     setOpenModifyModal(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
                 break;
             case 'delete':
-                selectedItem.id ?
+                selectedItemsToDelete.length > 0 && selectedItem.id ?
                     setOpenDeleteModal(true) : enqueueSnackbar('Debe seleccionar un registro', { variant: 'warning' })
                 break;
             default:
@@ -140,7 +141,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                 setFields(dataG.model_fields);
                 setActions(dataG.model_actions);
                 setNumberPages(dataG.model_table_rows.last_page)
-                console.log(dataG)
+                //console.log(JSON.stringify(fields))
             } else {
                 Validator(dataG, response.status)
             }
@@ -167,6 +168,34 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
         }
     }
 
+    const imprimirTabla = () => {
+        const ventana = window.open('', '_blank');
+
+        ventana.document.write(`<link rel="stylesheet" href="/css/print.css" />`)
+        ventana.document.write('<table>')
+        ventana.document.write('<thead>')
+        ventana.document.write('<tr>')
+        headers.forEach((el) => {
+            ventana.document.write('<td>')
+            ventana.document.write(el.Header)
+            ventana.document.write('</td>')
+        })
+        ventana.document.write('</tr>')
+        ventana.document.write('</thead>')
+        ventana.document.write('<tbody>')
+        data.forEach((el) => {
+            ventana.document.write('<tr>')
+            headers.forEach((item) => {
+                ventana.document.write('<td>')
+                ventana.document.write(el[item.accessor])
+                ventana.document.write('</td>')
+            })
+            ventana.document.write('</tr>')
+        })
+        ventana.document.write('</tbody>')
+        ventana.document.write('</table>')
+    }
+
     useEffect(() => {
 
         const fetchData = async () => {
@@ -177,9 +206,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
             }, {})
 
             console.log(tempFields)
-
             setSelectedItem(tempFields)
-
         }
 
         fetchData()
@@ -191,14 +218,14 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                 <LinkMui component={Link} underline="hover" color="inherit" to="/">
                     Appsiel
                 </LinkMui>
-                <LinkMui component={Link}
+                <LinkMui
                     underline="hover"
                     color="inherit"
                     to="/users/"
                 >
                     {app}
                 </LinkMui>
-                <LinkMui component={Link}
+                <LinkMui
                     underline="hover"
                     color="inherit"
                     to="/users/"
@@ -216,7 +243,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     </Fab>
                 ))}
                 <Divider orientation="vertical" flexItem />
-                <Fab aria-label="print" onClick={() => handleOpenModal({ type: "print" })} size="small" color="primary" sx={{ color: 'white' }}>
+                <Fab aria-label="print" onClick={() => imprimirTabla()} size="small" color="primary" sx={{ color: 'white' }}>
                     <i className="fas fa-print"></i>
                 </Fab>
             </Stack>
@@ -228,7 +255,13 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     <Typography variant="h3" width="300px"><Skeleton animation="wave" /></Typography>
                 </Box>
                 :
-                <GenericList pages={numberPages} setSelectedItem={setSelectedItem} modelName={modelName} data={data} setData={setData} headers={headers} />
+                <GenericList
+                    pages={numberPages}
+                    setSelectedItem={setSelectedItem}
+                    modelName={modelName} data={data}
+                    setData={setData} headers={headers}
+                    setSelectedItemsToDelete={setSelectedItemsToDelete}
+                />
             }
 
             {/*Modal create*/}
@@ -255,7 +288,6 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     selectedItem={selectedItem}
                     modelName={modelName}
                     fields={fields}
-                    handleChange={handleChange}
                     data={data}
                     setData={setData}
                     handleCloseModal={handleCloseModal}
@@ -281,7 +313,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
             <Dialog fullScreen={fullScreen} open={openDeleteModal} onClose={() => handleCloseModal({ type: "delete" })} >
                 <DeleteG
                     baseUrl={baseUrl}
-                    selectedItem={selectedItem}
+                    selectedItem={selectedItemsToDelete}
                     modelName={modelName}
                     data={data}
                     setData={setData}

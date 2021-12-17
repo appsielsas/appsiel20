@@ -11,91 +11,91 @@
     "created_at": "2021-12-01T23:44:14.000000Z",
     "updated_at": "2021-12-01T23:44:14.000000Z",
     "pivot": {
-      "model_id": 1,
+      "model_id": 15,
       "field_id": 1,
-      "position": 1,
-      "required": 1,
-      "editable": 1,
-      "unique": 0
-    }
-  },
-  {
-    "id": 2,
-    "label": "E-mail",
-    "type": "email",
-    "name": "email",
-    "options": "",
-    "value": "",
-    "attributes": "",
-    "definition": "",
-    "created_at": "2021-12-01T23:44:14.000000Z",
-    "updated_at": "2021-12-01T23:44:14.000000Z",
-    "pivot": {
-      "model_id": 1,
-      "field_id": 2,
-      "position": 2,
-      "required": 1,
-      "editable": 1,
-      "unique": 1
-    }
-  },
-  {
-    "id": 3,
-    "label": "Contraseña",
-    "type": "password",
-    "name": "password",
-    "options": "",
-    "value": "",
-    "attributes": "",
-    "definition": "",
-    "created_at": "2021-12-01T23:44:14.000000Z",
-    "updated_at": "2021-12-01T23:44:14.000000Z",
-    "pivot": {
-      "model_id": 1,
-      "field_id": 3,
-      "position": 3,
-      "required": 1,
-      "editable": 0,
-      "unique": 0
-    }
-  },
-  {
-    "id": 4,
-    "label": "Confirmar contraseña",
-    "type": "password",
-    "name": "password_confirmation",
-    "options": "",
-    "value": "",
-    "attributes": "",
-    "definition": "",
-    "created_at": "2021-12-01T23:44:14.000000Z",
-    "updated_at": "2021-12-01T23:44:14.000000Z",
-    "pivot": {
-      "model_id": 1,
-      "field_id": 4,
       "position": 4,
       "required": 1,
-      "editable": 0,
+      "editable": 1,
       "unique": 0
     }
   },
   {
-    "id": 8,
-    "label": "Empresa",
-    "type": "autocomplete",
-    "name": "company_id",
-    "options": "model_companies",
+    "id": 9,
+    "label": "Etiqueta",
+    "type": "text",
+    "name": "label",
+    "options": "",
     "value": "",
     "attributes": "",
     "definition": "",
     "created_at": "2021-12-01T23:44:14.000000Z",
     "updated_at": "2021-12-01T23:44:14.000000Z",
     "pivot": {
-      "model_id": 1,
-      "field_id": 8,
+      "model_id": 15,
+      "field_id": 9,
       "position": 2,
       "required": 1,
       "editable": 1,
+      "unique": 0
+    }
+  },
+  {
+    "id": 18,
+    "label": "Cantidad",
+    "type": "numeric",
+    "name": "quantity",
+    "options": "",
+    "value": "",
+    "attributes": "",
+    "definition": "",
+    "created_at": "2021-12-09T18:18:47.000000Z",
+    "updated_at": "2021-12-09T18:18:47.000000Z",
+    "pivot": {
+      "model_id": 15,
+      "field_id": 18,
+      "position": 6,
+      "required": 1,
+      "editable": 1,
+      "unique": 0
+    }
+  },
+  {
+    "id": 18,
+    "label": "Precio Unit.",
+    "type": "monetary",
+    "name": "price",
+    "options": "",
+    "value": "",
+    "attributes": "",
+    "definition": "",
+    "created_at": "2021-12-09T18:18:47.000000Z",
+    "updated_at": "2021-12-09T18:18:47.000000Z",
+    "pivot": {
+      "model_id": 15,
+      "field_id": 18,
+      "position": 6,
+      "required": 1,
+      "editable": 1,
+      "unique": 0
+    }
+  },
+  {
+    "id": 18,
+    "label": "Total",
+    "type": "monetary",
+    "name": "total",
+    "options": "",
+    "value": "",
+    "attributes": "",
+    "definition": "",
+    "created_at": "2021-12-09T18:18:47.000000Z",
+    "updated_at": "2021-12-09T18:18:47.000000Z",
+    "pivot": {
+      "model_id": 15,
+      "field_id": 18,
+      "position": 6,
+      "required": 1,
+      "editable": 0,
       "unique": 0
     }
   }

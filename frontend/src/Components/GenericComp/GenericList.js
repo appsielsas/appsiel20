@@ -25,7 +25,13 @@ const GenericList = (props) => {
             <Typography variant="h3" color="text.secondary" gutterBottom>
                 {props.modelName}
             </Typography>
-            <TableReact key={props.modelName} data={data} columns={columns} setSelected={props.setSelectedItem}></TableReact>
+            <TableReact
+                key={props.modelName + app + model}
+                data={data}
+                columns={columns}
+                setSelected={props.setSelectedItem}
+                setSelectedItemsToDelete={props.setSelectedItemsToDelete}
+            />
             <Pagination sx={{ mt: 2 }} page={parseInt(page)} count={props.pages} color="secondary" renderItem={(item) => (
                 <PaginationItem
                     component={Link}

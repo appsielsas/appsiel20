@@ -197,7 +197,7 @@ export function StyledTreeItem(props) {
   return (
     <StyledTreeItemRoot
       label={
-        <LinkMUI color="inherit" {...(url.tipo && { component: Link, to: `/${urlTemp}` })} underline="none">
+        <LinkMUI color="inherit" {...(url && url.tipo && { component: Link, to: `/${urlTemp}` })} underline="none">
           <Box
             sx={{
               display: "flex",

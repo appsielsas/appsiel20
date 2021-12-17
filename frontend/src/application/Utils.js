@@ -61,8 +61,8 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
                     }
                     break
                 default:
-                    setValidateForm(prev => ({ ...prev, [item.name]: `El campo ${item.label} es invalido` }))
-                    result = true
+                    //setValidateForm(prev => ({ ...prev, [item.name]: `El campo ${item.label} es invalido` }))
+                    break
             }
         }
 

@@ -33,7 +33,7 @@ const IndeterminateCheckbox = React.forwardRef(
   }
 );
 
-export default function TableReact({ columns, data, setSelected }) {
+export default function TableReact({ columns, data, setSelected, setSelectedItemsToDelete }) {
 
   const { app, model } = useParams();
   const history = useHistory()
@@ -98,6 +98,14 @@ export default function TableReact({ columns, data, setSelected }) {
     } else {
       setSelected({})
     }
+    setSelectedItemsToDelete(selectedFlatRows.map(u => {
+      const item = { ...u.original };
+      delete item.created_at
+      delete item.updated_at
+
+      return item
+    }))
+
   }, [selectedFlatRows])
 
   // Render the UI for your table
@@ -108,39 +116,38 @@ export default function TableReact({ columns, data, setSelected }) {
         <Table size="small" {...getTableProps()} id="table1">
           <TableHead>
             {headerGroups.map((headerGroup, i) => (
-              <Fragment key={i + ''}>
-                <TableRow>
-                  {headerGroup.headers.map(column => (
-                    <TableCell>
-                      {column.id === 'selection' ? null : <TextField
-                        variant="standard"
-                        name={column.id}
-                        onChange={handleChange}
-                        placeholder={`Buscar ${column.Header}...`}
-                        size="small"
-                      >
-                      </TextField>}
-                    </TableCell>
-                  ))}
-                </TableRow>
-                <StyledTableRow {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map(column => (
-                    <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
-                      {column.render('Header')}
-                      <span>
-                        {column.isSorted
-                          ? column.isSortedDesc
-                            ? <ArrowDropDownIcon fontSize='inherit' />
-                            : <ArrowDropUpIcon fontSize='inherit' />
-                          : ''}
-                      </span>
-                    </TableCell>
-                  ))}
-                </StyledTableRow>
-              </Fragment >
+              <TableRow key={i} >
+                {headerGroup.headers.map((column, i) => (
+                  <TableCell key={column.accessor + i}>
+                    {column.id === 'selection' ? null : <TextField
+                      variant="standard"
+                      name={column.id}
+                      onChange={handleChange}
+                      placeholder={`Buscar ${column.Header}...`}
+                      size="small"
+                    >
+                    </TextField>}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+            {headerGroups.map((headerGroup, i) => (
+              <StyledTableRow {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => (
+                  <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    {column.render('Header')}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? <ArrowDropDownIcon fontSize='inherit' />
+                          : <ArrowDropUpIcon fontSize='inherit' />
+                        : ''}
+                    </span>
+                  </TableCell>
+                ))}
+              </StyledTableRow>
             ))}
           </TableHead>
-
           <TableBody {...getTableBodyProps()} >
             {rows.map((row, i) => {
               prepareRow(row)

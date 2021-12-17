@@ -42,7 +42,7 @@ function UserLogin() {
       if (response.ok) {
         console.log("ok");
         signIn();
-        window.localStorage.setItem("loggedAppsielApp", dataG.token);
+        window.localStorage.setItem("loggedAppsielApp", dataG.access_token);
       } else {
         console.log("error");
         enqueueSnackbar(dataG.error, { variant: "error" });

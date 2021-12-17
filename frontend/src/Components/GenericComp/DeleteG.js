@@ -16,8 +16,11 @@ const DeleteG = (props) => {
             let dataG = await response.json();
 
             if (response.ok) {
-                setData(data.filter(Usuario => Usuario.id !== selectedItem.id));
-                enqueueSnackbar('Registro ' + selectedItem.id + ' eliminado', { variant: 'success' });
+                let newData = data.filter(item => !(selectedItem.some(i => i.id === item.id)))
+                setData(newData);
+                selectedItem.forEach(element => {
+                    enqueueSnackbar('Registro ' + element.id + ' eliminado', { variant: 'success' });
+                });
                 //setSelectedItem({});
                 handleCloseModal({ type: "delete" })
             } else {
@@ -34,7 +37,7 @@ const DeleteG = (props) => {
             <DialogTitle>Eliminar {modelName}</DialogTitle>
             <DialogContent sx={{ minWidth: 500 }}>
                 <DialogContentText>
-                    Realmente desea eliminar este registro. <b>{selectedItem.id}</b>
+                    Realmente desea eliminar este registro. <b>{selectedItem.reduce(((acc, el) => acc = acc + ' ' + el.id), '')}</b>
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

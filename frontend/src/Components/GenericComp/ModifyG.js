@@ -46,7 +46,7 @@ export default function SimplePaper(props) {
                         {fields.map((item, i, arr) => {
                             return item.pivot.editable === 1 &&
                                 <Grid item xs={12} sm={arr.length > 5 ? 6 : 12}>
-                                    {item.type === "autocomplete" && <Asynchronous key={item.id + ''} item={item} path={item.options} />}
+                                    {item.type === "autocomplete" && <Asynchronous key={item.id + ''} item={item} path={item.options} handleChange={handleChange} />}
                                     {item.type === "select" && <FormControl fullWidth variant="standard" key={item.id + ''}>
                                         <InputLabel id="demo-simple-select-label">{item.label}</InputLabel>
                                         <Select
