@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\System\HomeController;
 use App\Http\Controllers\System\HtmlController;
 use App\Http\Controllers\System\UserController;
+use App\Http\Controllers\System\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,9 +34,14 @@ Route::resource('crud', CrudController::class);
 
 Route::get('get_suggestions_autocomplete', [HtmlController::class, 'get_suggestions_autocomplete']);
 
-Route::group(['middleware' => ['jwt.verify']], function () {
+Route::group([
+    'middleware' => 'api',
+], function () {
 
-    Route::post('user', [UserController::class, 'getAuthenticatedUser']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('user', [AuthController::class, 'me']);
 });
 
 Route::get('menu', [HomeController::class, 'menu']);

@@ -118,6 +118,9 @@ export default function TableLines({ columns, dataTable, setDataTable, selectedI
                             <Input type="button">Insertar linea</Input>
                         </TableCell>
                     </StyledTableRow>
+                    <TableRow>
+                        <TableCell>+Insertar Lineas</TableCell>
+                    </TableRow>
                 </TableFooter>
             </Table >
         </TableContainer >
