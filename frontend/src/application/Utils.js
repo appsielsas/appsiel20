@@ -40,6 +40,7 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
     let result = false;
 
     fields.forEach((item) => {
+        setValidateForm(prev => ({ ...prev, [item.name]: `` }))
         if (item.pivot.required && selectedItem[item.name]) {
             switch (item.type) {
                 case 'text':
@@ -69,10 +70,10 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
 
         if (item.pivot.required) {
             if (!selectedItem[item.name]) {
-                setValidateForm(prev => ({ ...prev, [item.name]: `El campo ${item.label} no puede estar vacio` }))
+                setValidateForm(prev => ({ ...prev, [item.name]: `El campo no puede estar vacio` }))
                 result = true
             } else if (!selectedItem[item.name].trim()) {
-                setValidateForm(prev => ({ ...prev, [item.name]: `El campo ${item.label} no puede estar vacio` }))
+                setValidateForm(prev => ({ ...prev, [item.name]: `El campo no puede estar vacio` }))
                 result = true
             }
         }

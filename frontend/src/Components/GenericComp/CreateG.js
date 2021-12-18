@@ -1,4 +1,4 @@
-import { Box, Button, Paper, TextField, Typography, DialogActions, DialogContent, DialogTitle, InputLabel, Select, MenuItem, FormControl, Grid, useMediaQuery, FormHelperText } from '@mui/material';
+import { Box, Button, Paper, TextField, Typography, DialogActions, DialogContent, DialogTitle, InputLabel, Select, MenuItem, FormControl, Grid, useMediaQuery, FormHelperText, InputAdornment, Input } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useParams } from 'react-router-dom';
 import { optionsPOST, ValidatorForm } from './../../application/Utils'
@@ -80,13 +80,15 @@ export const GenerateFields = ({ item, selectedItem, handleChange, keyDown, vali
         console.log('re-render')
     }, [])
 
-    return <>
-        {item.type === "autocomplete" && <Asynchronous key={item.id + ''} item={item} handleChange={handleChange} keyDown={keyDown} path={item.options} validateForm={validateForm} />}
-        {
-            item.type === "select" && <FormControl fullWidth variant="standard" {...(item.pivot.required === 1 && { required: true })} key={item.id + ''}>
-                <InputLabel id="demo-simple-select-label">{item.label}</InputLabel>
+    switch (item.type) {
+        case "autocomplete":
+            return <Asynchronous key={item.id + ''} item={item} handleChange={handleChange} keyDown={keyDown} path={item.options} validateForm={validateForm} />
+
+        case "select":
+            return <FormControl fullWidth variant="standard" {...(item.pivot.required === 1 && { required: true })} key={item.id + ''}>
+                <InputLabel id={`simple-select-label-${item.name}`}>{item.label}</InputLabel>
                 <Select
-                    labelId={`simple-select-label-${item.label}`}
+                    labelId={`simple-select-label-${item.name}`}
                     id={`simple-select-${item.label}`}
                     name={item.name}
                     value={selectedItem[item.name] || ''}
@@ -100,11 +102,24 @@ export const GenerateFields = ({ item, selectedItem, handleChange, keyDown, vali
                 </Select>
                 <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
             </FormControl>
-        }
-        {item.type !== "select" && item.type !== "autocomplete" && <FormControl fullWidth>
-            <TextField key={item.id + ''} type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.pivot.required && { required: true })} value={selectedItem[item.name] || ''} onKeyDown={keyDown}
-            />
-            <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
-        </FormControl>}
-    </>
+        case "monetary":
+            return <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+                <InputLabel htmlFor={`standard-adornment-amount-${item.name}`}>Amount</InputLabel>
+                <Input
+                    id={`standard-adornment-amount-${item.name}`}
+                    name={item.name}
+                    value={selectedItem[item.name] || ''}
+                    onChange={handleChange}
+                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                />
+                <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
+            </FormControl>
+        default:
+            <FormControl fullWidth>
+                <TextField key={item.id + ''} type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.pivot.required && { required: true })} value={selectedItem[item.name] || ''} onKeyDown={keyDown}
+                />
+                <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
+            </FormControl>
+            break
+    }
 }

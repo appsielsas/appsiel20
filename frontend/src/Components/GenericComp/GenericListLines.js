@@ -38,12 +38,14 @@ const GenericListLines = () => {
         }
         fetchData()
 
-        const tempData = fields.reduce((acc, item) => {
+        const tempItem = fields.reduce((acc, item) => {
             acc = { ...acc, [item.name]: '' }
             return acc
         }, {})
 
-        setDataTable(JSON.parse(window.localStorage.getItem('dataTableLines')))
+        const tempData = JSON.parse(window.localStorage.getItem('dataTableLines'))
+        console.log(tempData)
+        tempData && setDataTable(tempData)
 
         console.log(JSON.parse(window.localStorage.getItem('dataTableLines')))
 
