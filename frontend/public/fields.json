@@ -42,7 +42,7 @@
   {
     "id": 18,
     "label": "Cantidad",
-    "type": "numeric",
+    "type": "date",
     "name": "quantity",
     "options": "",
     "value": "",

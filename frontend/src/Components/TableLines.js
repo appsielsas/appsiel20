@@ -1,4 +1,4 @@
-import { Button, Fab, TableFooter } from '@mui/material';
+import { Button, ButtonGroup, Fab, TableFooter } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -170,12 +170,19 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                     {dataTable.map((row, idx, arr) => (
                         <TableRow key={row.id}>
                             <TableCell style={{ textAlign: 'center' }}>
-                                {idx > 0 && <Fab aria-label="sortUp" onClick={() => { sortByButton(true, idx); }} size="small" color="secondary" sx={{ color: 'white' }}>
-                                    <i className="fas fa-arrow-up"></i>
-                                </Fab>}
-                                {idx < arr.length - 1 && <Fab aria-label="sortDown" onClick={() => { sortByButton(false, idx); }} size="small" color="secondary" sx={{ color: 'white' }}>
-                                    <i className="fas fa-arrow-down"></i>
-                                </Fab>}
+
+                                <ButtonGroup
+                                    orientation="vertical"
+                                    aria-label="vertical outlined button group"
+                                    variant='text'
+                                >
+                                    {idx > 0 && <Button aria-label="sortUp" onClick={() => { sortByButton(true, idx); }} size="small" color="primary">
+                                        <i className="fas fa-chevron-up"></i>
+                                    </Button>}
+                                    {idx < arr.length - 1 && <Button aria-label="sortDown" onClick={() => { sortByButton(false, idx); }} size="small" color="primary">
+                                        <i className="fas fa-chevron-down"></i>
+                                    </Button>}
+                                </ButtonGroup>
                             </TableCell>
                             {columns.map((column, j, arj) => {
                                 if (row.id === tableLineEdit.id) {
@@ -185,7 +192,7 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                                         }
                                     </TableCell>
                                 } else {
-                                    return <TableCell onDoubleClick={() => setTableLineEdit(row)}>
+                                    return <TableCell onDoubleClick={() => setTableLineEdit(row)} onClick={() => { handlerEdit(); console.log('entro') }}>
                                         {row[column.accessor]}
                                     </TableCell>
                                 }
@@ -215,8 +222,8 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                             </TableCell>
                         ))}
                         <TableCell>
-                            <Fab aria-label="insert" component={'button'} type="submit" size="small" color="secondary" sx={{ color: 'white' }}>
-                                <i className="fas fa-plus"></i>
+                            <Fab aria-label="insert" onClick={handleInsert} size="small" color="secondary" sx={{ color: 'white' }}>
+                                <i className="fas fa-check"></i>
                             </Fab>
                         </TableCell>
                     </StyledTableRow>

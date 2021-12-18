@@ -94,6 +94,7 @@ export const GenerateFields = ({ item, selectedItem, handleChange, keyDown, vali
                     value={selectedItem[item.name] || ''}
                     label={item.label}
                     onChange={handleChange}
+                    onKeyDown={keyDown}
                 >
                     {JSON.parse(item.options).map((el) => {
                         const [value, label] = el;
@@ -110,16 +111,16 @@ export const GenerateFields = ({ item, selectedItem, handleChange, keyDown, vali
                     name={item.name}
                     value={selectedItem[item.name] || ''}
                     onChange={handleChange}
+                    onKeyDown={keyDown}
                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                 />
                 <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
             </FormControl>
         default:
-            <FormControl fullWidth>
+            return <FormControl fullWidth>
                 <TextField key={item.id + ''} type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.pivot.required && { required: true })} value={selectedItem[item.name] || ''} onKeyDown={keyDown}
                 />
                 <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
             </FormControl>
-            break
     }
 }

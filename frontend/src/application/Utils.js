@@ -37,6 +37,7 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
 
     const regexText = /[0-9a-zA-Z]+/gim;
     const regexEmail = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+    const regexMonetary = /[0-9]*/i;
     let result = false;
 
     fields.forEach((item) => {
@@ -55,9 +56,15 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
                         result = true
                     }
                     break
-                case 'password':
-                    if (!selectedItem[item.name].match(regexEmail)) {
-                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba una contraseña valida" }))
+                case 'monetary':
+                    if (!selectedItem[item.name].match(regexMonetary)) {
+                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba una valor valido" }))
+                        result = true
+                    }
+                    break
+                case 'monetary':
+                    if (!selectedItem[item.name].match(regexMonetary)) {
+                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba una valor valido" }))
                         result = true
                     }
                     break
