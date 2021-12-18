@@ -41,7 +41,7 @@ export default function Asynchronous({
   }, [inputSearch]);
 
   React.useEffect(() => {
-    value && value.label && handleChange({ target: { name: item.name, value: value.label } });
+    value && value.label && handleChange({ target: { name: item.name, value: value.id } });
   }, [value]);
 
   return (

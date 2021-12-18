@@ -37,11 +37,12 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
 
     const regexText = /[0-9a-zA-Z]+/gim;
     const regexEmail = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-    const regexMonetary = /[0-9]*/i;
+    const regexMonetary = /[0-9]+/;
     let result = false;
 
     fields.forEach((item) => {
         setValidateForm(prev => ({ ...prev, [item.name]: `` }))
+        console.log(selectedItem[item.name])
         if (item.pivot.required && selectedItem[item.name]) {
             switch (item.type) {
                 case 'text':
@@ -58,13 +59,13 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
                     break
                 case 'monetary':
                     if (!selectedItem[item.name].match(regexMonetary)) {
-                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba una valor valido" }))
+                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba una valor numerico" }))
                         result = true
                     }
                     break
-                case 'monetary':
+                case 'numeric':
                     if (!selectedItem[item.name].match(regexMonetary)) {
-                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba una valor valido" }))
+                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba una valor numerico" }))
                         result = true
                     }
                     break
@@ -79,7 +80,7 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
             if (!selectedItem[item.name]) {
                 setValidateForm(prev => ({ ...prev, [item.name]: `El campo no puede estar vacio` }))
                 result = true
-            } else if (!selectedItem[item.name].trim()) {
+            } else if (!(selectedItem[item.name] + '').trim()) {
                 setValidateForm(prev => ({ ...prev, [item.name]: `El campo no puede estar vacio` }))
                 result = true
             }

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { optionsPOST, ValidatorForm } from './../../application/Utils'
 import Asynchronous from '../Inputs/Asynchronous'
 import React, { useEffect } from 'react';
+import Functions from '../../application/Functions';
 
 export default function CreateG(props) {
 
@@ -80,6 +81,12 @@ export const GenerateFields = ({ item, selectedItem, handleChange, keyDown, vali
         console.log('re-render')
     }, [])
 
+    const hoy = () => {
+        let formatted_date = new Date().getFullYear() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate() + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
+        console.log(formatted_date)
+        return formatted_date;
+    }
+
     switch (item.type) {
         case "autocomplete":
             return <Asynchronous key={item.id + ''} item={item} handleChange={handleChange} keyDown={keyDown} path={item.options} validateForm={validateForm} />
@@ -105,7 +112,7 @@ export const GenerateFields = ({ item, selectedItem, handleChange, keyDown, vali
             </FormControl>
         case "monetary":
             return <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-                <InputLabel htmlFor={`standard-adornment-amount-${item.name}`}>Amount</InputLabel>
+                <InputLabel htmlFor={`standard-adornment-amount-${item.name}`}>{item.label}</InputLabel>
                 <Input
                     id={`standard-adornment-amount-${item.name}`}
                     name={item.name}
@@ -116,9 +123,50 @@ export const GenerateFields = ({ item, selectedItem, handleChange, keyDown, vali
                 />
                 <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
             </FormControl>
+        case 'date':
+            console.log(selectedItem[item.name])
+            return <FormControl fullWidth>
+                <TextField key={item.id + ''}
+                    type={item.type}
+                    name={item.name}
+                    onChange={handleChange}
+                    onBlur={handleChange}
+                    label={item.label}
+                    variant="standard"
+                    {...(item.pivot.required && { required: true })}
+                    value={selectedItem[item.name] === '' ? hoy : selectedItem[item.name]}
+                    onKeyDown={keyDown}
+                />
+                <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
+            </FormControl>
+        case 'calculated':
+            console.log(selectedItem[item.name])
+            return <FormControl fullWidth>
+                <TextField key={item.id + ''}
+                    type={item.type}
+                    name={item.name}
+                    onChange={handleChange}
+                    onBlur={handleChange}
+                    label={item.label}
+                    variant="standard"
+                    {...(item.pivot.required && { required: true })}
+                    value={Functions(selectedItem, item.options, item.name, handleChange)}
+                    onKeyDown={keyDown}
+                />
+                <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
+            </FormControl>
         default:
             return <FormControl fullWidth>
-                <TextField key={item.id + ''} type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.pivot.required && { required: true })} value={selectedItem[item.name] || ''} onKeyDown={keyDown}
+                <TextField key={item.id + ''}
+                    type={item.type}
+                    name={item.name}
+                    onChange={handleChange}
+                    onBlur={handleChange}
+                    label={item.label}
+                    variant="standard"
+                    {...(item.pivot.required && { required: true })}
+                    value={selectedItem[item.name] || ''}
+                    onKeyDown={keyDown}
                 />
                 <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
             </FormControl>
