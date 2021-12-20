@@ -1,8 +1,9 @@
 const Functions = (item, nameFunction, name, handleChange) => {
-    console.log(item)
+    console.log('calculando...')
     switch (nameFunction) {
         case "total_row":
-            handleChange({ target: { name: name, value: item.quantity * item.price } })
+            console.log(item)
+            handleChange({ target: { name: 'total', value: item.quantity * item.price } })
             break
         default: break
     }

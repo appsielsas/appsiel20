@@ -37,7 +37,7 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
 
     const regexText = /[0-9a-zA-Z]+/gim;
     const regexEmail = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-    const regexMonetary = /[0-9]+/;
+    const regexNumeric = /^(-?)[0-9]*(\.?)[0-9]+$/;
     let result = false;
 
     fields.forEach((item) => {
@@ -46,26 +46,26 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
         if (item.pivot.required && selectedItem[item.name]) {
             switch (item.type) {
                 case 'text':
-                    if (!selectedItem[item.name].match(regexText)) {
-                        setValidateForm(prev => ({ ...prev, [item.name]: `El campo ${item.label} no puede contener simbolos ni carateres especiales` }))
+                    if (!regexText.test(selectedItem[item.name])) {
+                        setValidateForm(prev => ({ ...prev, [item.name]: `El campo no puede contener simbolos ni carateres especiales` }))
                         result = true
                     }
                     break
                 case 'email':
-                    if (!selectedItem[item.name].match(regexEmail)) {
+                    if (!regexEmail.test(selectedItem[item.name])) {
                         setValidateForm(prev => ({ ...prev, [item.name]: "Escriba un email valido" }))
                         result = true
                     }
                     break
                 case 'monetary':
-                    if (!selectedItem[item.name].match(regexMonetary)) {
-                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba una valor numerico" }))
+                    if (!regexNumeric.test(selectedItem[item.name])) {
+                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba un valor numerico" }))
                         result = true
                     }
                     break
                 case 'numeric':
-                    if (!selectedItem[item.name].match(regexMonetary)) {
-                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba una valor numerico" }))
+                    if (!regexNumeric.test(selectedItem[item.name])) {
+                        setValidateForm(prev => ({ ...prev, [item.name]: "Escriba un valor numerico" }))
                         result = true
                     }
                     break

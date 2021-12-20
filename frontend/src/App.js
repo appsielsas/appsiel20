@@ -27,7 +27,7 @@ export default function App() {
         <UserProvider>
           <SideBar>
             <Switch>
-              <Route path="/api/core/users" exact>
+              <Route path="/user" exact>
                 <Users />
               </Route>
               <Route path="/report" exact>
@@ -55,7 +55,7 @@ export default function App() {
               <Route path="/">
                 <Container >
                   <Box component={Paper} sx={{ width: '100%', p: 3 }}>
-                    <Typography variant="h1">Inicio Dashboard Appsiel</Typography>
+                    <Typography variant="h1">Inicio Appsiel</Typography>
 
                   </Box>
                 </Container>

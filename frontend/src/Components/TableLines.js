@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Fab, TableFooter } from '@mui/material';
+import { Button, ButtonGroup, Avatar, TableFooter, IconButton } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -11,7 +11,7 @@ import { Box } from '@mui/system';
 import React, { useEffect } from 'react';
 import { ValidatorForm } from '../application/Utils';
 import { StyledTableRow } from './../CustomStyles';
-import { GenerateFields } from './GenericComp/CreateG';
+import GenerateFields from './Inputs/GenerateFields';
 
 
 const IndeterminateCheckbox = React.forwardRef(
@@ -48,9 +48,8 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
             if (nextfield !== null) {
                 nextfield.focus();
             } else {
-                selectedItemEdit.id === -1 ?
-                    handleInsert(e) :
-                    handlerEdit()
+
+                document.querySelector('#insert').focus()
             }
             console.log('enter')
         }
@@ -161,6 +160,9 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                         <TableCell width="20px">
                             Ordenar
                         </TableCell>
+                        <TableCell width="20px">
+                            ID
+                        </TableCell>
                         {columns.map(column => (
                             <TableCell>
                                 {column.Header}
@@ -175,7 +177,6 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                     {dataTable.map((row, idx, arr) => (
                         <TableRow key={row.id}>
                             <TableCell style={{ textAlign: 'center' }}>
-
                                 <ButtonGroup
                                     orientation="vertical"
                                     aria-label="vertical outlined button group"
@@ -188,6 +189,9 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                                         <i className="fas fa-chevron-down"></i>
                                     </Button>}
                                 </ButtonGroup>
+                            </TableCell>
+                            <TableCell style={{ textAlign: 'center' }}>
+                                {row.id}
                             </TableCell>
                             {columns.map((column, j, arj) => {
                                 if (row.id === selectedItemEdit.id) {
@@ -204,12 +208,12 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                             }
                             )}
                             <TableCell >
-                                {row.id === selectedItemEdit.id ? <Fab aria-label="set" onClick={() => { handlerEdit(row.id); }} size="small" color="secondary" sx={{ color: 'white' }}>
+                                {row.id === selectedItemEdit.id ? <IconButton aria-label="set" id="insert" onClick={() => { handlerEdit(row.id); }} sx={{ boxShadow: 3, bgcolor: 'secondary.dark', color: 'text.secondary' }}>
                                     <i className="fas fa-check"></i>
-                                </Fab> :
-                                    <Fab aria-label="delete" onClick={() => { handlerDelete(row.id); }} size="small" color="primary" sx={{ color: 'white' }}>
+                                </IconButton> :
+                                    <IconButton aria-label="delete" onClick={() => { handlerDelete(row.id); }} sx={{ boxShadow: 3, bgcolor: 'error.light', color: 'text.error' }}>
                                         <i className="fas fa-trash"></i>
-                                    </Fab>}
+                                    </IconButton>}
                             </TableCell>
                         </TableRow>
                     ))}
@@ -219,6 +223,9 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                         <TableCell>
 
                         </TableCell>
+                        <TableCell>
+                            {selectedItem.id}
+                        </TableCell>
                         {selectedItemEdit.id === -1 && columns.map((column, i, arr) => (
                             <TableCell>
                                 {
@@ -227,9 +234,9 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                             </TableCell>
                         ))}
                         <TableCell>
-                            {selectedItemEdit.id === -1 && <Fab aria-label="insert" onClick={handleInsert} size="small" color="secondary" sx={{ color: 'white' }}>
+                            {selectedItemEdit.id === -1 && <IconButton aria-label="insert" id="insert" onClick={handleInsert} sx={{ boxShadow: 3, bgcolor: 'secondary.dark', color: 'text.secondary' }}>
                                 <i className="fas fa-check"></i>
-                            </Fab>}
+                            </IconButton>}
                         </TableCell>
                     </StyledTableRow>
                     <TableRow>

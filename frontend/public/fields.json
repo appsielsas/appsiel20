@@ -95,7 +95,7 @@
       "field_id": 18,
       "position": 6,
       "required": 1,
-      "editable": 0,
+      "editable": 1,
       "unique": 0
     }
   }

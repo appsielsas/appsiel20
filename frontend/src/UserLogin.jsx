@@ -41,7 +41,7 @@ function UserLogin() {
 
       if (response.ok) {
         console.log("ok");
-        signIn();
+        await signIn();
         window.localStorage.setItem("loggedAppsielApp", dataG.access_token);
       } else {
         console.log("error");
@@ -53,27 +53,7 @@ function UserLogin() {
     }
   };
 
-  React.useEffect(() => {
-    const verifyAuth = async () => {
-      try {
-        const logged = await fetch(process.env.REACT_APP_URL + "/api/user", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${window.localStorage.getItem("loggedAppsielApp")}`,
-          },
-        });
-        if (logged.ok) {
-          signIn();
-        } else {
-          //signOut();
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    verifyAuth();
-  }, []);
+  React.useEffect(() => {}, []);
 
   return (
     <Box
@@ -86,7 +66,7 @@ function UserLogin() {
         backgroundImage: "linear-gradient(to right, #3ab5b0 0%, #3d99be 31%, #56317a 100%)",
       }}
     >
-      <Paper sx={{ padding: 2, width: "500px" }}>
+      <Paper sx={{ padding: 2, minWidth: "320px", width: "500px" }}>
         <Box
           component="form"
           sx={{ display: "flex", flexDirection: "column", gap: 4 }}
@@ -97,6 +77,7 @@ function UserLogin() {
             src="http://demo.appsiel.com.co/assets/img/appsiel-logo.png"
             alt="appsiel"
             style={{ objectFit: "cover" }}
+            width="100%"
           />
           <Typography variant="h4" style={{ textAlign: "center" }}>
             Iniciar Sesión
