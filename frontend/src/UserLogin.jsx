@@ -1,59 +1,19 @@
 import { Button, Paper, TextField, Typography } from "@mui/material";
 import React from "react";
-import { useSnackbar } from "notistack";
+
 import { Box } from "@mui/system";
 import { UserContext } from "./application/UserProvider";
 
 function UserLogin() {
   const [email, setEmail] = React.useState("randommail@mail.com");
   const [password, setPassword] = React.useState("strongkey123");
-  const { enqueueSnackbar } = useSnackbar();
+
   const { signIn } = React.useContext(UserContext);
 
-  const requestPost = async (e) => {
-    e.preventDefault();
-
-    if (!email.trim()) {
-      enqueueSnackbar(`Ingrese el email.`, {
-        variant: "error",
-      });
-      return;
-    }
-    if (!password.trim()) {
-      enqueueSnackbar(`Ingrese la contraseña.`, {
-        variant: "error",
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch(process.env.REACT_APP_URL + "/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: `{"email": "${email}", "password": "${password}"}`,
-      });
-
-      let dataG = await response.json();
-
-      console.log(dataG);
-
-      if (response.ok) {
-        console.log("ok");
-        await signIn();
-        window.localStorage.setItem("loggedAppsielApp", dataG.access_token);
-      } else {
-        console.log("error");
-        enqueueSnackbar(dataG.error, { variant: "error" });
-      }
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar(error.message, { variant: "error" });
-    }
-  };
-
-  React.useEffect(() => {}, []);
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    signIn(email, password)
+  }
 
   return (
     <Box
@@ -70,7 +30,7 @@ function UserLogin() {
         <Box
           component="form"
           sx={{ display: "flex", flexDirection: "column", gap: 4 }}
-          onSubmit={requestPost}
+          onSubmit={handleSubmit}
           autoComplete="off"
         >
           <img

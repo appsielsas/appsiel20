@@ -111,7 +111,6 @@ export default function CustomStyles(props) {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <App>
-
         </App>
       </ThemeProvider>
     </ColorModeContext.Provider >

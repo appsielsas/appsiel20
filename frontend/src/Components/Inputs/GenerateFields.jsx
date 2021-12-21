@@ -18,7 +18,8 @@ const GenerateFields = ({ item, selectedItem, handleChange, keyDown, validateFor
   }, []);
 
   const required = item.pivot.required === 1 && true;
-  const disabled = item.pivot.editable === 0 && true;
+  //const disabled = item.pivot.editable === 0 && true;
+  const disabled = false;
 
   const hoy = () => {
     let formatted_date =

@@ -56,7 +56,6 @@ export default function App() {
                 <Container >
                   <Box component={Paper} sx={{ width: '100%', p: 3 }}>
                     <Typography variant="h1">Inicio Appsiel</Typography>
-
                   </Box>
                 </Container>
               </Route>
@@ -64,14 +63,6 @@ export default function App() {
           </SideBar>
         </UserProvider>
       </SnackbarProvider>
-      {/*</CustomStyles>*/}
-      <div>
-
-
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-
-      </div>
     </Router >
   );
 }
