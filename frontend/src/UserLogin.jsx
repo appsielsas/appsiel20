@@ -1,6 +1,5 @@
 import { Button, Paper, TextField, Typography } from "@mui/material";
 import React from "react";
-
 import { Box } from "@mui/system";
 import { UserContext } from "./application/UserProvider";
 
@@ -11,9 +10,9 @@ function UserLogin() {
   const { signIn } = React.useContext(UserContext);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    signIn(email, password)
-  }
+    e.preventDefault();
+    signIn(email, password);
+  };
 
   return (
     <Box

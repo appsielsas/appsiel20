@@ -1,22 +1,11 @@
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import TreeView from "@mui/lab/TreeView";
-import {
-  Avatar,
-  Link as LinkMUI,
-  Menu,
-  MenuItem,
-  Stack,
-  Tooltip,
-  useMediaQuery,
-} from "@mui/material";
+import { Link as LinkMUI, useMediaQuery } from "@mui/material";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
@@ -27,7 +16,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../application/UserProvider";
 import { AppBar, ColorModeContext, Drawer, DrawerHeader, StyledTreeItem } from "./../CustomStyles";
-import { MenuLoginBar, ShorcutBar } from "./NavigationBar";
+import { MenuLoginBar } from "./NavigationBar";
 
 const drawerWidth = 240;
 
@@ -109,15 +98,15 @@ export default function Layout(props) {
             </Typography>
           </div>
 
-          <Box sx={smScreen && { position: "fixed", bottom: 0, left: 0, right: 0 }}>
+          <Box sx={smScreen ? { position: "fixed", bottom: 0, left: 0, right: 0 } : {}}>
             <BottomNavigation
               showLabels
-              sx={!smScreen && { backgroundColor: "rgba(0,0,0,0)", i: { fontSize: "24px" } }}
+              sx={!smScreen ? { backgroundColor: "rgba(0,0,0,0)", i: { fontSize: "24px" } } : {}}
             >
               {shorcutLayout &&
                 shorcutLayout.map((item, i) => (
                   <BottomNavigationAction
-                    sx={!smScreen && { "& > i, span": { color: "primary.contrastText" } }}
+                    sx={!smScreen ? { "& > i, span": { color: "primary.contrastText" } } : {}}
                     label={item.label}
                     component={Link}
                     to={item.url}

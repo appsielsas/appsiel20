@@ -59,7 +59,7 @@ export default function CreateG(props) {
                     </Typography>
                     <Grid container spacing={2} sx={{ p: 2 }}>
                         {fields.map((item, i, arr) => {
-                            return <Grid item xs={12} sm={arr.length > 5 ? 6 : 12}>
+                            return <Grid item xs={12} sm={arr.length > 5 ? 6 : 12} key={i}>
                                 <GenerateFields item={item} selectedItem={selectedItem} handleChange={handleChange} validateForm={validateForm} />
                                 {console.log(arr[i])}
                             </Grid>

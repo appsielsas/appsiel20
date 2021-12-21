@@ -12,14 +12,21 @@ import { useEffect } from "react";
 import Functions from "../../application/Functions";
 import Asynchronous from "./Asynchronous";
 
-const GenerateFields = ({ item, selectedItem, handleChange, keyDown, validateForm }) => {
+const GenerateFields = ({
+  item,
+  selectedItem,
+  handleChange,
+  keyDown,
+  validateForm,
+  modify = false,
+}) => {
   useEffect(() => {
     console.log("re-render");
   }, []);
 
   const required = item.pivot.required === 1 && true;
-  //const disabled = item.pivot.editable === 0 && true;
-  const disabled = false;
+  const disabled = item.pivot.editable === 0 && modify ? true : false;
+  //const disabled = false;
 
   const hoy = () => {
     let formatted_date =
@@ -39,7 +46,7 @@ const GenerateFields = ({ item, selectedItem, handleChange, keyDown, validateFor
   };
 
   const handleChangeCalculated = () => {
-    Functions(selectedItem, item.options, item.name, handleChange);
+    Functions(selectedItem, "total_row", item.name, handleChange);
   };
 
   switch (item.type) {
@@ -52,6 +59,7 @@ const GenerateFields = ({ item, selectedItem, handleChange, keyDown, validateFor
           keyDown={keyDown}
           path={item.options}
           validateForm={validateForm}
+          disabled={disabled}
         />
       );
 
@@ -90,8 +98,12 @@ const GenerateFields = ({ item, selectedItem, handleChange, keyDown, validateFor
             id={`standard-adornment-amount-${item.name}`}
             name={item.name}
             type="number"
-            value={selectedItem[item.name] || "0"}
+            value={selectedItem[item.name] || 0}
             onChange={(e) => {
+              handleChange(e);
+              handleChangeCalculated();
+            }}
+            onBlur={(e) => {
               handleChange(e);
               handleChangeCalculated();
             }}
@@ -113,7 +125,10 @@ const GenerateFields = ({ item, selectedItem, handleChange, keyDown, validateFor
               handleChange(e);
               handleChangeCalculated();
             }}
-            onBlur={handleChange}
+            onBlur={(e) => {
+              handleChange(e);
+              handleChangeCalculated();
+            }}
             label={item.label}
             variant="standard"
             {...(item.pivot.required && { required: true })}

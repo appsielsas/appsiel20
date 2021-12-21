@@ -7,15 +7,14 @@ export const UserContext = createContext();
 
 const UserProvider = (props) => {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-
   const signIn = async (email, password) => {
-    setIsLoading(true)
-    await requestLogin(email, password)
+    setIsLoading(true);
+    await requestLogin(email, password);
     await verifyAuth();
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   const signOut = async () => {
@@ -26,7 +25,6 @@ const UserProvider = (props) => {
   };
 
   const requestLogin = async (email, password) => {
-
     if (!email.trim()) {
       enqueueSnackbar(`Ingrese el email.`, {
         variant: "error",
@@ -96,9 +94,9 @@ const UserProvider = (props) => {
       if (response.ok) {
         const { message } = await response.json();
         enqueueSnackbar(message, { variant: "success" });
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
     } catch (e) {
       console.log(e);
@@ -107,10 +105,7 @@ const UserProvider = (props) => {
 
   return (
     <UserContext.Provider value={{ user, signIn, signOut }}>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading}
-      >
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {user ? props.children : <UserLogin />}

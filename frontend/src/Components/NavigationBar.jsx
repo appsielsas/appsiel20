@@ -1,28 +1,12 @@
-import {
-  BottomNavigation,
-  BottomNavigationAction,
-  Button,
-  IconButton,
-  Stack,
-  Toolbar,
-  Link as LinkMUI,
-  Typography,
-  Tooltip,
-  Avatar,
-  Menu,
-  MenuItem,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { Avatar, IconButton, Menu, MenuItem, Stack, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import React from "react";
-import { Link } from "react-router-dom";
-import { AppBar, ColorModeContext, Drawer, DrawerHeader, StyledTreeItem } from "./../CustomStyles";
 import { Box } from "@mui/system";
-import { UserContext } from "../application/UserProvider";
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import React from "react";
 import { useHistory } from "react-router-dom";
+import { UserContext } from "../application/UserProvider";
+import { ColorModeContext } from "./../CustomStyles";
 
 const NavigationBar = ({ openDrawer, handleDrawerOpen, shorcutLayout }) => {
   //cambiar a modo nocturno

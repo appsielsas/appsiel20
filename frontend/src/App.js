@@ -8,6 +8,8 @@ import UserProvider from './application/UserProvider';
 import Catalogs from './Components/Catalogs';
 import Generic from './Components/GenericComp/Generic';
 import GenericListLines from './Components/GenericComp/GenericListLines';
+import Transactions from './Components/GenericComp/Transactions';
+import TransactionsCreate from './Components/GenericComp/TransactionsCreate';
 import SideBar from './Components/Layout';
 import Users from './Components/ModelUser/Users';
 import PdfCreator from './Components/Report/PdfCreator';
@@ -29,6 +31,9 @@ export default function App() {
             <Switch>
               <Route path="/user" exact>
                 <Users />
+              </Route>
+              <Route path="/create_transactions" exact>
+                <Transactions />
               </Route>
               <Route path="/report" exact>
                 <Report></Report>

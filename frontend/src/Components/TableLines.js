@@ -1,5 +1,4 @@
-import { Button, ButtonGroup, Avatar, TableFooter, IconButton } from '@mui/material';
-import Checkbox from '@mui/material/Checkbox';
+import { Button, ButtonGroup, IconButton, TableFooter } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,29 +6,10 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Box } from '@mui/system';
 import React, { useEffect } from 'react';
 import { ValidatorForm } from '../application/Utils';
 import { StyledTableRow } from './../CustomStyles';
 import GenerateFields from './Inputs/GenerateFields';
-
-
-const IndeterminateCheckbox = React.forwardRef(
-    ({ indeterminate, ...rest }, ref) => {
-        const defaultRef = React.useRef();
-        const resolvedRef = ref || defaultRef;
-
-        React.useEffect(() => {
-            resolvedRef.current.indeterminate = indeterminate;
-        }, [resolvedRef, indeterminate]);
-
-        return (
-            <>
-                <Checkbox ref={resolvedRef} {...rest} />
-            </>
-        );
-    }
-);
 
 export default function TableLines({ fields, columns, dataTable, setDataTable, selectedItem, handleChange }) {
 
@@ -150,10 +130,12 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
 
     }, [changed])
 
+
+
     // Render the UI for your table
     return (
 
-        <TableContainer component={Paper} sx={{ overflowX: 'scroll', width: "100%" }}>
+        <TableContainer component={Paper} sx={{ width: "100%" }}>
             <Table size="small" id="table1">
                 <TableHead>
                     <StyledTableRow>
@@ -239,9 +221,6 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                             </IconButton>}
                         </TableCell>
                     </StyledTableRow>
-                    <TableRow>
-                        <TableCell colSpan={2}><Button variant="contained">Registrar documento</Button></TableCell>
-                    </TableRow>
                 </TableFooter>
             </Table >
         </TableContainer >

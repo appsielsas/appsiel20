@@ -88,3 +88,31 @@ export const ValidatorForm = (fields, selectedItem, setValidateForm) => {
     })
     return result
 }
+
+export const imprimirTabla = (headers, data) => {
+    const ventana = window.open('', '_blank');
+
+    ventana.document.write(`<link rel="stylesheet" href="/css/print.css" />`)
+    ventana.document.write('<table>')
+    ventana.document.write('<thead>')
+    ventana.document.write('<tr>')
+    headers.forEach((el) => {
+        ventana.document.write('<td>')
+        ventana.document.write(el.Header)
+        ventana.document.write('</td>')
+    })
+    ventana.document.write('</tr>')
+    ventana.document.write('</thead>')
+    ventana.document.write('<tbody>')
+    data.forEach((el) => {
+        ventana.document.write('<tr>')
+        headers.forEach((item) => {
+            ventana.document.write('<td>')
+            ventana.document.write(el[item.accessor])
+            ventana.document.write('</td>')
+        })
+        ventana.document.write('</tr>')
+    })
+    ventana.document.write('</tbody>')
+    ventana.document.write('</table>')
+}

@@ -6,9 +6,9 @@
       "url": "/home"
     },
     {
-      "label": "users",
-      "icon": "fas fa-user",
-      "url": "/api/core/users"
+      "label": "Transactions",
+      "icon": "fas fa-file-alt",
+      "url": "/create_transactions"
     },
     {
       "label": "PdfCreator",

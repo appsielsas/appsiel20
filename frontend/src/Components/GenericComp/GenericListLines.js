@@ -43,6 +43,8 @@ const GenericListLines = () => {
             return acc
         }, {})
 
+        setSelectedItem(tempItem)
+
         const tempData = JSON.parse(window.localStorage.getItem('dataTableLines'))
         console.log(tempData)
         tempData && setDataTable(tempData)
@@ -59,8 +61,8 @@ const GenericListLines = () => {
 
     return (
         <div>
-            <Typography variant="h3" color="text.secondary" gutterBottom>
-
+            <Typography variant="h4" color="text.secondary" gutterBottom>
+                Lineas de Registro
             </Typography>
             <TableLines fields={fields} columns={columns} dataTable={dataTable} setDataTable={setDataTable} selectedItem={selectedItem} handleChange={handleChange} ></TableLines>
         </div>
