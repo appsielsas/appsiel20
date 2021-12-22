@@ -60,7 +60,7 @@
     }
   },
   {
-    "id": 18,
+    "id": 19,
     "label": "Precio Unit.",
     "type": "monetary",
     "name": "price",
@@ -80,11 +80,11 @@
     }
   },
   {
-    "id": 18,
+    "id": 20,
     "label": "Total",
     "type": "calculated",
     "name": "total",
-    "options": "total_row",
+    "options": "",
     "value": "",
     "attributes": "monetary",
     "definition": "",
@@ -95,7 +95,7 @@
       "field_id": 18,
       "position": 6,
       "required": 1,
-      "editable": 1,
+      "editable": 0,
       "unique": 0
     }
   }

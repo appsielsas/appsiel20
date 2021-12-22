@@ -20,11 +20,7 @@ const GenerateFields = ({
   validateForm,
   modify = false,
 }) => {
-  useEffect(() => {
-    console.log("re-render");
-  }, []);
-
-  const required = item.pivot.required === 1 && true;
+  const required = item.pivot.required === 1 && !modify ? true : false;
   const disabled = item.pivot.editable === 0 && modify ? true : false;
   //const disabled = false;
 
@@ -45,15 +41,15 @@ const GenerateFields = ({
     return formatted_date;
   };
 
-  const handleChangeCalculated = () => {
+  const handleChangeCalculated = (e) => {
     Functions(selectedItem, "total_row", item.name, handleChange);
+    handleChange(e);
   };
 
   switch (item.type) {
     case "autocomplete":
       return (
         <Asynchronous
-          key={item.id + ""}
           item={item}
           handleChange={handleChange}
           keyDown={keyDown}
@@ -65,7 +61,13 @@ const GenerateFields = ({
 
     case "select":
       return (
-        <FormControl fullWidth variant="standard" {...(required, disabled)} key={item.id + ""}>
+        <FormControl
+          error={validateForm[item.name] ? true : false}
+          fullWidth
+          variant="standard"
+          disabled={disabled}
+          required={required}
+        >
           <InputLabel id={`simple-select-label-${item.name}`}>{item.label}</InputLabel>
           <Select
             labelId={`simple-select-label-${item.name}`}
@@ -74,11 +76,16 @@ const GenerateFields = ({
             value={selectedItem[item.name] || ""}
             label={item.label}
             onChange={handleChange}
+            onBlur={handleChange}
             onKeyDown={keyDown}
           >
-            {JSON.parse(item.options).map((el) => {
+            {JSON.parse(item.options).map((el, i) => {
               const [value, label] = el;
-              return <MenuItem value={value}>{label}</MenuItem>;
+              return (
+                <MenuItem key={i} value={value}>
+                  {label}
+                </MenuItem>
+              );
             })}
           </Select>
           <FormHelperText error>{validateForm[item.name] || ""}</FormHelperText>
@@ -87,6 +94,7 @@ const GenerateFields = ({
     case "monetary":
       return (
         <FormControl
+          error={validateForm[item.name] ? true : false}
           fullWidth
           sx={{ m: 1 }}
           required={required}
@@ -99,14 +107,8 @@ const GenerateFields = ({
             name={item.name}
             type="number"
             value={selectedItem[item.name] || 0}
-            onChange={(e) => {
-              handleChange(e);
-              handleChangeCalculated();
-            }}
-            onBlur={(e) => {
-              handleChange(e);
-              handleChangeCalculated();
-            }}
+            onChange={handleChangeCalculated}
+            onBlur={handleChangeCalculated}
             onKeyDown={keyDown}
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
           />
@@ -114,36 +116,26 @@ const GenerateFields = ({
         </FormControl>
       );
     case "numeric":
-      console.log(selectedItem[item.name]);
       return (
-        <FormControl fullWidth>
+        <FormControl error={validateForm[item.name] ? true : false} fullWidth>
           <TextField
-            key={item.id + ""}
             type={"number"}
             name={item.name}
-            onChange={(e) => {
-              handleChange(e);
-              handleChangeCalculated();
-            }}
-            onBlur={(e) => {
-              handleChange(e);
-              handleChangeCalculated();
-            }}
+            onChange={handleChangeCalculated}
+            onBlur={handleChangeCalculated}
             label={item.label}
             variant="standard"
             {...(item.pivot.required && { required: true })}
-            value={selectedItem[item.name] || "0"}
+            value={selectedItem[item.name] || 0}
             onKeyDown={keyDown}
           />
           <FormHelperText error>{validateForm[item.name] || ""}</FormHelperText>
         </FormControl>
       );
     case "date":
-      console.log(selectedItem[item.name]);
       return (
-        <FormControl fullWidth>
+        <FormControl error={validateForm[item.name] ? true : false} fullWidth>
           <TextField
-            key={item.id + ""}
             type={item.type}
             name={item.name}
             onChange={handleChange}
@@ -159,13 +151,31 @@ const GenerateFields = ({
       );
     case "calculated":
       return (
-        <FormControl fullWidth>
+        <FormControl error={validateForm[item.name] ? true : false} fullWidth>
           <TextField
-            key={item.id + ""}
             type="number"
             name={item.name}
             onChange={handleChangeCalculated}
             onBlur={handleChangeCalculated}
+            label={item.label}
+            variant="standard"
+            required={required}
+            disabled={disabled}
+            value={selectedItem[item.name] || 0}
+            onKeyDown={keyDown}
+          />
+          <FormHelperText error>{validateForm[item.name] || ""}</FormHelperText>
+        </FormControl>
+      );
+    case "text":
+      return (
+        <FormControl fullWidth>
+          <TextField
+            error={validateForm[item.name] ? true : false}
+            type={item.type}
+            name={item.name}
+            onChange={handleChange}
+            onBlur={handleChange}
             label={item.label}
             variant="standard"
             required={required}
@@ -180,7 +190,7 @@ const GenerateFields = ({
       return (
         <FormControl fullWidth>
           <TextField
-            key={item.id + ""}
+            error={validateForm[item.name] ? true : false}
             type={item.type}
             name={item.name}
             onChange={handleChange}

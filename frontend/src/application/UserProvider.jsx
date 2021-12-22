@@ -1,5 +1,5 @@
 import { Backdrop, CircularProgress } from "@mui/material";
-import { createContext, useState } from "react";
+import React, { createContext, useState } from "react";
 import UserLogin from "../UserLogin";
 import { useSnackbar } from "notistack";
 
@@ -18,10 +18,12 @@ const UserProvider = (props) => {
   };
 
   const signOut = async () => {
+    setIsLoading(true);
     if (await requestLogout()) {
       window.localStorage.removeItem("loggedAppsielApp");
       setUser(null);
     }
+    setIsLoading(false);
   };
 
   const requestLogin = async (email, password) => {
@@ -103,10 +105,20 @@ const UserProvider = (props) => {
     }
   };
 
+  React.useEffect(() => {
+    if (!user && window.localStorage.getItem("loggedAppsielApp")) {
+      (async () => {
+        setIsLoading(true);
+        await verifyAuth();
+        setIsLoading(false);
+      })();
+    }
+  }, []);
+
   return (
     <UserContext.Provider value={{ user, signIn, signOut }}>
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
-        <CircularProgress color="inherit" />
+        {isLoading && <CircularProgress color="inherit" />}
       </Backdrop>
       {user ? props.children : <UserLogin />}
     </UserContext.Provider>

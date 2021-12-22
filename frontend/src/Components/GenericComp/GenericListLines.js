@@ -16,7 +16,7 @@ const GenericListLines = () => {
             ...prevState,
             [name]: value
         }))
-        console.log(selectedItem)
+        //console.log(selectedItem)
     }
 
     const columns = React.useMemo(
@@ -29,6 +29,8 @@ const GenericListLines = () => {
         )), [fields])
 
 
+
+
     React.useEffect(() => {
         console.log('recargs');
         async function fetchData() {
@@ -39,17 +41,17 @@ const GenericListLines = () => {
         fetchData()
 
         const tempItem = fields.reduce((acc, item) => {
-            acc = { ...acc, [item.name]: '' }
+            acc = { ...acc, [item.name]: (item.type === 'numeric' || item.type === 'monetary' || item.type === 'calculated') ? 0 : '' }
             return acc
         }, {})
-
+        //console.log(tempItem)
         setSelectedItem(tempItem)
 
         const tempData = JSON.parse(window.localStorage.getItem('dataTableLines'))
-        console.log(tempData)
+        //console.log(tempData)
         tempData && setDataTable(tempData)
 
-        console.log(JSON.parse(window.localStorage.getItem('dataTableLines')))
+        //console.log(JSON.parse(window.localStorage.getItem('dataTableLines')))
 
     }, [])
 
@@ -60,12 +62,12 @@ const GenericListLines = () => {
 
 
     return (
-        <div>
+        <>
             <Typography variant="h4" color="text.secondary" gutterBottom>
                 Lineas de Registro
             </Typography>
             <TableLines fields={fields} columns={columns} dataTable={dataTable} setDataTable={setDataTable} selectedItem={selectedItem} handleChange={handleChange} ></TableLines>
-        </div>
+        </>
     )
 }
 

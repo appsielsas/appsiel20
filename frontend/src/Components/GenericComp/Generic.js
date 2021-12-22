@@ -114,7 +114,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
             ...prevState,
             [name]: value
         }))
-        console.log('dd')
+        //console.log(value)
     }
 
     const requestGet = async () => {
@@ -219,7 +219,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     </Fab>
                 ))}
                 <Divider orientation="vertical" flexItem />
-                <Fab aria-label="print" onClick={() => imprimirTabla(headers, data)} size="small" color="primary" sx={{ color: 'white' }}>
+                <Fab aria-label="print" onClick={() => imprimirTabla(modelName, headers, data)} size="small" color="primary" sx={{ color: 'white' }}>
                     <i className="fas fa-print"></i>
                 </Fab>
             </Stack>

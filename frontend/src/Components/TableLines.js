@@ -145,8 +145,8 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                         <TableCell width="20px">
                             ID
                         </TableCell>
-                        {columns.map(column => (
-                            <TableCell>
+                        {columns.map((column, i) => (
+                            <TableCell key={i}>
                                 {column.Header}
                             </TableCell>
                         ))}
@@ -177,14 +177,14 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                             </TableCell>
                             {columns.map((column, j, arj) => {
                                 if (row.id === selectedItemEdit.id) {
-                                    return <TableCell>
+                                    return <TableCell key={j}>
                                         {
-                                            column.item && <GenerateFields key={j} item={column.item} selectedItem={selectedItemEdit} handleChange={handleChangeEdit} keyDown={(e) => keyDown(e, ((j + 1) < (arj.length)) && arj[j + 1].accessor)} validateForm={validateForm} />
+                                            column.item && <GenerateFields item={column.item} selectedItem={selectedItemEdit} handleChange={handleChangeEdit} keyDown={(e) => keyDown(e, ((j + 1) < (arj.length)) && arj[j + 1].accessor)} validateForm={validateForm} />
                                         }
                                     </TableCell>
                                 } else {
                                     return <TableCell onDoubleClick={() => setSelectedItemEdit(row)} onClick={() => { selectedItemEdit.id !== -1 && handlerEdit(); console.log('entro') }}>
-                                        {column.item.type === "monetary" ? Number(row[column.accessor]).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 2 }) : row[column.accessor]}
+                                        {column.item.type === "monetary" || column.item.attributes === "monetary" ? Number(row[column.accessor]).toLocaleString('es-CO', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }) : row[column.accessor]}
                                     </TableCell>
                                 }
                             }
@@ -209,9 +209,9 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                             {selectedItem.id}
                         </TableCell>
                         {selectedItemEdit.id === -1 && columns.map((column, i, arr) => (
-                            <TableCell>
+                            <TableCell key={column.item.id}>
                                 {
-                                    column.item && <GenerateFields key={column.item.id} item={column.item} selectedItem={selectedItem} handleChange={handleChange} keyDown={(e) => keyDown(e, ((i + 1) < (arr.length)) && arr[i + 1].accessor)} validateForm={validateForm} />
+                                    column.item && <GenerateFields item={column.item} selectedItem={selectedItem} handleChange={handleChange} keyDown={(e) => keyDown(e, ((i + 1) < (arr.length)) && arr[i + 1].accessor)} validateForm={validateForm} />
                                 }
                             </TableCell>
                         ))}

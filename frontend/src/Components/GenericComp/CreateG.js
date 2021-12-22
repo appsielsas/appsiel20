@@ -49,6 +49,10 @@ export default function CreateG(props) {
 
     }, [])
 
+    useEffect(() => {
+        console.log(validateForm)
+    }, [validateForm])
+
     return (
         <>
             <DialogTitle>Insertar {modelName}</DialogTitle>
@@ -59,9 +63,8 @@ export default function CreateG(props) {
                     </Typography>
                     <Grid container spacing={2} sx={{ p: 2 }}>
                         {fields.map((item, i, arr) => {
-                            return <Grid item xs={12} sm={arr.length > 5 ? 6 : 12} key={i}>
+                            return <Grid item xs={12} sm={arr.length > 5 ? 6 : 12} key={item.id}>
                                 <GenerateFields item={item} selectedItem={selectedItem} handleChange={handleChange} validateForm={validateForm} />
-                                {console.log(arr[i])}
                             </Grid>
                         })}
                     </Grid>
