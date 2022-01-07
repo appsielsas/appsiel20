@@ -1,5 +1,4 @@
-import { Button, ButtonGroup, Fab, TableFooter } from '@mui/material';
-import Checkbox from '@mui/material/Checkbox';
+import { Button, ButtonGroup, IconButton, TableFooter } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,38 +6,19 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Box } from '@mui/system';
 import React, { useEffect } from 'react';
 import { ValidatorForm } from '../application/Utils';
 import { StyledTableRow } from './../CustomStyles';
-import { GenerateFields } from './GenericComp/CreateG';
-
-
-const IndeterminateCheckbox = React.forwardRef(
-    ({ indeterminate, ...rest }, ref) => {
-        const defaultRef = React.useRef();
-        const resolvedRef = ref || defaultRef;
-
-        React.useEffect(() => {
-            resolvedRef.current.indeterminate = indeterminate;
-        }, [resolvedRef, indeterminate]);
-
-        return (
-            <>
-                <Checkbox ref={resolvedRef} {...rest} />
-            </>
-        );
-    }
-);
+import GenerateFields from './Inputs/GenerateFields';
 
 export default function TableLines({ fields, columns, dataTable, setDataTable, selectedItem, handleChange }) {
 
     const [validateForm, setValidateForm] = React.useState(selectedItem)
-    const [tableLineEdit, setTableLineEdit] = React.useState({ id: -1 })
+    const [selectedItemEdit, setSelectedItemEdit] = React.useState({ id: -1 })
     const [changed, setChanged] = React.useState(true)
 
     const keyDown = (e, next) => {
-        if (e.code === 'Enter') {
+        if (e.code === 'Enter' || e.code === 'NumpadEnter') {
             console.log(next)
             const nextfield = document.querySelector(
                 `input[name=${next}]`
@@ -48,7 +28,8 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
             if (nextfield !== null) {
                 nextfield.focus();
             } else {
-                handleInsert(e)
+
+                document.querySelector('#insert').focus()
             }
             console.log('enter')
         }
@@ -65,7 +46,6 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
         if (ValidatorForm(fields, selectedItem, setValidateForm)) {
             return
         }
-
         console.log(selectedItem)
         refreshId()
         setDataTable(dataTable.concat(selectedItem))
@@ -84,20 +64,23 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
     }
 
     const handlerEdit = () => {
-        let newData = dataTable.map(row => tableLineEdit.id === row.id ? tableLineEdit : row)
+        if (ValidatorForm(fields, selectedItemEdit, setValidateForm)) {
+            return
+        }
+        let newData = dataTable.map(row => selectedItemEdit.id === row.id ? selectedItemEdit : row)
         refreshId()
         setDataTable(newData);
         window.localStorage.setItem('dataTableLines', JSON.stringify(newData))
-        setTableLineEdit({ id: -1 })
+        setSelectedItemEdit({ id: -1 })
     }
 
     const handleChangeEdit = (e) => {
         const { name, value } = e.target;
-        setTableLineEdit(prevState => ({
+        setSelectedItemEdit(prevState => ({
             ...prevState,
             [name]: value
         }))
-        console.log(tableLineEdit)
+        console.log(selectedItemEdit)
     }
 
     const sortByButton = (sentido, idx) => {
@@ -136,8 +119,9 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
             acc = { ...acc, [item.name]: '' }
             return acc
         }, {})
-
-
+        for (const property in tempFields) {
+            handleChange({ target: { name: property, value: '' } })
+        }
         setValidateForm(tempFields)
     }
 
@@ -146,22 +130,27 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
 
     }, [changed])
 
+
+
     // Render the UI for your table
     return (
 
-        <TableContainer component={Paper} sx={{ overflowX: 'scroll', width: "100%" }}>
+        <TableContainer component={Paper} sx={{ width: "100%" }}>
             <Table size="small" id="table1">
                 <TableHead>
                     <StyledTableRow>
-                        <TableCell width="120px">
+                        <TableCell width="20px">
                             Ordenar
                         </TableCell>
-                        {columns.map(column => (
-                            <TableCell>
+                        <TableCell width="20px">
+                            ID
+                        </TableCell>
+                        {columns.map((column, i) => (
+                            <TableCell key={i}>
                                 {column.Header}
                             </TableCell>
                         ))}
-                        <TableCell>
+                        <TableCell width="20px">
                             Acciones
                         </TableCell>
                     </StyledTableRow>
@@ -170,7 +159,6 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                     {dataTable.map((row, idx, arr) => (
                         <TableRow key={row.id}>
                             <TableCell style={{ textAlign: 'center' }}>
-
                                 <ButtonGroup
                                     orientation="vertical"
                                     aria-label="vertical outlined button group"
@@ -184,27 +172,30 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                                     </Button>}
                                 </ButtonGroup>
                             </TableCell>
+                            <TableCell style={{ textAlign: 'center' }}>
+                                {row.id}
+                            </TableCell>
                             {columns.map((column, j, arj) => {
-                                if (row.id === tableLineEdit.id) {
-                                    return <TableCell>
+                                if (row.id === selectedItemEdit.id) {
+                                    return <TableCell key={j}>
                                         {
-                                            column.item && <GenerateFields key={j} item={column.item} selectedItem={tableLineEdit} handleChange={handleChangeEdit} validateForm={validateForm} />
+                                            column.item && <GenerateFields item={column.item} selectedItem={selectedItemEdit} handleChange={handleChangeEdit} keyDown={(e) => keyDown(e, ((j + 1) < (arj.length)) && arj[j + 1].accessor)} validateForm={validateForm} />
                                         }
                                     </TableCell>
                                 } else {
-                                    return <TableCell onDoubleClick={() => setTableLineEdit(row)} onClick={() => { handlerEdit(); console.log('entro') }}>
-                                        {row[column.accessor]}
+                                    return <TableCell onDoubleClick={() => setSelectedItemEdit(row)} onClick={() => { selectedItemEdit.id !== -1 && handlerEdit(); console.log('entro') }}>
+                                        {column.item.type === "monetary" || column.item.attributes === "monetary" ? Number(row[column.accessor]).toLocaleString('es-CO', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }) : row[column.accessor]}
                                     </TableCell>
                                 }
                             }
                             )}
                             <TableCell >
-                                {row.id === tableLineEdit.id ? <Fab aria-label="set" onClick={() => { handlerEdit(row.id); }} size="small" color="secondary" sx={{ color: 'white' }}>
+                                {row.id === selectedItemEdit.id ? <IconButton aria-label="set" id="insert" onClick={() => { handlerEdit(row.id); }} sx={{ boxShadow: 3, bgcolor: 'secondary.dark', color: 'text.secondary' }}>
                                     <i className="fas fa-check"></i>
-                                </Fab> :
-                                    <Fab aria-label="delete" onClick={() => { handlerDelete(row.id); }} size="small" color="primary" sx={{ color: 'white' }}>
+                                </IconButton> :
+                                    <IconButton aria-label="delete" onClick={() => { handlerDelete(row.id); }} sx={{ boxShadow: 3, bgcolor: 'error.light', color: 'text.error' }}>
                                         <i className="fas fa-trash"></i>
-                                    </Fab>}
+                                    </IconButton>}
                             </TableCell>
                         </TableRow>
                     ))}
@@ -214,22 +205,22 @@ export default function TableLines({ fields, columns, dataTable, setDataTable, s
                         <TableCell>
 
                         </TableCell>
-                        {columns.map((column, i, arr) => (
-                            <TableCell>
+                        <TableCell>
+                            {selectedItem.id}
+                        </TableCell>
+                        {selectedItemEdit.id === -1 && columns.map((column, i, arr) => (
+                            <TableCell key={column.item.id}>
                                 {
-                                    column.item && <GenerateFields key={column.item.id} item={column.item} selectedItem={selectedItem} handleChange={handleChange} keyDown={(e) => keyDown(e, ((i + 1) < (arr.length)) && arr[i + 1].accessor)} validateForm={validateForm} />
+                                    column.item && <GenerateFields item={column.item} selectedItem={selectedItem} handleChange={handleChange} keyDown={(e) => keyDown(e, ((i + 1) < (arr.length)) && arr[i + 1].accessor)} validateForm={validateForm} />
                                 }
                             </TableCell>
                         ))}
                         <TableCell>
-                            <Fab aria-label="insert" onClick={handleInsert} size="small" color="secondary" sx={{ color: 'white' }}>
+                            {selectedItemEdit.id === -1 && <IconButton aria-label="insert" id="insert" onClick={handleInsert} sx={{ boxShadow: 3, bgcolor: 'secondary.dark', color: 'text.secondary' }}>
                                 <i className="fas fa-check"></i>
-                            </Fab>
+                            </IconButton>}
                         </TableCell>
                     </StyledTableRow>
-                    <TableRow>
-                        <TableCell colSpan={2}><Button variant="contained">Registrar documento</Button></TableCell>
-                    </TableRow>
                 </TableFooter>
             </Table >
         </TableContainer >

@@ -26,9 +26,8 @@ use App\Http\Controllers\System\AuthController;
 
 Route::resource('users', UserController::class);
 
-
 Route::post('register', [UserController::class, 'register']);
-Route::post('login', [UserController::class, 'authenticate']);
+
 
 Route::resource('crud', CrudController::class);
 

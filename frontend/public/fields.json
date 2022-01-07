@@ -22,7 +22,7 @@
   {
     "id": 9,
     "label": "Etiqueta",
-    "type": "text",
+    "type": "time",
     "name": "label",
     "options": "",
     "value": "",
@@ -42,7 +42,7 @@
   {
     "id": 18,
     "label": "Cantidad",
-    "type": "date",
+    "type": "numeric",
     "name": "quantity",
     "options": "",
     "value": "",
@@ -60,7 +60,7 @@
     }
   },
   {
-    "id": 18,
+    "id": 19,
     "label": "Precio Unit.",
     "type": "monetary",
     "name": "price",
@@ -80,13 +80,13 @@
     }
   },
   {
-    "id": 18,
+    "id": 20,
     "label": "Total",
-    "type": "monetary",
+    "type": "calculated",
     "name": "total",
     "options": "",
     "value": "",
-    "attributes": "",
+    "attributes": "monetary",
     "definition": "",
     "created_at": "2021-12-09T18:18:47.000000Z",
     "updated_at": "2021-12-09T18:18:47.000000Z",

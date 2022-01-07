@@ -13,6 +13,7 @@ export default function Asynchronous({
   keyDown,
   path = "model_company",
   validateForm,
+  disabled,
 }) {
   const [value, setValue] = React.useState({ label: "" });
   const [options, setOptions] = React.useState([]);
@@ -41,12 +42,13 @@ export default function Asynchronous({
   }, [inputSearch]);
 
   React.useEffect(() => {
-    value && value.label && handleChange({ target: { name: item.name, value: value.label } });
+    value && value.label && handleChange({ target: { name: item.name, value: value.id } });
   }, [value]);
 
   return (
     <FormControl fullWidth>
       <Autocomplete
+        disabled={disabled}
         disablePortal
         filterOptions={(x) => x}
         options={options}

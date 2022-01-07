@@ -8,6 +8,8 @@ import UserProvider from './application/UserProvider';
 import Catalogs from './Components/Catalogs';
 import Generic from './Components/GenericComp/Generic';
 import GenericListLines from './Components/GenericComp/GenericListLines';
+import Transactions from './Components/GenericComp/Transactions';
+import TransactionsCreate from './Components/GenericComp/TransactionsCreate';
 import SideBar from './Components/Layout';
 import Users from './Components/ModelUser/Users';
 import PdfCreator from './Components/Report/PdfCreator';
@@ -27,8 +29,11 @@ export default function App() {
         <UserProvider>
           <SideBar>
             <Switch>
-              <Route path="/api/core/users" exact>
+              <Route path="/user" exact>
                 <Users />
+              </Route>
+              <Route path="/create_transactions" exact>
+                <Transactions />
               </Route>
               <Route path="/report" exact>
                 <Report></Report>
@@ -55,8 +60,7 @@ export default function App() {
               <Route path="/">
                 <Container >
                   <Box component={Paper} sx={{ width: '100%', p: 3 }}>
-                    <Typography variant="h1">Inicio Dashboard Appsiel</Typography>
-
+                    <Typography variant="h1">Inicio Appsiel</Typography>
                   </Box>
                 </Container>
               </Route>
@@ -64,14 +68,6 @@ export default function App() {
           </SideBar>
         </UserProvider>
       </SnackbarProvider>
-      {/*</CustomStyles>*/}
-      <div>
-
-
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-
-      </div>
     </Router >
   );
 }

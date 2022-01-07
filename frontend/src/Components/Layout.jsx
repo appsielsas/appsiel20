@@ -1,14 +1,11 @@
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
 import TreeView from "@mui/lab/TreeView";
-import { Link as LinkMUI } from "@mui/material";
+import { Link as LinkMUI, useMediaQuery } from "@mui/material";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
@@ -19,6 +16,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../application/UserProvider";
 import { AppBar, ColorModeContext, Drawer, DrawerHeader, StyledTreeItem } from "./../CustomStyles";
+import { MenuLoginBar } from "./NavigationBar";
 
 const drawerWidth = 240;
 
@@ -30,6 +28,7 @@ export default function Layout(props) {
   //cambiar a modo nocturno
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
+  const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   //sesiones de usuario
   const { user, signIn, signOut } = React.useContext(UserContext);
@@ -78,33 +77,36 @@ export default function Layout(props) {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={openDrawer} enableColorOnDark>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: "36px",
-              ...(openDrawer && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div">
-            <LinkMUI component={Link} to="/" underline="none" color="primary.contrastText">
-              Appsiel
-            </LinkMUI>
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <div>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: "36px",
+                ...(openDrawer && { display: "none" }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="span">
+              <LinkMUI component={Link} to="/" underline="none" color="primary.contrastText">
+                Appsiel
+              </LinkMUI>
+            </Typography>
+          </div>
+
+          <Box sx={smScreen ? { position: "fixed", bottom: 0, left: 0, right: 0 } : {}}>
             <BottomNavigation
               showLabels
-              sx={{ backgroundColor: "rgba(0,0,0,0)", i: { fontSize: "24px" } }}
+              sx={!smScreen ? { backgroundColor: "rgba(0,0,0,0)", i: { fontSize: "24px" } } : {}}
             >
               {shorcutLayout &&
                 shorcutLayout.map((item, i) => (
                   <BottomNavigationAction
-                    sx={{ "& > i, span": { color: "primary.contrastText" } }}
+                    sx={!smScreen ? { "& > i, span": { color: "primary.contrastText" } } : {}}
                     label={item.label}
                     component={Link}
                     to={item.url}
@@ -114,18 +116,8 @@ export default function Layout(props) {
                 ))}
             </BottomNavigation>
           </Box>
-          <>
-            <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-              {theme.palette.mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
-            {user ? (
-              <Button onClick={signOut} color="inherit">
-                Cerrar sesión
-              </Button>
-            ) : (
-              ""
-            )}
-          </>
+
+          <MenuLoginBar></MenuLoginBar>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={openDrawer}>

@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import { optionsPOST, ValidatorForm } from './../../application/Utils'
 import Asynchronous from '../Inputs/Asynchronous'
 import React, { useEffect } from 'react';
+import Functions from '../../application/Functions';
+import GenerateFields from '../Inputs/GenerateFields';
 
 export default function CreateG(props) {
 
@@ -47,6 +49,10 @@ export default function CreateG(props) {
 
     }, [])
 
+    useEffect(() => {
+        console.log(validateForm)
+    }, [validateForm])
+
     return (
         <>
             <DialogTitle>Insertar {modelName}</DialogTitle>
@@ -57,9 +63,8 @@ export default function CreateG(props) {
                     </Typography>
                     <Grid container spacing={2} sx={{ p: 2 }}>
                         {fields.map((item, i, arr) => {
-                            return <Grid item xs={12} sm={arr.length > 5 ? 6 : 12}>
+                            return <Grid item xs={12} sm={arr.length > 5 ? 6 : 12} key={item.id}>
                                 <GenerateFields item={item} selectedItem={selectedItem} handleChange={handleChange} validateForm={validateForm} />
-                                {console.log(arr[i])}
                             </Grid>
                         })}
                     </Grid>
@@ -74,53 +79,3 @@ export default function CreateG(props) {
     );
 }
 
-export const GenerateFields = ({ item, selectedItem, handleChange, keyDown, validateForm }) => {
-
-    useEffect(() => {
-        console.log('re-render')
-    }, [])
-
-    switch (item.type) {
-        case "autocomplete":
-            return <Asynchronous key={item.id + ''} item={item} handleChange={handleChange} keyDown={keyDown} path={item.options} validateForm={validateForm} />
-
-        case "select":
-            return <FormControl fullWidth variant="standard" {...(item.pivot.required === 1 && { required: true })} key={item.id + ''}>
-                <InputLabel id={`simple-select-label-${item.name}`}>{item.label}</InputLabel>
-                <Select
-                    labelId={`simple-select-label-${item.name}`}
-                    id={`simple-select-${item.label}`}
-                    name={item.name}
-                    value={selectedItem[item.name] || ''}
-                    label={item.label}
-                    onChange={handleChange}
-                    onKeyDown={keyDown}
-                >
-                    {JSON.parse(item.options).map((el) => {
-                        const [value, label] = el;
-                        return <MenuItem value={value}>{label}</MenuItem>
-                    })}
-                </Select>
-                <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
-            </FormControl>
-        case "monetary":
-            return <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-                <InputLabel htmlFor={`standard-adornment-amount-${item.name}`}>Amount</InputLabel>
-                <Input
-                    id={`standard-adornment-amount-${item.name}`}
-                    name={item.name}
-                    value={selectedItem[item.name] || ''}
-                    onChange={handleChange}
-                    onKeyDown={keyDown}
-                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                />
-                <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
-            </FormControl>
-        default:
-            return <FormControl fullWidth>
-                <TextField key={item.id + ''} type={item.type} name={item.name} onChange={handleChange} onBlur={handleChange} label={item.label} variant="standard" {...(item.pivot.required && { required: true })} value={selectedItem[item.name] || ''} onKeyDown={keyDown}
-                />
-                <FormHelperText error>{validateForm[item.name] || ''}</FormHelperText>
-            </FormControl>
-    }
-}

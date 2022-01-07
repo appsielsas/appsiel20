@@ -5,6 +5,7 @@ import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { UserContext } from '../../application/UserProvider';
+import { imprimirTabla } from '../../application/Utils';
 import CreateG from './CreateG';
 import DeleteG from './DeleteG';
 import GenericList from './GenericList';
@@ -113,7 +114,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
             ...prevState,
             [name]: value
         }))
-
+        //console.log(value)
     }
 
     const requestGet = async () => {
@@ -168,33 +169,8 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
         }
     }
 
-    const imprimirTabla = () => {
-        const ventana = window.open('', '_blank');
 
-        ventana.document.write(`<link rel="stylesheet" href="/css/print.css" />`)
-        ventana.document.write('<table>')
-        ventana.document.write('<thead>')
-        ventana.document.write('<tr>')
-        headers.forEach((el) => {
-            ventana.document.write('<td>')
-            ventana.document.write(el.Header)
-            ventana.document.write('</td>')
-        })
-        ventana.document.write('</tr>')
-        ventana.document.write('</thead>')
-        ventana.document.write('<tbody>')
-        data.forEach((el) => {
-            ventana.document.write('<tr>')
-            headers.forEach((item) => {
-                ventana.document.write('<td>')
-                ventana.document.write(el[item.accessor])
-                ventana.document.write('</td>')
-            })
-            ventana.document.write('</tr>')
-        })
-        ventana.document.write('</tbody>')
-        ventana.document.write('</table>')
-    }
+
 
     useEffect(() => {
 
@@ -243,7 +219,7 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
                     </Fab>
                 ))}
                 <Divider orientation="vertical" flexItem />
-                <Fab aria-label="print" onClick={() => imprimirTabla()} size="small" color="primary" sx={{ color: 'white' }}>
+                <Fab aria-label="print" onClick={() => imprimirTabla(modelName, headers, data)} size="small" color="primary" sx={{ color: 'white' }}>
                     <i className="fas fa-print"></i>
                 </Fab>
             </Stack>
@@ -285,9 +261,10 @@ const Generic = ({ path = true, breadcrumbs = true, tab = 0 }) => {
             <Dialog fullScreen={fullScreen} fullWidth maxWidth={'lg'} component="form" open={openModifyModal} onClose={() => handleCloseModal({ type: "edit" })}>
                 <ModifyG
                     baseUrl={baseUrl}
-                    selectedItem={selectedItem}
                     modelName={modelName}
                     fields={fields}
+                    selectedItem={selectedItem}
+                    handleChange={handleChange}
                     data={data}
                     setData={setData}
                     handleCloseModal={handleCloseModal}

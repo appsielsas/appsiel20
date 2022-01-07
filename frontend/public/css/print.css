@@ -10,3 +10,20 @@ table {
 thead td {
   font-weight: bolder;
 }
+
+@page {
+  @top-left-corner {
+    content: "hola";
+  }
+
+  @top-right-corner {
+    content: "hola";
+  }
+  size: letter portrait;
+  @footnote {
+    float: bottom;
+  }
+}
+
+footer {
+}

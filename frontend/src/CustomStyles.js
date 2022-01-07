@@ -111,7 +111,6 @@ export default function CustomStyles(props) {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <App>
-
         </App>
       </ThemeProvider>
     </ColorModeContext.Provider >
@@ -277,7 +276,7 @@ const closedMixin = (theme) => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: `calc(${theme.spacing(12)} + 1px)`,
+  width: `calc(${theme.spacing(0)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(12)} + 1px)`,
   },
