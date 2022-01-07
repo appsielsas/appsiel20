@@ -18,8 +18,7 @@ class Field extends Model
         ["Header" => "Opciones", "accessor" => "options"],
         ["Header" => "Valor", "accessor" => "value"],
         ["Header" => "Atributos", "accessor" => "attributes"],
-        ["Header" => "Definicion", "accessor" => "definition"],
-
+        ["Header" => "Definicion", "accessor" => "definition"]
     ];
 
     public function get_value_to_show($model_row)

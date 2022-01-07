@@ -8,18 +8,15 @@ class ModelServ
 {
     public $model;
 
-    public function __construct($model_id, $model_name = null)
+    protected $failed = false;
+
+    protected $errors;
+
+    public function __construct($model_name)
     {
-        if ($model_id != 0) {
-            $this->model  = SysModel::find($model_id);
-        }
+        $this->model  = SysModel::where('name', $model_name)->get()->first();
 
-        if ($model_name != null) {
-            $this->model  = SysModel::where('name', $model_name)->get()->first();
-            $model_id = $this->model->id;
-        }
-
-        $this->validate_exits($model_id);
+        $this->validate_exits($model_name);
     }
 
     public function index_table_headers()
@@ -91,21 +88,37 @@ class ModelServ
         return app($this->model->name_space)->get_tabs($row);
     }
 
-    public function validate_exits($model_id)
+    public function validate_exits($model_name)
     {
         if ($this->model == null) {
-            dd('El modelo con ID=' . $model_id . ' no existe en la base de datos.');
+            $this->failed = true;
+            $this->errors = ["model" => ['El modelo <' . $model_name . '> no existe en la base de datos.']];
+            return 0;
         }
 
         if (!class_exists($this->model->name_space)) {
-            dd('El modelo <' . $this->model->label . '> (ID=' . $this->model->id . ') tiene un Namespace errado en la base de datos.');
+            $this->failed = true;
+            $this->errors = ["model" => ['El modelo <' . $this->model->label . '> (ID=' . $this->model->id . ') tiene un Namespace errado en la base de datos.']];
+            return 0;
         }
 
         $methods = ['show', 'model_delete', 'get_rows'];
         foreach ($methods as $key => $method) {
             if (!method_exists(app($this->model->name_space), $method)) {
-                dd('El modelo <' . $this->model->label . '> (ID=' . $this->model->id . ') NO tiene creado el metodo ' . $method . '().');
+                $this->failed = true;
+                $this->errors = ["model" => ['El modelo <' . $this->model->label . '> (ID=' . $this->model->id . ') NO tiene creado el metodo ' . $method . '().']];
+                return 0;
             }
         }
+    }
+
+    public function fails()
+    {
+        return $this->failed;
+    }
+
+    public function errors()
+    {
+        return $this->errors;
     }
 }

@@ -6,9 +6,14 @@ use App\Appsiel\System\Services\ModelServ;
 
 class CrudServ
 {
-    public function get_model_index_data($model_id)
+    public function get_model_index_data($model_name)
     {
-        $obj_model_serv = new ModelServ($model_id);
+        $obj_model_serv = new ModelServ($model_name);
+
+        if ($obj_model_serv->fails()) {
+            return response()->json($obj_model_serv->errors(), 500);
+        }
+
         return [
             'name' => $obj_model_serv->model->label,
             'model_table_headers' => $obj_model_serv->index_table_headers(),
@@ -18,9 +23,12 @@ class CrudServ
         ];
     }
 
-    public function ModelValidator($model_id, $data, $action, $id = 0)
+    public function ModelValidator($model_name, $data, $action, $id = 0)
     {
-        $obj_model_serv = new ModelServ($model_id);
+        $obj_model_serv = new ModelServ($model_name);
+        if ($obj_model_serv->fails()) {
+            return $obj_model_serv;
+        }
 
         switch ($action) {
             case 'store':
@@ -37,21 +45,29 @@ class CrudServ
         }
     }
 
-    public function store($model_id, $data)
+    public function store($data)
     {
-        $obj_model_serv = new ModelServ($model_id);
         return $obj_model_serv->store($data);
     }
 
-    public function update($model_id, $data, $id)
+    public function update($model_name, $data, $id)
     {
-        $obj_model_serv = new ModelServ($model_id);
+        $obj_model_serv = new ModelServ($model_name);
+
+        if ($obj_model_serv->fails()) {
+            return response()->json($obj_model_serv->errors(), 500);
+        }
+
         return $obj_model_serv->model_update($data, $id);
     }
 
-    public function show($model_id, $id)
+    public function show($model_name, $id)
     {
-        $obj_model_serv = new ModelServ($model_id);
+        $obj_model_serv = new ModelServ($model_name);
+
+        if ($obj_model_serv->fails()) {
+            return response()->json($obj_model_serv->errors(), 500);
+        }
 
         $row = app($obj_model_serv->model->name_space)->find($id);
         if ($row == null) {
